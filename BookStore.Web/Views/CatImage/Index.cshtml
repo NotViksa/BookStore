@@ -1,0 +1,164 @@
+﻿@using PurrfectPics.Web.Controllers
+@model PaginatedList<PurrfectPics.Data.Models.Book>
+
+@{
+    ViewData["Title"] = "Browse Cat Pictures";
+    var itemsPerPage = 8;
+}
+
+<div class="container mt-4">
+    <!-- Header Section with Search and Upload -->
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1 class="display-5 text-purple fw-bold">
+            <i class="bi bi-images me-2"></i>Browse Cat Pictures
+        </h1>
+
+        <div class="d-flex gap-3">
+            <form asp-action="Search" method="get" class="d-flex" style="min-width: 300px;">
+                <div class="input-group shadow-sm">
+                    <input type="text" name="query" class="form-control border-purple"
+                           placeholder="Search cats or tags..."
+                           value="@ViewBag.SearchQuery">
+                    <button class="btn btn-purple" type="submit">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                </div>
+            </form>
+
+            <a asp-action="Upload" class="btn btn-purple shadow-sm">
+                <i class="bi bi-cloud-arrow-up me-2"></i>Upload
+            </a>
+        </div>
+    </div>
+
+    <!-- Search Results Header -->
+    @if (ViewBag.SearchQuery != null)
+    {
+        <div class="alert alert-purple alert-dismissible fade show mb-4">
+            <span>
+                <i class="bi bi-search me-2"></i>
+                Showing results for: <strong>"@ViewBag.SearchQuery"</strong>
+            </span>
+            <a asp-action="Index" class="btn-close" aria-label="Close"></a>
+        </div>
+    }
+
+    <!-- Cat Images Grid -->
+    <div class="row g-4">
+        @if (!Model.Any())
+        {
+            <div class="col-12">
+                <div class="card shadow-sm border-0 text-center py-5">
+                    <i class="bi bi-emoji-frown display-4 text-muted mb-3"></i>
+                    <h3 class="text-purple">No cat-tastic images found!</h3>
+                    <p class="text-muted mb-4">Try a different search or upload your own purr-fect picture</p>
+                    <a asp-action="Upload" class="btn btn-purple px-4">
+                        <i class="bi bi-cloud-arrow-up me-2"></i>Upload Cats
+                    </a>
+                </div>
+            </div>
+        }
+        else
+        {
+            @foreach (var image in Model)
+            {
+                <div class="col-md-4 col-lg-3">
+                    <div class="card h-100 shadow-sm border-0 hover-scale">
+                        <a asp-action="Details" asp-route-id="@image.Id" class="text-decoration-none">
+                            <div class="ratio ratio-4x3">
+                                <img src="@image.ImageUrl" class="card-img-top object-fit-cover" alt="@image.Title">
+                            </div>
+
+                            <div class="card-body">
+                                <h5 class="card-title text-purple clamp-1-line">
+                                    @if (ViewBag.SearchQuery != null)
+                                    {
+                                        @Html.Raw(image.Title.Replace(ViewBag.SearchQuery.ToString(),
+                                        $"<span class='search-highlight'>{ViewBag.SearchQuery}</span>",
+                                                        StringComparison.OrdinalIgnoreCase))
+                                                        }
+                                    else
+                                    {
+                                        @image.Title
+                                    }
+                                </h5>
+
+                                <p class="card-text text-muted clamp-2-lines mb-3">
+                                    @image.Description
+                                </p>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar me-1"></i>
+                                        @image.UploadDate.ToString("MMM dd, yyyy")
+                                    </small>
+
+                                    <div class="tag-cloud">
+                                        @foreach (var tag in image.Tags.Take(2))
+                                        {
+                                            <span class="badge bg-light-purple text-purple">
+                                                @if (ViewBag.SearchQuery != null && tag.Name.Contains(ViewBag.SearchQuery.ToString(), StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    @Html.Raw(tag.Name.Replace(ViewBag.SearchQuery.ToString(),
+                                                    $"<span class='search-highlight-badge'>{ViewBag.SearchQuery}</span>",
+                                                                        StringComparison.OrdinalIgnoreCase))
+                                                                        }
+                                                else
+                                                {
+                                                    @tag.Name
+                                                }
+                                            </span>
+                                        }
+                                        @if (image.Tags.Count > 2)
+                                        {
+                                            <span class="badge bg-light-purple text-purple">+@(image.Tags.Count - 2)</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.Any())
+    {
+        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @prevDisabled">
+                    <a asp-action="Index"
+                       asp-route-pageNumber="@(Model.PageIndex - 1)"
+                       asp-route-query="@ViewBag.SearchQuery"
+                       class="page-link bg-purple text-white border-purple">
+                        Previous
+                    </a>
+                </li>
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a asp-action="Index"
+                           asp-route-pageNumber="@i"
+                           asp-route-query="@ViewBag.SearchQuery"
+                           class="page-link @(i == Model.PageIndex ? "bg-light-purple text-purple border-purple" : "text-purple")">
+                            @i
+                        </a>
+                    </li>
+                }
+                <li class="page-item @nextDisabled">
+                    <a asp-action="Index"
+                       asp-route-pageNumber="@(Model.PageIndex + 1)"
+                       asp-route-query="@ViewBag.SearchQuery"
+                       class="page-link bg-purple text-white border-purple">
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>
