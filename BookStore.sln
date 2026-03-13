@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36301.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookStore.Web", "PurrfectPics.Web\BookStore.Web.csproj", "{1FA38B46-FE9F-4BF8-8F44-5D0C7C9FD9F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookStore.Web", "BookStore.Web\BookStore.Web.csproj", "{1FA38B46-FE9F-4BF8-8F44-5D0C7C9FD9F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookStore.Data", "PurrfectPics.Data\BookStore.Data.csproj", "{E0A38C81-379A-442E-A7E8-EC9A55D5B2B6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookStore.Data", "BookStore.Data\BookStore.Data.csproj", "{E0A38C81-379A-442E-A7E8-EC9A55D5B2B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookStore.Services", "PurrfectPics.Services\BookStore.Services.csproj", "{C05E354A-CDA7-48D9-8B9F-C88C18C598E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookStore.Services", "BookStore.Services\BookStore.Services.csproj", "{C05E354A-CDA7-48D9-8B9F-C88C18C598E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookStore.Tests", "PurrfectPics.Tests\BookStore.Tests.csproj", "{E9AAD5EA-B51C-461D-9F2E-575CD7D01196}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookStore.Tests", "BookStore.Tests\BookStore.Tests.csproj", "{E9AAD5EA-B51C-461D-9F2E-575CD7D01196}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

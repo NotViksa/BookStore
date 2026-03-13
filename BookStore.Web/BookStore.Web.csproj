@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PurrfectPics.Services\BookStore.Services.csproj" />
+    <ProjectReference Include="..\BookStore.Services\BookStore.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
