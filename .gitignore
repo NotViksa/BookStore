@@ -1,0 +1,28 @@
+# VS stuff
+.vs/
+bin/
+obj/
+*.user
+*.suo
+
+# System files
+Thumbs.db
+desktop.ini
+
+# App folders - DON'T TRACK THESE!
+Application Data/
+Cookies/
+Local Settings/
+My Documents/
+NetHood/
+PrintHood/
+Recent/
+SendTo/
+Start Menu/
+Templates/
+
+# Build outputs
+*/bin/
+*/obj/
+*.dll
+*.exe
