@@ -1,6 +1,6 @@
-﻿using PurrfectPics.Data.Models.Identity;
+﻿using BookStore.Data.Models.Identity;
 
-namespace PurrfectPics.Data.Models
+namespace BookStore.Data.Models
 {
     public class Review
     {

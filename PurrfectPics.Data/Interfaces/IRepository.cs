@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace PurrfectPics.Data.Interfaces
+namespace BookStore.Data.Interfaces
 {
     public interface IRepository<T> where T : class
     {

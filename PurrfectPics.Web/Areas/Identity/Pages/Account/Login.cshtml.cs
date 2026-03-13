@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using PurrfectPics.Data.Models.Identity;
+using BookStore.Data.Models.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace PurrfectPics.Web.Areas.Identity.Pages.Account
+namespace BookStore.Web.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {

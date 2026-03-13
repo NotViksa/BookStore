@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using PurrfectPics.Data;
-using PurrfectPics.Data.Interfaces;
-using PurrfectPics.Data.Models.Identity;
-using PurrfectPics.Data.Repositories;
-using PurrfectPics.Services;
-using PurrfectPics.Services.Interfaces;
+using BookStore.Data;
+using BookStore.Data.Interfaces;
+using BookStore.Data.Models.Identity;
+using BookStore.Data.Repositories;
+using BookStore.Services;
+using BookStore.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +18,7 @@ if (builder.Configuration.GetConnectionString("DefaultConnection") == null)
 
 // Get connection string with fallback
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? "Server=(localdb)\\mssqllocaldb;Database=PurrfectPics;Trusted_Connection=True;MultipleActiveResultSets=true";
+    ?? "Server=(localdb)\\mssqllocaldb;Database=BookStore;Trusted_Connection=True;MultipleActiveResultSets=true";
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
@@ -121,7 +121,7 @@ using (var scope = app.Services.CreateScope())
         }
 
         // Create admin user if it doesn't exist
-        var adminEmail = "admin@purrfectpics.com";
+        var adminEmail = "admin@BookStore.com";
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
         if (adminUser == null)
         {

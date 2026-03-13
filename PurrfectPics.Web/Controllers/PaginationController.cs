@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PurrfectPics.Web.Controllers
+namespace BookStore.Web.Controllers
 {
     public class PaginatedList<T> : List<T>
     {

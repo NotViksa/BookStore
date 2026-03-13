@@ -1,11 +1,11 @@
-﻿using PurrfectPics.Data.Interfaces;
-using PurrfectPics.Data.Models;
-using PurrfectPics.Data.Repositories;
-using PurrfectPics.Services.Interfaces;
+﻿using BookStore.Data.Interfaces;
+using BookStore.Data.Models;
+using BookStore.Data.Repositories;
+using BookStore.Services.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace PurrfectPics.Services
+namespace BookStore.Services
 {
     public class TagService : ITagService
     {

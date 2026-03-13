@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PurrfectPics.Data.Interfaces;
+using BookStore.Data.Interfaces;
 using System.Linq.Expressions;
 
-namespace PurrfectPics.Data.Repositories
+namespace BookStore.Data.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {

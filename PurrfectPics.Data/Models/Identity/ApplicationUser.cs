@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
-namespace PurrfectPics.Data.Models.Identity
+namespace BookStore.Data.Models.Identity
 {
     public class ApplicationUser : IdentityUser
     {

@@ -1,4 +1,4 @@
-﻿namespace PurrfectPics.Services.Interfaces
+﻿namespace BookStore.Services.Interfaces
 {
     public interface IVoteService
     {

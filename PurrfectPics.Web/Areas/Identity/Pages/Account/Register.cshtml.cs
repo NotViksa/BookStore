@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using PurrfectPics.Data.Models.Identity; // Make sure this matches your namespace
+using BookStore.Data.Models.Identity; // Make sure this matches your namespace
 using System.ComponentModel.DataAnnotations;
 
-namespace PurrfectPics.Web.Areas.Identity.Pages.Account
+namespace BookStore.Web.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {

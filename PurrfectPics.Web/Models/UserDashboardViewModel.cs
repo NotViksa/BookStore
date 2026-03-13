@@ -1,7 +1,7 @@
-﻿using PurrfectPics.Data.Models;
-using PurrfectPics.Data.Models.Identity;
+﻿using BookStore.Data.Models;
+using BookStore.Data.Models.Identity;
 
-namespace PurrfectPics.Web.Models
+namespace BookStore.Web.Models
 {
     public class UserDashboardViewModel
     {

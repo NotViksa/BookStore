@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using PurrfectPics.Data.Models.Identity;
-using PurrfectPics.Services;
-using PurrfectPics.Services.Interfaces;
-using PurrfectPics.Web.Models;
+using BookStore.Data.Models.Identity;
+using BookStore.Services;
+using BookStore.Services.Interfaces;
+using BookStore.Web.Models;
 
-namespace PurrfectPics.Web.Controllers
+namespace BookStore.Web.Controllers
 {
     [Authorize]
     public class UserController : Controller

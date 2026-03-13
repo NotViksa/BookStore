@@ -1,8 +1,8 @@
-﻿using PurrfectPics.Data.Models.Identity;
+﻿using BookStore.Data.Models.Identity;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PurrfectPics.Data.Models
+namespace BookStore.Data.Models
 {
     public class Wishlist
     {

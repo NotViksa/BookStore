@@ -1,10 +1,10 @@
-﻿using PurrfectPics.Data.Interfaces;
-using PurrfectPics.Data.Models;
-using PurrfectPics.Services.Interfaces;
+﻿using BookStore.Data.Interfaces;
+using BookStore.Data.Models;
+using BookStore.Services.Interfaces;
 using System;
 using System.Threading.Tasks;
 
-namespace PurrfectPics.Services
+namespace BookStore.Services
 {
     public class VoteService : IVoteService
     {

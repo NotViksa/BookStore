@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using PurrfectPics.Data.Models;
-using PurrfectPics.Data.Models.Identity;
+using BookStore.Data.Models;
+using BookStore.Data.Models.Identity;
 
-namespace PurrfectPics.Data
+namespace BookStore.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

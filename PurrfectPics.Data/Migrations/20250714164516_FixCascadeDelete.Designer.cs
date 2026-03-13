@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PurrfectPics.Data;
+using BookStore.Data;
 
 #nullable disable
 
-namespace PurrfectPics.Data.Migrations
+namespace BookStore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250714164516_FixCascade")]
@@ -177,7 +177,7 @@ namespace PurrfectPics.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PurrfectPics.Data.Models.CatImage", b =>
+            modelBuilder.Entity("BookStore.Data.Models.CatImage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -212,7 +212,7 @@ namespace PurrfectPics.Data.Migrations
                     b.ToTable("CatImages");
                 });
 
-            modelBuilder.Entity("PurrfectPics.Data.Models.Comment", b =>
+            modelBuilder.Entity("BookStore.Data.Models.Comment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -243,7 +243,7 @@ namespace PurrfectPics.Data.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("PurrfectPics.Data.Models.Favorite", b =>
+            modelBuilder.Entity("BookStore.Data.Models.Favorite", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -270,7 +270,7 @@ namespace PurrfectPics.Data.Migrations
                     b.ToTable("Favorites");
                 });
 
-            modelBuilder.Entity("PurrfectPics.Data.Models.Identity.ApplicationUser", b =>
+            modelBuilder.Entity("BookStore.Data.Models.Identity.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -346,7 +346,7 @@ namespace PurrfectPics.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("PurrfectPics.Data.Models.Tag", b =>
+            modelBuilder.Entity("BookStore.Data.Models.Tag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -363,7 +363,7 @@ namespace PurrfectPics.Data.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("PurrfectPics.Data.Models.Vote", b =>
+            modelBuilder.Entity("BookStore.Data.Models.Vote", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -395,13 +395,13 @@ namespace PurrfectPics.Data.Migrations
 
             modelBuilder.Entity("CatImageTag", b =>
                 {
-                    b.HasOne("PurrfectPics.Data.Models.CatImage", null)
+                    b.HasOne("BookStore.Data.Models.CatImage", null)
                         .WithMany()
                         .HasForeignKey("CatImagesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PurrfectPics.Data.Models.Tag", null)
+                    b.HasOne("BookStore.Data.Models.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -419,7 +419,7 @@ namespace PurrfectPics.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("PurrfectPics.Data.Models.Identity.ApplicationUser", null)
+                    b.HasOne("BookStore.Data.Models.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -428,7 +428,7 @@ namespace PurrfectPics.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("PurrfectPics.Data.Models.Identity.ApplicationUser", null)
+                    b.HasOne("BookStore.Data.Models.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -443,7 +443,7 @@ namespace PurrfectPics.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PurrfectPics.Data.Models.Identity.ApplicationUser", null)
+                    b.HasOne("BookStore.Data.Models.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -452,16 +452,16 @@ namespace PurrfectPics.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("PurrfectPics.Data.Models.Identity.ApplicationUser", null)
+                    b.HasOne("BookStore.Data.Models.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PurrfectPics.Data.Models.CatImage", b =>
+            modelBuilder.Entity("BookStore.Data.Models.CatImage", b =>
                 {
-                    b.HasOne("PurrfectPics.Data.Models.Identity.ApplicationUser", "UploadedBy")
+                    b.HasOne("BookStore.Data.Models.Identity.ApplicationUser", "UploadedBy")
                         .WithMany()
                         .HasForeignKey("UploadedById")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -470,15 +470,15 @@ namespace PurrfectPics.Data.Migrations
                     b.Navigation("UploadedBy");
                 });
 
-            modelBuilder.Entity("PurrfectPics.Data.Models.Comment", b =>
+            modelBuilder.Entity("BookStore.Data.Models.Comment", b =>
                 {
-                    b.HasOne("PurrfectPics.Data.Models.CatImage", "CatImage")
+                    b.HasOne("BookStore.Data.Models.CatImage", "CatImage")
                         .WithMany("Comments")
                         .HasForeignKey("CatImageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PurrfectPics.Data.Models.Identity.ApplicationUser", "PostedBy")
+                    b.HasOne("BookStore.Data.Models.Identity.ApplicationUser", "PostedBy")
                         .WithMany()
                         .HasForeignKey("PostedById")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -489,15 +489,15 @@ namespace PurrfectPics.Data.Migrations
                     b.Navigation("PostedBy");
                 });
 
-            modelBuilder.Entity("PurrfectPics.Data.Models.Favorite", b =>
+            modelBuilder.Entity("BookStore.Data.Models.Favorite", b =>
                 {
-                    b.HasOne("PurrfectPics.Data.Models.CatImage", "CatImage")
+                    b.HasOne("BookStore.Data.Models.CatImage", "CatImage")
                         .WithMany("Favorites")
                         .HasForeignKey("CatImageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PurrfectPics.Data.Models.Identity.ApplicationUser", "User")
+                    b.HasOne("BookStore.Data.Models.Identity.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -508,15 +508,15 @@ namespace PurrfectPics.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PurrfectPics.Data.Models.Vote", b =>
+            modelBuilder.Entity("BookStore.Data.Models.Vote", b =>
                 {
-                    b.HasOne("PurrfectPics.Data.Models.CatImage", "CatImage")
+                    b.HasOne("BookStore.Data.Models.CatImage", "CatImage")
                         .WithMany("Votes")
                         .HasForeignKey("CatImageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PurrfectPics.Data.Models.Identity.ApplicationUser", "User")
+                    b.HasOne("BookStore.Data.Models.Identity.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -527,7 +527,7 @@ namespace PurrfectPics.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PurrfectPics.Data.Models.CatImage", b =>
+            modelBuilder.Entity("BookStore.Data.Models.CatImage", b =>
                 {
                     b.Navigation("Comments");
 

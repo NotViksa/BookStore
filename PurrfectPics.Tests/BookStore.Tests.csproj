@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PurrfectPics.Services\PurrfectPics.Services.csproj" />
-    <ProjectReference Include="..\PurrfectPics.Web\PurrfectPics.Web.csproj" />
+    <ProjectReference Include="..\BookStore.Services\BookStore.Services.csproj" />
+    <ProjectReference Include="..\BookStore.Web\BookStore.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>

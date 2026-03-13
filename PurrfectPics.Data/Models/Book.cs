@@ -1,8 +1,8 @@
 ﻿using Azure;
-using PurrfectPics.Data.Models.Identity;
+using BookStore.Data.Models.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace PurrfectPics.Data.Models
+namespace BookStore.Data.Models
 {
     public class Book
     {

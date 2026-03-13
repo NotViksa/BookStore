@@ -1,6 +1,6 @@
-﻿using PurrfectPics.Data.Models;
+﻿using BookStore.Data.Models;
 
-namespace PurrfectPics.Web.Models
+namespace BookStore.Web.Models
 {
     public class CatImageDetailsViewModel
     {

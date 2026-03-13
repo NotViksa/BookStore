@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using PurrfectPics.Data.Models.Identity;
+using BookStore.Data.Models.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PurrfectPics.Services
+namespace BookStore.Services
 {
     public static class RolesInitializer
     {
@@ -27,7 +27,7 @@ namespace PurrfectPics.Services
             }
 
             // Create admin user
-            var adminEmail = "admin@purrfectpics.com";
+            var adminEmail = "admin@BookStore.com";
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
             if (adminUser == null)

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PurrfectPics.Services.Interfaces;
+using BookStore.Services.Interfaces;
 using System.Threading.Tasks;
 
-namespace PurrfectPics.Web.Controllers
+namespace BookStore.Web.Controllers
 {
     public class TagController : Controller
     {

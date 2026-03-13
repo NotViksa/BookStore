@@ -1,8 +1,8 @@
-﻿using PurrfectPics.Data.Models;
+﻿using BookStore.Data.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace PurrfectPics.Data.Interfaces
+namespace BookStore.Data.Interfaces
 {
     public interface IWishlistRepository
     {

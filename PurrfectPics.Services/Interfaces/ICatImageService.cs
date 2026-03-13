@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PurrfectPics.Data.Models;
+using BookStore.Data.Models;
 
-namespace PurrfectPics.Services.Interfaces
+namespace BookStore.Services.Interfaces
 {
     public interface ICatImageService
     {

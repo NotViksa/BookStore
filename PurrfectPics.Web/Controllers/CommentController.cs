@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PurrfectPics.Services.Interfaces;
+using BookStore.Services.Interfaces;
 using System.Security.Claims;
 
-namespace PurrfectPics.Web.Controllers
+namespace BookStore.Web.Controllers
 {
     [Authorize]
     public class CommentController : Controller

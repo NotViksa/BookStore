@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace PurrfectPics.Data.Migrations
+namespace BookStore.Data.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

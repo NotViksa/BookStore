@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using PurrfectPics.Data.Models.Identity;
-using PurrfectPics.Services.Interfaces;
-using PurrfectPics.Web.Models;
+using BookStore.Data.Models.Identity;
+using BookStore.Services.Interfaces;
+using BookStore.Web.Models;
 using System.Diagnostics;
 using System.Security.Claims;
 
-namespace PurrfectPics.Web.Controllers
+namespace BookStore.Web.Controllers
 {
     public class HomeController : Controller
     {

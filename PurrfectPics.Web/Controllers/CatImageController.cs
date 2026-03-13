@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PurrfectPics.Data.Models;
-using PurrfectPics.Services.Interfaces;
-using PurrfectPics.Web.Models;
-using PurrfectPics.Web.ViewModels;
+using BookStore.Data.Models;
+using BookStore.Services.Interfaces;
+using BookStore.Web.Models;
+using BookStore.Web.ViewModels;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
-namespace PurrfectPics.Web.Controllers
+namespace BookStore.Web.Controllers
 {
     public class CatImageController : Controller
     {

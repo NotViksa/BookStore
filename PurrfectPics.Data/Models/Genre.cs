@@ -1,4 +1,4 @@
-﻿namespace PurrfectPics.Data.Models
+﻿namespace BookStore.Data.Models
 {
     public class Genre
     {

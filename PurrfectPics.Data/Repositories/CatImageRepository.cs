@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PurrfectPics.Data.Interfaces;
-using PurrfectPics.Data.Models;
+using BookStore.Data.Interfaces;
+using BookStore.Data.Models;
 using System.Linq.Expressions;
 
-namespace PurrfectPics.Data.Repositories
+namespace BookStore.Data.Repositories
 {
     public class CatImageRepository : Repository<Book>, IBookRepository
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace PurrfectPics.Web.ViewModels
+namespace BookStore.Web.ViewModels
 {
     public class CatImageUploadViewModel
     {

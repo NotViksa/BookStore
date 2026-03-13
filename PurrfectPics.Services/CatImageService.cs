@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PurrfectPics.Data.Interfaces;
-using PurrfectPics.Data.Models;
-using PurrfectPics.Services.Interfaces;
+using BookStore.Data.Interfaces;
+using BookStore.Data.Models;
+using BookStore.Services.Interfaces;
 using System.Linq.Expressions;
 
-namespace PurrfectPics.Services
+namespace BookStore.Services
 {
     public class CatImageService : ICatImageService
     {

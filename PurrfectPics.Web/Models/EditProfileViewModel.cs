@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace PurrfectPics.Web.Models
+namespace BookStore.Web.Models
 {
     public class EditProfileViewModel
     {
