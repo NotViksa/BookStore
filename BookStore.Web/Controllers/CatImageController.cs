@@ -11,7 +11,7 @@ namespace BookStore.Web.Controllers
 {
     public class CatImageController : Controller
     {
-        private readonly ICatImageService _catImageService;
+        private readonly IBookService _catImageService;
         private readonly ITagService _tagService;
         private readonly IFavoriteService _favoriteService;
         private readonly IVoteService _voteService;
@@ -20,7 +20,7 @@ namespace BookStore.Web.Controllers
         private readonly ICommentService _commentService;
 
         public CatImageController(
-            ICatImageService catImageService,
+            IBookService catImageService,
             ITagService tagService,
             IFavoriteService favoriteService,
             IVoteService voteService,

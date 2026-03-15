@@ -12,13 +12,13 @@ namespace BookStore.Web.Controllers
     public class UserController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ICatImageService _catImageService;
-        private readonly IFavoriteService _favoriteService;
+        private readonly IBookService _catImageService;
+        private readonly IWishlistService _favoriteService;
 
         public UserController(
             UserManager<ApplicationUser> userManager,
-            ICatImageService catImageService,
-            IFavoriteService favoriteService)
+            IBookService catImageService,
+            IWishlistService favoriteService)
         {
             _userManager = userManager;
             _catImageService = catImageService;

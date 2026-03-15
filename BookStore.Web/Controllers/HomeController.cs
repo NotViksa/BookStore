@@ -11,18 +11,18 @@ namespace BookStore.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ICatImageService _catImageService;
-        private readonly ITagService _tagService;
-        private readonly IFavoriteService _favoriteService;
-        private readonly ICommentService _commentService;
+        private readonly IBookService _catImageService;
+        private readonly IGenreService _tagService;
+        private readonly IWishlistService _favoriteService;
+        private readonly IReviewService _commentService;
         private readonly UserManager<ApplicationUser> _userManager;
 
 
         public HomeController(
-            ICatImageService catImageService,
-            ITagService tagService,
-            IFavoriteService favoriteService,
-            ICommentService commentService,
+            IBookService catImageService,
+            IGenreService tagService,
+            IWishlistService favoriteService,
+            IReviewService commentService,
             UserManager<ApplicationUser> userManager)
         {
             _catImageService = catImageService;

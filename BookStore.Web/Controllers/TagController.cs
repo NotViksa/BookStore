@@ -7,10 +7,10 @@ namespace BookStore.Web.Controllers
 {
     public class TagController : Controller
     {
-        private readonly ITagService _tagService;
-        private readonly ICatImageService _catImageService;
+        private readonly IGenreService _tagService;
+        private readonly IBookService _catImageService;
 
-        public TagController(ITagService tagService, ICatImageService catImageService)
+        public TagController(IGenreService tagService, IBookService catImageService)
         {
             _tagService = tagService;
             _catImageService = catImageService;

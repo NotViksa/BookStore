@@ -8,9 +8,9 @@ namespace BookStore.Web.Controllers
     [Authorize]
     public class CommentController : Controller
     {
-        private readonly ICommentService _commentService;
+        private readonly IReviewService _commentService;
 
-        public CommentController(ICommentService commentService)
+        public CommentController(IReviewService commentService)
         {
             _commentService = commentService;
         }

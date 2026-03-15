@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BookStore.Services
 {
-    public class TagService : ITagService
+    public class TagService : IGenreService
     {
         private readonly IGenreRepository _tagRepository;
         public TagService(IGenreRepository tagRepository)

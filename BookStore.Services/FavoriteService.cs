@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BookStore.Services
 {
-    public class FavoriteService : IFavoriteService
+    public class FavoriteService : IWishlistService
     {
         private readonly IWishlistRepository _favoriteRepository;
 

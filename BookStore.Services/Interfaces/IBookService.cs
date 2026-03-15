@@ -3,7 +3,7 @@ using BookStore.Data.Models;
 
 namespace BookStore.Services.Interfaces
 {
-    public interface ICatImageService
+    public interface IBookService
     {
         Task<IEnumerable<Book>> GetAllImagesAsync();
         Task<Book?> GetImageByIdAsync(int id);

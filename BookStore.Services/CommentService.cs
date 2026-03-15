@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BookStore.Services
 {
-    public class CommentService : ICommentService
+    public class CommentService : IReviewService
     {
         private readonly IReviewRepository _commentRepository;
 

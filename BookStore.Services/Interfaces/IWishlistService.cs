@@ -2,7 +2,7 @@
 
 namespace BookStore.Services.Interfaces
 {
-    public interface IFavoriteService
+    public interface IWishlistService
     {
         Task<bool> ToggleFavoriteAsync(string userId, int imageId);
         Task<bool> IsFavoritedAsync(string userId, int imageId);

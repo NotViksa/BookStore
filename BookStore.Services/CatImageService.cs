@@ -6,14 +6,14 @@ using System.Linq.Expressions;
 
 namespace BookStore.Services
 {
-    public class CatImageService : ICatImageService
+    public class CatImageService : IBookService
     {
         private readonly IBookRepository _catImageRepository;
-        private readonly ITagService _tagService;
+        private readonly IGenreService _tagService;
 
         public CatImageService(
             IBookRepository catImageRepository,
-            ITagService tagService)
+            IGenreService tagService)
         {
             _catImageRepository = catImageRepository;
             _tagService = tagService;

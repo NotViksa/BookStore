@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BookStore.Services
 {
-    public class VoteService : IVoteService
+    public class VoteService : IRatingService
     {
         private readonly IRatingRepository _voteRepository;
 
