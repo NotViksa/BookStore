@@ -12,21 +12,21 @@ namespace BookStore.Web.Controllers
     public class CatImageController : Controller
     {
         private readonly IBookService _catImageService;
-        private readonly ITagService _tagService;
-        private readonly IFavoriteService _favoriteService;
-        private readonly IVoteService _voteService;
+        private readonly IGenreService _tagService;
+        private readonly IWishlistService _favoriteService;
+        private readonly IRatingService _voteService;
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<CatImageController> _logger;
-        private readonly ICommentService _commentService;
+        private readonly IReviewService _commentService;
 
         public CatImageController(
             IBookService catImageService,
-            ITagService tagService,
-            IFavoriteService favoriteService,
-            IVoteService voteService,
+            IGenreService tagService,
+            IWishlistService favoriteService,
+            IRatingService voteService,
             IWebHostEnvironment environment,
             ILogger<CatImageController> logger,
-            ICommentService commentService)
+            IReviewService commentService)
         {
             _catImageService = catImageService;
             _tagService = tagService;

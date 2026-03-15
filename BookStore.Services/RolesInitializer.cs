@@ -2,9 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using BookStore.Data.Models.Identity;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BookStore.Services
@@ -27,7 +24,7 @@ namespace BookStore.Services
             }
 
             // Create admin user
-            var adminEmail = "admin@BookStore.com";
+            var adminEmail = "admin@bookstore.com";
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
             if (adminUser == null)
@@ -37,6 +34,9 @@ namespace BookStore.Services
                     UserName = adminEmail,
                     Email = adminEmail,
                     DisplayName = "Admin",
+                    Bio = "Bookstore Administrator",
+                    FavoriteGenre = "Classics",
+                    BirthYear = 1990,
                     RegistrationDate = DateTime.UtcNow
                 };
 

@@ -101,7 +101,7 @@ namespace BookStore.Data
                     PublicationYear = 1925,
                     Publisher = "Scribner",
                     PageCount = 180,
-                    UploadedById = "1", // Will need to be adjusted after users are created
+                    UploadedById = "1",
                     AddedDate = DateTime.UtcNow
                 },
                 new Book

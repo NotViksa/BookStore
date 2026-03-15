@@ -13,5 +13,7 @@ namespace BookStore.Data.Interfaces
         Task<int> CountAsync(Expression<Func<Book, bool>> predicate);
         Task<IEnumerable<Book>> SearchAsync(string searchTerm);
         IQueryable<Book> GetQueryable();
+        Task<IEnumerable<Book>> GetBooksByPriceRangeAsync(decimal minPrice, decimal maxPrice);
+        Task<IEnumerable<Book>> GetByAuthorAsync(string author);
     }
 }

@@ -34,11 +34,11 @@ builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 
 // Register services
-builder.Services.AddScoped<ICatImageService, CatImageService>();
-builder.Services.AddScoped<ITagService, TagService>();
-builder.Services.AddScoped<IFavoriteService, FavoriteService>();
-builder.Services.AddScoped<IVoteService, VoteService>();
-builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IGenreService, GenreService>();
+builder.Services.AddScoped<IWishlistService, WishlistService>();
+builder.Services.AddScoped<IRatingService, RatingService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
 
 
 // Configure Identity

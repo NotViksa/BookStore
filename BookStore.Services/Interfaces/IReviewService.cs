@@ -2,12 +2,17 @@
 
 namespace BookStore.Services.Interfaces
 {
-    public interface ICommentService
+    public interface IReviewService
     {
-        Task<int> GetCommentCountByUserAsync(string userId);
-        Task<Review> AddCommentAsync(string content, int catImageId, string userId);
-        Task<IEnumerable<Review>> GetCommentsForImageAsync(int catImageId);
-        Task<bool> DeleteCommentAsync(int commentId, string userId, bool isAdmin);
-        Task<bool> EditCommentAsync(int commentId, string? userId, string content);
+        // Basic operations
+        Task<Review> AddReviewAsync(string content, int rating, int bookId, string userId);
+        Task<bool> DeleteReviewAsync(int reviewId, string userId, bool isAdmin);
+        Task<bool> EditReviewAsync(int reviewId, string userId, string content, int rating);
+
+        // Queries
+        Task<Review?> GetReviewByIdAsync(int reviewId);
+        Task<IEnumerable<Review>> GetReviewsForBookAsync(int bookId);
+        Task<int> GetReviewCountByUserAsync(string userId);
+        Task<double> GetAverageRatingForBookAsync(int bookId);
     }
 }
