@@ -5,10 +5,10 @@ namespace BookStore.Data.Interfaces
 {
     public interface IRatingRepository
     {
-        Task<Rating> GetVoteAsync(string userId, int imageId);
-        Task AddVoteAsync(Rating vote);
-        Task UpdateVoteAsync(Rating vote);
-        Task RemoveVoteAsync(Rating vote);
-        Task<int> GetImageScoreAsync(int imageId);
+        Task<Rating> GetVoteAsync(string userId, int bookId);
+        Task AddVoteAsync(Rating rating);
+        Task UpdateVoteAsync(Rating rating);
+        Task RemoveVoteAsync(Rating rating);
+        Task<int> GetImageScoreAsync(int bookId);
     }
 }

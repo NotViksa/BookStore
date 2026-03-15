@@ -57,10 +57,11 @@ namespace BookStore.Data.Repositories
             var entity = await GetByIdAsync(id);
             return entity != null;
         }
+
         public async Task<IEnumerable<T>> FindAsync(
-    Expression<Func<T, bool>> predicate,
-    Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-    int? take = null)
+            Expression<Func<T, bool>> predicate,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            int? take = null)
         {
             IQueryable<T> query = _dbSet.Where(predicate);
 

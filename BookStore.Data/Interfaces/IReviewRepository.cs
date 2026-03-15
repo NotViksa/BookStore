@@ -6,11 +6,11 @@ namespace BookStore.Data.Interfaces
 {
     public interface IReviewRepository
     {
-        Task<Review> GetByIdAsync(int commentId);
-        Task<Review> AddAsync(Review comment);
-        Task<bool> DeleteAsync(Review comment);
-        Task<IEnumerable<Review>> GetCommentsForImageAsync(int catImageId);
+        Task<Review> GetByIdAsync(int reviewId);
+        Task<Review> AddAsync(Review review);
+        Task<bool> DeleteAsync(Review review);
+        Task<IEnumerable<Review>> GetCommentsForImageAsync(int bookId);
         Task<int> GetCountByUserAsync(string userId);
-        Task<bool> UpdateAsync(Review comment);
+        Task<bool> UpdateAsync(Review review);
     }
 }

@@ -12,15 +12,19 @@ namespace BookStore.Data.Models.Identity
         public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
 
         [StringLength(500, ErrorMessage = "Bio cannot exceed 500 characters")]
-        public string? ProfileBio { get; set; }
+        public string? Bio { get; set; }
 
         public string ProfileImageUrl { get; set; } = "/images/default-profile.png";
 
-        // Navigation properties
-        public ICollection<Book> UploadedImages { get; set; } = new List<Book>();
-        public ICollection<Wishlist> Favorites { get; set; } = new List<Wishlist>();
-        public ICollection<Rating> Votes { get; set; } = new List<Rating>();
-        public ICollection<Review> Comments { get; set; } = new List<Review>();
+        // New fields for book store
+        [StringLength(50)]
+        public string? FavoriteGenre { get; set; }
 
+        [Range(1900, 2026, ErrorMessage = "Please enter a valid birth year")]
+        public int? BirthYear { get; set; }
+        public ICollection<Book> UploadedBooks { get; set; } = new List<Book>();
+        public ICollection<Wishlist> Wishlist { get; set; } = new List<Wishlist>();
+        public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }

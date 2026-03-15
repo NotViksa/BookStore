@@ -9,11 +9,11 @@ namespace BookStore.Data.Interfaces
         Task<IEnumerable<Genre>> GetAllAsync();
         Task<Genre?> GetByIdAsync(int id);
         Task<Genre?> GetByNameAsync(string name);
-        Task<Genre> AddAsync(Genre tag);
-        Task UpdateAsync(Genre tag);
-        Task DeleteAsync(Genre tag);
-        Task<int> GetUsageCountAsync(int tagId);
-        Task<IEnumerable<Genre>> GetTagsForImageAsync(int imageId);
+        Task<Genre> AddAsync(Genre genre);
+        Task UpdateAsync(Genre genre);
+        Task DeleteAsync(Genre genre);
+        Task<int> GetUsageCountAsync(int genreId);
+        Task<IEnumerable<Genre>> GetTagsForImageAsync(int bookId);
         Task<IEnumerable<Genre>> GetPopularTagsAsync(int count);
     }
 }

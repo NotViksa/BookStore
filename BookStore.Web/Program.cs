@@ -27,11 +27,11 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Register repositories
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<IBookRepository, CatImageRepository>();
-builder.Services.AddScoped<IWishlistRepository, FavoriteRepository>();
-builder.Services.AddScoped<IRatingRepository, VoteRepository>();
-builder.Services.AddScoped<IReviewRepository, CommentRepository>();
-builder.Services.AddScoped<IGenreRepository, TagRepository>();
+builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IWishlistRepository, WishlistRepository>();
+builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 
 // Register services
 builder.Services.AddScoped<ICatImageService, CatImageService>();

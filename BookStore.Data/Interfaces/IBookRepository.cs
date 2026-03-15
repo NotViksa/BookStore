@@ -13,6 +13,5 @@ namespace BookStore.Data.Interfaces
         Task<int> CountAsync(Expression<Func<Book, bool>> predicate);
         Task<IEnumerable<Book>> SearchAsync(string searchTerm);
         IQueryable<Book> GetQueryable();
-
     }
 }
