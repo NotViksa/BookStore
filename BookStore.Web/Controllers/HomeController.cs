@@ -11,39 +11,48 @@ namespace BookStore.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IBookService _catImageService;
-        private readonly IGenreService _tagService;
-        private readonly IWishlistService _favoriteService;
-        private readonly IReviewService _commentService;
+        private readonly IBookService _bookService;
+        private readonly IGenreService _genreService;
+        private readonly IWishlistService _wishlistService;
+        private readonly IReviewService _reviewService;
         private readonly UserManager<ApplicationUser> _userManager;
-
+        private readonly ILogger<HomeController> _logger;
 
         public HomeController(
-            IBookService catImageService,
-            IGenreService tagService,
-            IWishlistService favoriteService,
-            IReviewService commentService,
-            UserManager<ApplicationUser> userManager)
+            IBookService bookService,
+            IGenreService genreService,
+            IWishlistService wishlistService,
+            IReviewService reviewService,
+            UserManager<ApplicationUser> userManager,
+            ILogger<HomeController> logger)
         {
-            _catImageService = catImageService;
-            _tagService = tagService;
-            _favoriteService = favoriteService;
-            _commentService = commentService;
+            _bookService = bookService;
+            _genreService = genreService;
+            _wishlistService = wishlistService;
+            _reviewService = reviewService;
             _userManager = userManager;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
         {
-            if (!User.Identity.IsAuthenticated)
+            try
             {
-                return RedirectToAction("About", "Home");
+                var recentBooks = await _bookService.GetRecentBooksAsync(12);
+                var popularGenres = await _genreService.GetPopularGenresAsync(10);
+                var popularBooks = await _bookService.GetMostPopularBooksAsync(6);
+
+                ViewBag.RecentBooks = recentBooks;
+                ViewBag.PopularGenres = popularGenres;
+                ViewBag.PopularBooks = popularBooks;
+
+                return View();
             }
-
-            var recentImages = await _catImageService.GetRecentImagesAsync(12);
-            var popularTags = await _tagService.GetPopularTagsAsync(10);
-
-            ViewBag.PopularTags = popularTags;
-            return RedirectToAction("Dashboard");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading home page");
+                return View();
+            }
         }
 
         public IActionResult About()
@@ -58,13 +67,13 @@ namespace BookStore.Web.Controllers
             var user = await _userManager.FindByIdAsync(userId);
 
             ViewBag.UserDisplayName = user?.DisplayName ?? User.Identity?.Name;
-            ViewBag.UploadCount = await _catImageService.GetImageCountByUserAsync(userId);
-            ViewBag.FavoriteCount = await _favoriteService.GetFavoriteCountByUserAsync(userId);
-            ViewBag.CommentCount = await _commentService.GetCommentCountByUserAsync(userId);
+            ViewBag.UploadCount = await _bookService.GetBookCountByUserAsync(userId);
+            ViewBag.WishlistCount = await _wishlistService.GetWishlistCountByUserAsync(userId);
+            ViewBag.ReviewCount = await _reviewService.GetReviewCountByUserAsync(userId);
 
-            // activity feed data
-            ViewBag.RecentUploads = await _catImageService.GetRecentUserImagesAsync(userId, 3);
-            ViewBag.RecentFavorites = await _favoriteService.GetRecentFavoritesAsync(userId, 3);
+            // Activity feed data
+            ViewBag.RecentUploads = await _bookService.GetRecentUserBooksAsync(userId, 3);
+            ViewBag.RecentWishlistItems = await _wishlistService.GetRecentWishlistItemsAsync(userId, 3);
 
             return View();
         }
@@ -87,7 +96,6 @@ namespace BookStore.Web.Controllers
                 };
             }
 
-            // Handle exceptions that don't set a status code
             return View("Error500");
         }
 
