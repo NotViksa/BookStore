@@ -2,163 +2,240 @@
 @model PaginatedList<BookStore.Data.Models.Book>
 
 @{
-    ViewData["Title"] = "Browse Cat Pictures";
-    var itemsPerPage = 8;
+    ViewData["Title"] = "Browse Books";
 }
 
-<div class="container mt-4">
-    <!-- Header Section with Search and Upload -->
-    <div class="d-flex justify-content-between align-items-center mb-5">
-        <h1 class="display-5 text-purple fw-bold">
-            <i class="bi bi-images me-2"></i>Browse Cat Pictures
-        </h1>
+<div class="browse-container">
+    <!-- Header -->
+    <div class="browse-header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="page-title">
+                    <i class="bi bi-book"></i> Browse Books
+                </h1>
 
-        <div class="d-flex gap-3">
-            <form asp-action="Search" method="get" class="d-flex" style="min-width: 300px;">
-                <div class="input-group shadow-sm">
-                    <input type="text" name="query" class="form-control border-purple"
-                           placeholder="Search cats or tags..."
-                           value="@ViewBag.SearchQuery">
-                    <button class="btn btn-purple" type="submit">
-                        <i class="bi bi-search"></i> Search
-                    </button>
+                <div class="header-actions">
+                    <!-- Search -->
+                    <form asp-action="Search" method="get" class="search-form">
+                        <div class="search-wrapper">
+                            <input type="text" name="query" class="search-input"
+                                   placeholder="Search by title, author, ISBN, or genre..."
+                                   value="@ViewBag.SearchQuery">
+                            <button type="submit" class="search-btn">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a asp-action="AddBook" class="btn-add-book">
+                            <i class="bi bi-plus-circle"></i> Add Book
+                        </a>
+                    }
                 </div>
-            </form>
+            </div>
 
-            <a asp-action="Upload" class="btn btn-purple shadow-sm">
-                <i class="bi bi-cloud-arrow-up me-2"></i>Upload
-            </a>
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label>Genres:</label>
+                    <select class="filter-select" id="genreFilter">
+                        <option value="">All Genres</option>
+                        @foreach (var genre in ViewBag.PopularGenres ?? new List<Genre>())
+                        {
+                            <option value="@genre.Name" selected="@(ViewBag.CurrentGenre == genre.Name)">@genre.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Price:</label>
+                    <div class="price-range">
+                        <input type="number" class="price-input" id="minPrice" placeholder="Min" value="@ViewBag.MinPrice">
+                        <span>-</span>
+                        <input type="number" class="price-input" id="maxPrice" placeholder="Max" value="@ViewBag.MaxPrice">
+                    </div>
+                </div>
+
+                <button class="filter-apply" id="applyFilters">
+                    <i class="bi bi-funnel"></i> Apply Filters
+                </button>
+            </div>
         </div>
     </div>
 
     <!-- Search Results Header -->
-    @if (ViewBag.SearchQuery != null)
+    @if (!string.IsNullOrEmpty(ViewBag.SearchQuery))
     {
-        <div class="alert alert-purple alert-dismissible fade show mb-4">
-            <span>
-                <i class="bi bi-search me-2"></i>
-                Showing results for: <strong>"@ViewBag.SearchQuery"</strong>
-            </span>
-            <a asp-action="Index" class="btn-close" aria-label="Close"></a>
+        <div class="search-results-header">
+            <div class="container">
+                <i class="bi bi-search"></i>
+                <span>Showing results for: <strong>"@ViewBag.SearchQuery"</strong></span>
+                <a asp-action="Index" class="clear-search">
+                    <i class="bi bi-x-lg"></i> Clear
+                </a>
+            </div>
         </div>
     }
 
-    <!-- Cat Images Grid -->
-    <div class="row g-4">
+    <!-- Books Grid -->
+    <div class="container">
         @if (!Model.Any())
         {
-            <div class="col-12">
-                <div class="card shadow-sm border-0 text-center py-5">
-                    <i class="bi bi-emoji-frown display-4 text-muted mb-3"></i>
-                    <h3 class="text-purple">No cat-tastic images found!</h3>
-                    <p class="text-muted mb-4">Try a different search or upload your own purr-fect picture</p>
-                    <a asp-action="Upload" class="btn btn-purple px-4">
-                        <i class="bi bi-cloud-arrow-up me-2"></i>Upload Cats
+            <div class="empty-state">
+                <i class="bi bi-book"></i>
+                <h3>No books found</h3>
+                <p>Try adjusting your search or filters</p>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-action="AddBook" class="btn-add-book">
+                        <i class="bi bi-plus-circle"></i> Add Your First Book
                     </a>
-                </div>
+                }
             </div>
         }
         else
         {
-            @foreach (var image in Model)
-            {
-                <div class="col-md-4 col-lg-3">
-                    <div class="card h-100 shadow-sm border-0 hover-scale">
-                        <a asp-action="Details" asp-route-id="@image.Id" class="text-decoration-none">
-                            <div class="ratio ratio-4x3">
-                                <img src="@image.ImageUrl" class="card-img-top object-fit-cover" alt="@image.Title">
-                            </div>
-
-                            <div class="card-body">
-                                <h5 class="card-title text-purple clamp-1-line">
-                                    @if (ViewBag.SearchQuery != null)
-                                    {
-                                        @Html.Raw(image.Title.Replace(ViewBag.SearchQuery.ToString(),
-                                        $"<span class='search-highlight'>{ViewBag.SearchQuery}</span>",
-                                                        StringComparison.OrdinalIgnoreCase))
-                                                        }
-                                    else
-                                    {
-                                        @image.Title
-                                    }
-                                </h5>
-
-                                <p class="card-text text-muted clamp-2-lines mb-3">
-                                    @image.Description
-                                </p>
-
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">
-                                        <i class="bi bi-calendar me-1"></i>
-                                        @image.UploadDate.ToString("MMM dd, yyyy")
-                                    </small>
-
-                                    <div class="tag-cloud">
-                                        @foreach (var tag in image.Tags.Take(2))
-                                        {
-                                            <span class="badge bg-light-purple text-purple">
-                                                @if (ViewBag.SearchQuery != null && tag.Name.Contains(ViewBag.SearchQuery.ToString(), StringComparison.OrdinalIgnoreCase))
-                                                {
-                                                    @Html.Raw(tag.Name.Replace(ViewBag.SearchQuery.ToString(),
-                                                    $"<span class='search-highlight-badge'>{ViewBag.SearchQuery}</span>",
-                                                                        StringComparison.OrdinalIgnoreCase))
-                                                                        }
-                                                else
-                                                {
-                                                    @tag.Name
-                                                }
-                                            </span>
-                                        }
-                                        @if (image.Tags.Count > 2)
-                                        {
-                                            <span class="badge bg-light-purple text-purple">+@(image.Tags.Count - 2)</span>
-                                        }
-                                    </div>
+            <div class="books-grid">
+                @foreach (var book in Model)
+                {
+                    <a asp-action="Details" asp-route-id="@book.Id" class="book-card">
+                        <div class="book-cover">
+                            <img src="@book.CoverImageUrl" alt="@book.Title">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <form asp-action="ToggleWishlist" asp-route-bookId="@book.Id" method="post"
+                                      class="quick-wishlist-form" onclick="event.stopPropagation();">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="quick-wishlist @(ViewBag.WishlistIds?.Contains(book.Id) == true ? "active" : "")">
+                                        <i class="bi @(ViewBag.WishlistIds?.Contains(book.Id) == true ? "bi-bookmark-fill" : "bi-bookmark")"></i>
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">@book.Title</h3>
+                            <p class="book-author">@book.Author</p>
+                            <div class="book-meta">
+                                <div class="book-rating">
+                                    <i class="bi bi-star-fill"></i>
+                                    <span>@book.AverageRating.ToString("0.0")</span>
                                 </div>
+                                <span class="book-price">$@book.Price.ToString("0.00")</span>
                             </div>
-                        </a>
-                    </div>
+                            <div class="book-genres">
+                                @foreach (var genre in book.Genres.Take(2))
+                                {
+                                    <span class="genre-tag">@genre.Name</span>
+                                }
+                                @if (book.Genres.Count > 2)
+                                {
+                                    <span class="genre-tag">+@(book.Genres.Count - 2)</span>
+                                }
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    Showing page @Model.PageIndex of @Model.TotalPages
                 </div>
-            }
-        }
-    </div>
-
-    <!-- Pagination -->
-    @if (Model.Any())
-    {
-        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-
-        <nav aria-label="Page navigation" class="mt-4">
-            <ul class="pagination justify-content-center">
-                <li class="page-item @prevDisabled">
+                <div class="pagination-controls">
                     <a asp-action="Index"
                        asp-route-pageNumber="@(Model.PageIndex - 1)"
                        asp-route-query="@ViewBag.SearchQuery"
-                       class="page-link bg-purple text-white border-purple">
-                        Previous
+                       asp-route-genre="@ViewBag.CurrentGenre"
+                       asp-route-minPrice="@ViewBag.MinPrice"
+                       asp-route-maxPrice="@ViewBag.MaxPrice"
+                       class="pagination-btn @(!Model.HasPreviousPage ? "disabled" : "")">
+                        <i class="bi bi-chevron-left"></i> Previous
                     </a>
-                </li>
-                @for (int i = 1; i <= Model.TotalPages; i++)
-                {
-                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                        <a asp-action="Index"
-                           asp-route-pageNumber="@i"
-                           asp-route-query="@ViewBag.SearchQuery"
-                           class="page-link @(i == Model.PageIndex ? "bg-light-purple text-purple border-purple" : "text-purple")">
-                            @i
-                        </a>
-                    </li>
-                }
-                <li class="page-item @nextDisabled">
+
+                    <div class="page-numbers">
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <a asp-action="Index"
+                               asp-route-pageNumber="@i"
+                               asp-route-query="@ViewBag.SearchQuery"
+                               asp-route-genre="@ViewBag.CurrentGenre"
+                               asp-route-minPrice="@ViewBag.MinPrice"
+                               asp-route-maxPrice="@ViewBag.MaxPrice"
+                               class="page-number @(i == Model.PageIndex ? "active" : "")">
+                                @i
+                            </a>
+                        }
+                    </div>
+
                     <a asp-action="Index"
                        asp-route-pageNumber="@(Model.PageIndex + 1)"
                        asp-route-query="@ViewBag.SearchQuery"
-                       class="page-link bg-purple text-white border-purple">
-                        Next
+                       asp-route-genre="@ViewBag.CurrentGenre"
+                       asp-route-minPrice="@ViewBag.MinPrice"
+                       asp-route-maxPrice="@ViewBag.MaxPrice"
+                       class="pagination-btn @(!Model.HasNextPage ? "disabled" : "")">
+                        Next <i class="bi bi-chevron-right"></i>
                     </a>
-                </li>
-            </ul>
-        </nav>
-    }
+                </div>
+            </div>
+        }
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Quick wishlist toggle
+            $('.quick-wishlist-form').submit(function(e) {
+                e.preventDefault();
+                var form = $(this);
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function(data) {
+                        if (data.success) {
+                            var btn = form.find('button');
+                            btn.toggleClass('active');
+
+                            var icon = btn.find('i');
+                            if (btn.hasClass('active')) {
+                                icon.removeClass('bi-bookmark').addClass('bi-bookmark-fill');
+                            } else {
+                                icon.removeClass('bi-bookmark-fill').addClass('bi-bookmark');
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Apply filters
+            $('#applyFilters').click(function() {
+                var genre = $('#genreFilter').val();
+                var minPrice = $('#minPrice').val();
+                var maxPrice = $('#maxPrice').val();
+                var query = '@ViewBag.SearchQuery';
+
+                var url = '@Url.Action("Index")?';
+
+                if (query) url += '&query=' + encodeURIComponent(query);
+                if (genre) url += '&genre=' + encodeURIComponent(genre);
+                if (minPrice) url += '&minPrice=' + minPrice;
+                if (maxPrice) url += '&maxPrice=' + maxPrice;
+
+                window.location.href = url;
+            });
+
+            // Enter key in price inputs
+            $('.price-input').keypress(function(e) {
+                if (e.which == 13) {
+                    $('#applyFilters').click();
+                }
+            });
+        });
+    </script>
+}
