@@ -2,30 +2,299 @@
     ViewData["Title"] = "About BookStore";
 }
 
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-8 mx-auto">
-            <h1 class="display-4 text-center mb-4">About BookStore</h1>
-            <div class="card shadow">
-                <div class="card-body">
-                    <p class="lead">Welcome to the cutest cat picture sharing platform!</p>
-                    <p>BookStore is a community-driven platform where cat lovers can share, vote, and comment on adorable cat pictures.</p>
-                    <p>Features include:</p>
-                    <ul>
-                        <li>Upload and share your favorite cat photos</li>
-                        <li>Tag images for easy discovery</li>
-                        <li>Vote on your favorite images</li>
-                        <li>Save favorites to your profile</li>
-                    </ul>
-                    @if (!User.Identity.IsAuthenticated)
-                    {
-                        <div class="text-center mt-4">
-                            <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-primary me-2">Join Now</a>
-                            <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-secondary">Sign In</a>
-                        </div>
-                    }
-                </div>
+<div class="about-container">
+    <!-- Hero Section -->
+    <div class="about-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">About BookStore</h1>
+                <p class="hero-subtitle">Where book lovers discover their next great read</p>
             </div>
         </div>
     </div>
+
+    <div class="container">
+        <div class="about-content">
+            <!-- Main About Section -->
+            <div class="about-card">
+                <div class="about-text">
+                    <h2>Our Story</h2>
+                    <p class="lead">BookStore is a community-driven platform where book lovers come together to share, discover, and celebrate great literature.</p>
+                    <p>Founded in 2024, we've grown from a small book-sharing community into a vibrant platform where readers can find their next favorite book, share their thoughts through reviews, and connect with fellow book enthusiasts.</p>
+                    <p>Our mission is to make book discovery social, engaging, and personal. We believe that every book deserves to be found by the right reader, and every reader deserves to find their perfect book.</p>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="features-section">
+                <h2 class="section-title">What We Offer</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-book"></i>
+                        </div>
+                        <h3>Discover Books</h3>
+                        <p>Browse our growing collection of books across all genres. Filter by genre, author, price, and more to find your next read.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <h3>Rate & Review</h3>
+                        <p>Share your thoughts with the community. Rate books on a 5-star scale and write detailed reviews to help others discover great reads.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-bookmark-plus"></i>
+                        </div>
+                        <h3>Build Wishlists</h3>
+                        <p>Save books to your personal wishlist. Keep track of books you want to read and never forget a recommendation.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h3>Join Community</h3>
+                        <p>Connect with fellow book lovers, follow your favorite reviewers, and discover books through community recommendations.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-cloud-upload"></i>
+                        </div>
+                        <h3>Share Books</h3>
+                        <p>Add books to the collection and share your favorite reads with the community. Help us grow our library!</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-search"></i>
+                        </div>
+                        <h3>Smart Search</h3>
+                        <p>Search by title, author, ISBN, or genre. Our smart search helps you find exactly what you're looking for.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-value">5K+</div>
+                    <div class="stat-label">Books Added</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">1K+</div>
+                    <div class="stat-label">Active Readers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">10K+</div>
+                    <div class="stat-label">Reviews Written</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">50+</div>
+                    <div class="stat-label">Genres</div>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <div class="cta-section">
+                    <div class="cta-content">
+                        <h3>Join Our Community</h3>
+                        <p>Start discovering books, sharing reviews, and connecting with fellow readers today.</p>
+                        <div class="cta-buttons">
+                            <a asp-area="Identity" asp-page="/Account/Register" class="btn-join">
+                                <i class="bi bi-person-plus"></i> Join Now
+                            </a>
+                            <a asp-area="Identity" asp-page="/Account/Login" class="btn-signin">
+                                <i class="bi bi-box-arrow-in-right"></i> Sign In
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 </div>
+
+<style>
+    .about-hero {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        padding: 4rem 0;
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+        font-weight: bold;
+        color: #ff8c42;
+        margin-bottom: 1rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .about-card {
+        background: #1e1e2e;
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .about-text h2 {
+        color: #ff8c42;
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+
+    .about-text .lead {
+        font-size: 1.2rem;
+        color: #e0e0e0;
+        margin-bottom: 1rem;
+    }
+
+    .about-text p {
+        color: #b0b0b0;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 2rem;
+        color: #ff8c42;
+        margin-bottom: 2rem;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .feature-card {
+        background: #1e1e2e;
+        border-radius: 1rem;
+        padding: 2rem;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 140, 66, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+    }
+
+        .feature-icon i {
+            font-size: 2rem;
+            color: #ff8c42;
+        }
+
+    .feature-card h3 {
+        color: #ff8c42;
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+        color: #b0b0b0;
+        line-height: 1.5;
+    }
+
+    .stats-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: #1e1e2e;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #ff8c42;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #b0b0b0;
+        font-size: 0.9rem;
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, #ff8c42 0%, #ff6b6b 100%);
+        border-radius: 1rem;
+        padding: 3rem;
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .cta-content h3 {
+        font-size: 1.8rem;
+        color: #fff;
+        margin-bottom: 1rem;
+    }
+
+    .cta-content p {
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 2rem;
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .btn-join, .btn-signin {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-join {
+        background: #1e1e2e;
+        color: #ff8c42;
+    }
+
+        .btn-join:hover {
+            background: #2a2a3a;
+            color: #ff9c5a;
+        }
+
+    .btn-signin {
+        background: transparent;
+        color: #fff;
+        border: 2px solid #fff;
+    }
+
+        .btn-signin:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+</style>

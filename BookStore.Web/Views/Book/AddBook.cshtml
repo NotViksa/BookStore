@@ -1,56 +1,151 @@
 ﻿@model BookStore.Web.ViewModels.AddBookViewModel
 @{
-    ViewData["Title"] = "Upload Cat Image";
+    ViewData["Title"] = "Add a Book";
 }
 
-<div class="upload-container">
-    <div class="upload-card">
-        <h1 class="upload-title">Share Your Cat Photo</h1>
-        <p class="upload-subtitle">Fill in the details below to upload your cat image</p>
+<div class="add-book-container">
+    <div class="container">
+        <div class="add-book-header">
+            <h1 class="page-title">
+                <i class="bi bi-plus-circle"></i> Add a Book to the Collection
+            </h1>
+            <p class="page-subtitle">Share your favorite books with the community</p>
+        </div>
 
-        <form asp-action="Upload" enctype="multipart/form-data" class="upload-form">
-            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <div class="add-book-card">
+            <form asp-action="AddBook" enctype="multipart/form-data" class="add-book-form">
+                <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
 
-            <div class="form-group">
-                <label asp-for="Title" class="form-label">Image Title</label>
-                <input asp-for="Title" class="form-control" placeholder="Give your image a title" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
+                <!-- Two Column Layout -->
+                <div class="form-columns">
+                    <!-- Left Column - Book Details -->
+                    <div class="form-left">
+                        <div class="form-group">
+                            <label asp-for="Title" class="form-label">
+                                <i class="bi bi-book"></i> Book Title
+                            </label>
+                            <input asp-for="Title" class="form-control" placeholder="e.g., The Great Gatsby" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
 
-            <div class="form-group">
-                <label asp-for="Description" class="form-label">Description</label>
-                <textarea asp-for="Description" class="form-control" rows="3"
-                          placeholder="Tell us about your cat"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
+                        <div class="form-group">
+                            <label asp-for="Author" class="form-label">
+                                <i class="bi bi-pencil"></i> Author
+                            </label>
+                            <input asp-for="Author" class="form-control" placeholder="e.g., F. Scott Fitzgerald" />
+                            <span asp-validation-for="Author" class="text-danger"></span>
+                        </div>
 
-            <div class="form-group">
-                <label asp-for="ImageFile" class="form-label">Image Upload*</label>
-                <div class="file-upload">
-                    <input asp-for="ImageFile" class="form-control"
-                           accept=".jpg,.jpeg,.png,.gif" />
-                    <div class="file-info">
-                        <i class="bi bi-cloud-arrow-up"></i>
-                        <span>Click to browse or drag & drop</span>
-                        <small>Max 5MB • JPG, PNG, GIF</small>
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label asp-for="ISBN" class="form-label">
+                                    <i class="bi bi-upc-scan"></i> ISBN
+                                </label>
+                                <input asp-for="ISBN" class="form-control" placeholder="9780743273565" />
+                                <span asp-validation-for="ISBN" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group half">
+                                <label asp-for="Price" class="form-label">
+                                    <i class="bi bi-currency-dollar"></i> Price
+                                </label>
+                                <input asp-for="Price" class="form-control" placeholder="12.99" />
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label asp-for="PublicationYear" class="form-label">Publication Year</label>
+                                <input asp-for="PublicationYear" class="form-control" placeholder="1925" />
+                                <span asp-validation-for="PublicationYear" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group half">
+                                <label asp-for="PageCount" class="form-label">Page Count</label>
+                                <input asp-for="PageCount" class="form-control" placeholder="180" />
+                                <span asp-validation-for="PageCount" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Publisher" class="form-label">Publisher</label>
+                            <input asp-for="Publisher" class="form-control" placeholder="Scribner" />
+                            <span asp-validation-for="Publisher" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Genres" class="form-label">
+                                <i class="bi bi-tags"></i> Genres
+                            </label>
+                            <input asp-for="Genres" class="form-control"
+                                   placeholder="fiction, classic, romance (separate with commas)" />
+                            <span asp-validation-for="Genres" class="text-danger"></span>
+                            <small class="form-hint">Separate multiple genres with commas</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Description" class="form-label">
+                                <i class="bi bi-text-paragraph"></i> Description
+                            </label>
+                            <textarea asp-for="Description" class="form-control" rows="6"
+                                      placeholder="Tell us about the book..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Right Column - Cover Image -->
+                    <div class="form-right">
+                        <div class="cover-upload-section">
+                            <label class="form-label">
+                                <i class="bi bi-image"></i> Book Cover
+                            </label>
+
+                            <div class="cover-upload-area" id="coverUploadArea">
+                                <input asp-for="CoverImage" type="file" id="CoverImage"
+                                       accept=".jpg,.jpeg,.png,.gif" style="display: none;" />
+
+                                <div class="cover-placeholder">
+                                    <i class="bi bi-cloud-upload"></i>
+                                    <p>Click or drag to upload cover image</p>
+                                    <small>JPG, PNG, GIF • Max 5MB</small>
+                                </div>
+
+                                <div class="cover-preview" style="display: none;">
+                                    <img id="coverPreview" src="#" alt="Cover preview" />
+                                    <button type="button" class="change-cover">
+                                        <i class="bi bi-pencil"></i> Change
+                                    </button>
+                                </div>
+                            </div>
+
+                            <span asp-validation-for="CoverImage" class="text-danger"></span>
+                        </div>
+
+                        <!-- Tips Box -->
+                        <div class="tips-box">
+                            <h4><i class="bi bi-lightbulb"></i> Tips</h4>
+                            <ul>
+                                <li>Use the official book cover for best results</li>
+                                <li>Make sure the ISBN is correct</li>
+                                <li>Add relevant genres to help others find the book</li>
+                                <li>Write a helpful description</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
-            </div>
 
-            <div class="form-group">
-                <label asp-for="Tags" class="form-label">Tags</label>
-                <input asp-for="Tags" class="form-control"
-                       placeholder="cute, tabby, orange (separate with commas)" />
-                <span asp-validation-for="Tags" class="text-danger"></span>
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary btn-upload">
-                    <i class="bi bi-cloud-upload"></i> Upload Image
-                </button>
-            </div>
-        </form>
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">
+                        <i class="bi bi-check-circle"></i> Add Book
+                    </button>
+                    <a asp-action="Index" class="btn-cancel">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -59,15 +154,74 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
-        document.querySelector('input[type="file"]').addEventListener('change', function(e) {
-            const fileInfo = this.parentElement.querySelector('.file-info');
-            if (this.files.length > 0) {
-                fileInfo.innerHTML = `
-                    <i class="bi bi-file-image"></i>
-                    <span>${this.files[0].name}</span>
-                    <small>${(this.files[0].size / 1024 / 1024).toFixed(2)} MB</small>
-                `;
-            }
+        $(document).ready(function() {
+            // Cover image upload handling
+            var coverUploadArea = $('#coverUploadArea');
+            var coverInput = $('#CoverImage');
+            var coverPlaceholder = $('.cover-placeholder');
+            var coverPreview = $('.cover-preview');
+            var coverPreviewImg = $('#coverPreview');
+
+            coverUploadArea.click(function() {
+                coverInput.click();
+            });
+
+            coverInput.on('dragenter', function(e) {
+                e.preventDefault();
+                coverUploadArea.addClass('dragover');
+            });
+
+            coverInput.on('dragleave', function(e) {
+                e.preventDefault();
+                coverUploadArea.removeClass('dragover');
+            });
+
+            coverInput.on('drop', function(e) {
+                e.preventDefault();
+                coverUploadArea.removeClass('dragover');
+            });
+
+            coverInput.change(function(e) {
+                var file = this.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        coverPreviewImg.attr('src', e.target.result);
+                        coverPlaceholder.hide();
+                        coverPreview.show();
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            $('.change-cover').click(function(e) {
+                e.stopPropagation();
+                coverInput.val('');
+                coverPreview.hide();
+                coverPlaceholder.show();
+            });
+
+            // Drag and drop
+            coverUploadArea.on('dragover', function(e) {
+                e.preventDefault();
+                $(this).addClass('dragover');
+            });
+
+            coverUploadArea.on('dragleave', function(e) {
+                e.preventDefault();
+                $(this).removeClass('dragover');
+            });
+
+            coverUploadArea.on('drop', function(e) {
+                e.preventDefault();
+                $(this).removeClass('dragover');
+
+                var files = e.originalEvent.dataTransfer.files;
+                if (files.length > 0) {
+                    coverInput[0].files = files;
+                    coverInput.trigger('change');
+                }
+            });
         });
     </script>
 }
