@@ -11,8 +11,6 @@
         var user = await UserManager.GetUserAsync(User);
         var displayName = user?.DisplayName ?? User.Identity?.Name;
         var profileImage = user?.ProfileImageUrl ?? "/images/default-profile.png";
-        var favoriteGenre = user?.FavoriteGenre;
-        var birthYear = user?.BirthYear;
     }
 
     <!-- Dashboard Header -->
@@ -29,17 +27,20 @@
                     <h1>Welcome back, @displayName!</h1>
                     <p class="profile-meta">
                         <i class="bi bi-calendar"></i> Member since @(user?.RegistrationDate.ToString("MMMM yyyy") ?? "recently")
-                        @if (favoriteGenre != null)
+
+                        @if (!string.IsNullOrEmpty(user?.FavoriteGenre))
                         {
+
                         <span class="separator">•</span>
                         <i class="bi bi-tag"></i>
- Favorite: @favoriteGenre
+
+                        
                                                 }
-                        @if (birthYear.HasValue)
+
+                        @if (user?.BirthYear.HasValue == true)
                         {
                         <span class="separator">•</span>
                         <i class="bi bi-cake"></i>
- Born: @birthYear
                                                 }
                     </p>
                 </div>
@@ -111,7 +112,7 @@
                             </a>
                         </div>
                         <div class="activity-body">
-                            @if (ViewBag.RecentUploads != null && ViewBag.RecentUploads.Count > 0)
+                            @if (ViewBag.RecentUploads != null && ((IEnumerable<dynamic>)ViewBag.RecentUploads).Any())
                             {
                                 <div class="books-grid">
                                     @foreach (var book in ViewBag.RecentUploads)
@@ -154,7 +155,7 @@
                             </a>
                         </div>
                         <div class="activity-body">
-                            @if (ViewBag.RecentWishlistItems != null && ViewBag.RecentWishlistItems.Count > 0)
+                            @if (ViewBag.RecentWishlistItems != null && ((IEnumerable<dynamic>)ViewBag.RecentWishlistItems).Any())
                             {
                                 <div class="wishlist-items">
                                     @foreach (var wishlistItem in ViewBag.RecentWishlistItems)

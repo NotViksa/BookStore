@@ -2,47 +2,306 @@
     ViewData["Title"] = "Privacy Policy";
 }
 
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-8 mx-auto">
-            <h1 class="display-4">@ViewData["Title"]</h1>
+<div class="privacy-container">
+    <div class="container">
+        <!-- Header -->
+        <div class="privacy-header">
+            <h1 class="privacy-title">Privacy Policy</h1>
+            <p class="privacy-subtitle">Last updated: March 2026</p>
+        </div>
 
-            <div class="card shadow mt-4">
-                <div class="card-body">
-                    <h3>Information Collection</h3>
-                    <p>We collect the following information when you use BookStore:</p>
-                    <ul>
-                        <li>Account information (username, email)</li>
-                        <li>Photos you upload</li>
-                        <li>Comments and interactions</li>
-                    </ul>
+        <div class="privacy-content">
+            <div class="privacy-card">
+                <p class="lead">Your privacy is important to us. This policy explains how we collect, use, and protect your personal information when you use BookStore.</p>
 
-                    <h3 class="mt-4">How We Use Your Information</h3>
-                    <p>Your information is used to:</p>
-                    <ul>
-                        <li>Provide and improve our services</li>
-                        <li>Display your content</li>
-                        <li>Communicate with you</li>
-                    </ul>
+                <!-- Information Collection -->
+                <div class="privacy-section">
+                    <h2><i class="bi bi-database"></i> Information We Collect</h2>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <i class="bi bi-person-circle"></i>
+                            <h3>Account Information</h3>
+                            <ul>
+                                <li>Name and display name</li>
+                                <li>Email address</li>
+                                <li>Profile picture (optional)</li>
+                                <li>Bio and reading preferences</li>
+                            </ul>
+                        </div>
+                        <div class="info-card">
+                            <i class="bi bi-journal-bookmark-fill"></i>
+                            <h3>Book Activity</h3>
+                            <ul>
+                                <li>Books you add to the collection</li>
+                                <li>Reviews and ratings you write</li>
+                                <li>Books in your wishlist</li>
+                                <li>Reading preferences</li>
+                            </ul>
+                        </div>
+                        <div class="info-card">
+                            <i class="bi bi-shield-lock"></i>
+                            <h3>Technical Data</h3>
+                            <ul>
+                                <li>IP address</li>
+                                <li>Browser type and version</li>
+                                <li>Device information</li>
+                                <li>Usage statistics</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-                    <h3 class="mt-4">Data Security</h3>
-                    <p>We implement security measures to protect your information:</p>
-                    <ul>
-                        <li>Encrypted data transmission</li>
-                        <li>Secure server storage</li>
-                        <li>Limited access to personal data</li>
-                    </ul>
+                <!-- How We Use Information -->
+                <div class="privacy-section">
+                    <h2><i class="bi bi-gear"></i> How We Use Your Information</h2>
+                    <div class="use-cases">
+                        <div class="use-case">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>Provide and maintain our services</span>
+                        </div>
+                        <div class="use-case">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>Display your book contributions and reviews</span>
+                        </div>
+                        <div class="use-case">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>Personalize your reading experience</span>
+                        </div>
+                        <div class="use-case">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>Communicate important updates</span>
+                        </div>
+                        <div class="use-case">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>Improve and optimize our platform</span>
+                        </div>
+                        <div class="use-case">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>Protect against unauthorized access</span>
+                        </div>
+                    </div>
+                </div>
 
-                    <div class="alert alert-info mt-4">
-                        <h4>Contact Us</h4>
-                        <p>For any privacy-related questions, contact us at:</p>
-                        <address>
-                            <strong>Privacy Officer</strong><br>
-                            privacy@BookStore.example.com
-                        </address>
+                <!-- Data Security -->
+                <div class="privacy-section">
+                    <h2><i class="bi bi-shield-check"></i> Data Security</h2>
+                    <p>We implement industry-standard security measures to protect your information:</p>
+                    <div class="security-features">
+                        <div class="security-feature">
+                            <i class="bi bi-lock-fill"></i>
+                            <div>
+                                <h4>Encryption</h4>
+                                <p>All data transmitted between your device and our servers is encrypted using SSL/TLS protocols.</p>
+                            </div>
+                        </div>
+                        <div class="security-feature">
+                            <i class="bi bi-shield-fill-check"></i>
+                            <div>
+                                <h4>Access Control</h4>
+                                <p>Strict access controls ensure only authorized personnel can access user data.</p>
+                            </div>
+                        </div>
+                        <div class="security-feature">
+                            <i class="bi bi-database-lock"></i>
+                            <div>
+                                <h4>Secure Storage</h4>
+                                <p>User data is stored in secure databases with regular backups and monitoring.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Your Rights -->
+                <div class="privacy-section">
+                    <h2><i class="bi bi-person-check"></i> Your Rights</h2>
+                    <div class="rights-grid">
+                        <div class="right-item">
+                            <i class="bi bi-eye"></i>
+                            <h3>Access</h3>
+                            <p>Request a copy of your personal data</p>
+                        </div>
+                        <div class="right-item">
+                            <i class="bi bi-pencil"></i>
+                            <h3>Rectify</h3>
+                            <p>Correct inaccurate information</p>
+                        </div>
+                        <div class="right-item">
+                            <i class="bi bi-trash"></i>
+                            <h3>Delete</h3>
+                            <p>Request deletion of your data</p>
+                        </div>
+                        <div class="right-item">
+                            <i class="bi bi-download"></i>
+                            <h3>Export</h3>
+                            <p>Download your data in a portable format</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cookies -->
+                <div class="privacy-section">
+                    <h2><i class="bi bi-cookie"></i> Cookies</h2>
+                    <p>We use cookies to enhance your experience on BookStore. Cookies help us remember your preferences, keep you logged in, and understand how you use our platform. You can manage cookie preferences through your browser settings.</p>
+                </div>
+
+                <!-- Contact -->
+                <div class="contact-section">
+                    <h2><i class="bi bi-envelope"></i> Contact Us</h2>
+                    <p>If you have any questions about this Privacy Policy or your data, please contact us:</p>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="bi bi-envelope-fill"></i>
+                            <span>privacy@bookstore.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            <span>BookStore HQ, Sofia, Bulgaria</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .privacy-container {
+        background: #0f0f1a;
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+
+    .privacy-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .privacy-title {
+        font-size: 2.5rem;
+        color: #ff8c42;
+        margin-bottom: 0.5rem;
+    }
+
+    .privacy-subtitle {
+        color: #b0b0b0;
+        font-size: 0.9rem;
+    }
+
+    .privacy-card {
+        background: #1e1e2e;
+        border-radius: 1rem;
+        padding: 2rem;
+    }
+
+        .privacy-card .lead {
+            color: #ff8c42;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+    .privacy-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+        .privacy-section h2 {
+            color: #ff8c42;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .privacy-section p {
+            color: #b0b0b0;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .info-card {
+        background: #2a2a3a;
+        border-radius: 0.75rem;
+        padding: 1.25rem;
+    }
+
+        .info-card i {
+            font-size: 2rem;
+            color: #ff8c42;
+            margin-bottom: 0.75rem;
+        }
+
+        .info-card h3 {
+            color: #fff;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .info-card li {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            padding: 0.25rem 0;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+            .info-card li:before {
+                content: "•";
+                color: #ff8c42;
+                position: absolute;
+                left: 0;
+            }
+
+    .use-cases {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+
+    .use-case {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #b0b0b0;
+        font-size: 0.95rem;
+    }
+
+        .use-case i {
+            color: #ff8c42;
+            font-size: 1rem;
+        }
+
+    .security-features {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .security-feature {
+        display: flex;
+        gap: 1rem;
+        background: #2a2a3a;
+        border-radius: 0.75rem;
+        padding: 1rem;
+    }
+
+        .security-feature i {
+            font-size: 1.5rem
