@@ -11,144 +11,496 @@
         var user = await UserManager.GetUserAsync(User);
         var displayName = user?.DisplayName ?? User.Identity?.Name;
         var profileImage = user?.ProfileImageUrl ?? "/images/default-profile.png";
+        var favoriteGenre = user?.FavoriteGenre;
+        var birthYear = user?.BirthYear;
     }
 
+    <!-- Dashboard Header -->
     <div class="dashboard-header">
-        <div class="profile-header">
-            <img src="@profileImage" class="profile-image" alt="Profile picture">
-            <div class="profile-info">
-                <h1>Welcome back, @displayName!</h1>
-                <p class="text-muted">Last active: @DateTime.Now.ToString("MMMM dd, yyyy")</p>
+        <div class="container">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <img src="@profileImage" alt="Profile picture">
+                    <span class="profile-badge">
+                        <i class="bi bi-person-check"></i>
+                    </span>
+                </div>
+                <div class="profile-info">
+                    <h1>Welcome back, @displayName!</h1>
+                    <p class="profile-meta">
+                        <i class="bi bi-calendar"></i> Member since @(user?.RegistrationDate.ToString("MMMM yyyy") ?? "recently")
+                        @if (favoriteGenre != null)
+                        {
+                        <span class="separator">•</span>
+                        <i class="bi bi-tag"></i>
+ Favorite: @favoriteGenre
+                                                }
+                        @if (birthYear.HasValue)
+                        {
+                        <span class="separator">•</span>
+                        <i class="bi bi-cake"></i>
+ Born: @birthYear
+                                                }
+                    </p>
+                </div>
+                <div class="profile-actions">
+                    <a asp-controller="Profile" asp-action="EditProfile" class="btn-edit-profile">
+                        <i class="bi bi-pencil"></i> Edit Profile
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="dashboard-content">
-        <div class="row">
-            <!-- Left Column - Stats -->
-            <div class="col-lg-4">
-                <div class="stats-card card">
-                    <div class="card-header">
-                        <h3><i class="bi bi-bar-chart"></i> Your Stats</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="stat-item">
-                            <div class="stat-icon bg-primary">
-                                <i class="bi bi-cloud-arrow-up"></i>
+    <div class="container">
+        <div class="dashboard-content">
+            <div class="row">
+                <!-- Left Column - Stats -->
+                <div class="col-lg-4">
+                    <div class="stats-card">
+                        <div class="stats-header">
+                            <h3><i class="bi bi-graph-up"></i> Your Stats</h3>
+                        </div>
+                        <div class="stats-body">
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="bi bi-journal-bookmark-fill"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h4>@ViewBag.UploadCount</h4>
+                                    <p>Books Added</p>
+                                </div>
                             </div>
-                            <div class="stat-info">
-                                <h5>@ViewBag.UploadCount</h5>
-                                <p>Uploads</p>
+
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="bi bi-bookmark-star-fill"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h4>@ViewBag.WishlistCount</h4>
+                                    <p>Wishlist Items</p>
+                                </div>
+                            </div>
+
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="bi bi-chat-right-text-fill"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h4>@ViewBag.ReviewCount</h4>
+                                    <p>Reviews Written</p>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="stat-item">
-                            <div class="stat-icon bg-danger">
-                                <i class="bi bi-heart"></i>
-                            </div>
-                            <div class="stat-info">
-                                <h5>@ViewBag.FavoriteCount</h5>
-                                <p>Favorites</p>
-                            </div>
-                        </div>
-
-                        <div class="stat-item">
-                            <div class="stat-icon bg-success">
-                                <i class="bi bi-chat-left-text"></i>
-                            </div>
-                            <div class="stat-info">
-                                <h5>@ViewBag.CommentCount</h5>
-                                <p>Comments</p>
-                            </div>
-                        </div>
-
-                        <div class="quick-actions mt-4">
-                            <a asp-controller="User" asp-action="Dashboard" class="btn btn-primary btn-block">
-                                <i class="bi bi-pencil"></i>  To Dashboard
-                            </a>
-                            <a asp-controller="CatImage" asp-action="" class="btn btn-primary btn-block">
-                                <i class="bi bi-heart"></i>  Browse
+                        <div class="stats-footer">
+                            <a asp-controller="Profile" asp-action="Index" class="btn-view-all">
+                                <i class="bi bi-person"></i> View Full Profile
                             </a>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Right Column - Activity -->
-            <div class="col-lg-8">
-                <!-- Recent Uploads -->
-                <div class="activity-card card mb-4">
-                    <div class="card-header">
-                        <h3><i class="bi bi-images"></i> Recent Uploads</h3>
+                <!-- Right Column - Activity -->
+                <div class="col-lg-8">
+                    <!-- Recent Uploads -->
+                    <div class="activity-card">
+                        <div class="activity-header">
+                            <h3><i class="bi bi-plus-circle"></i> Recent Books Added</h3>
+                            <a asp-controller="Profile" asp-action="MyBooks" class="btn-view-all">
+                                View All <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                        <div class="activity-body">
+                            @if (ViewBag.RecentUploads != null && ViewBag.RecentUploads.Count > 0)
+                            {
+                                <div class="books-grid">
+                                    @foreach (var book in ViewBag.RecentUploads)
+                                    {
+                                        <div class="book-card-mini">
+                                            <a asp-controller="Book" asp-action="Details" asp-route-id="@book.Id">
+                                                <div class="book-cover-mini">
+                                                    <img src="@book.CoverImageUrl" alt="@book.Title">
+                                                </div>
+                                                <div class="book-info-mini">
+                                                    <h4>@book.Title</h4>
+                                                    <p>by @book.Author</p>
+                                                    <div class="book-price">$@book.Price.ToString("0.00")</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="empty-state">
+                                    <i class="bi bi-journal-bookmark"></i>
+                                    <h4>No books added yet</h4>
+                                    <p>Share your first book with the community!</p>
+                                    <a asp-controller="Book" asp-action="AddBook" class="btn-primary">
+                                        <i class="bi bi-plus-circle"></i> Add a Book
+                                    </a>
+                                </div>
+                            }
+                        </div>
                     </div>
-                    <div class="card-body">
-                        @if (ViewBag.RecentUploads.Count > 0)
-                        {
-                            <div class="image-grid">
-                                @foreach (var image in ViewBag.RecentUploads)
-                                {
-                                    <div class="image-item">
-                                        <a asp-controller="CatImage" asp-action="Details" asp-route-id="@image.Id">
-                                            <img src="@image.ImageUrl" class="img-fluid" alt="@image.Title">
-                                            <div class="image-overlay">
-                                                <span>@image.Title</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                }
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="empty-state">
-                                <i class="bi bi-images"></i>
-                                <h4>No uploads yet</h4>
-                                <p>Share your first cat picture with the community!</p>
-                                <a asp-controller="CatImage" asp-action="Upload" class="btn btn-primary">
-                                    <i class="bi bi-cloud-arrow-up"></i> Upload Image
-                                </a>
-                            </div>
-                        }
-                    </div>
-                </div>
 
-                <!-- Recent Favorites -->
-                <div class="activity-card card">
-                    <div class="card-header">
-                        <h3><i class="bi bi-heart"></i> Recent Favorites</h3>
-                    </div>
-                    <div class="card-body">
-                        @if (ViewBag.RecentFavorites.Count > 0)
-                        {
-                            <div class="image-grid">
-                                @foreach (var favorite in ViewBag.RecentFavorites)
-                                {
-                                    <div class="image-item">
-                                        <a asp-controller="CatImage" asp-action="Details" asp-route-id="@favorite.CatImage.Id">
-                                            <img src="@favorite.CatImage.ImageUrl" class="img-fluid" alt="@favorite.CatImage.Title">
-                                            <div class="image-overlay">
-                                                <span>@favorite.CatImage.Title</span>
-                                                <small>Favorited @favorite.FavoritedDate.ToString("MMM dd")</small>
-                                            </div>
-                                        </a>
-                                    </div>
-                                }
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="empty-state">
-                                <i class="bi bi-heart"></i>
-                                <h4>No favorites yet</h4>
-                                <p>Start exploring and favorite some cute cat pictures!</p>
-                                <a asp-controller="CatImage" asp-action="Index" class="btn btn-primary">
-                                    <i class="bi bi-search"></i> Browse Images
-                                </a>
-                            </div>
-                        }
+                    <!-- Recent Wishlist Items -->
+                    <div class="activity-card">
+                        <div class="activity-header">
+                            <h3><i class="bi bi-bookmark-heart"></i> Recent Wishlist Items</h3>
+                            <a asp-controller="Profile" asp-action="Wishlist" class="btn-view-all">
+                                View All <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                        <div class="activity-body">
+                            @if (ViewBag.RecentWishlistItems != null && ViewBag.RecentWishlistItems.Count > 0)
+                            {
+                                <div class="wishlist-items">
+                                    @foreach (var wishlistItem in ViewBag.RecentWishlistItems)
+                                    {
+                                        <div class="wishlist-item">
+                                            <a asp-controller="Book" asp-action="Details" asp-route-id="@wishlistItem.Book.Id" class="wishlist-link">
+                                                <div class="wishlist-cover">
+                                                    <img src="@wishlistItem.Book.CoverImageUrl" alt="@wishlistItem.Book.Title">
+                                                </div>
+                                                <div class="wishlist-info">
+                                                    <h4>@wishlistItem.Book.Title</h4>
+                                                    <p>by @wishlistItem.Book.Author</p>
+                                                    <div class="wishlist-meta">
+                                                        <span class="price">$@wishlistItem.Book.Price.ToString("0.00")</span>
+                                                        <span class="added-date">
+                                                            <i class="bi bi-clock"></i> Added @wishlistItem.AddedDate.ToString("MMM dd")
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="empty-state">
+                                    <i class="bi bi-bookmark"></i>
+                                    <h4>No wishlist items yet</h4>
+                                    <p>Start adding books to your wishlist!</p>
+                                    <a asp-controller="Book" asp-action="Index" class="btn-primary">
+                                        <i class="bi bi-search"></i> Browse Books
+                                    </a>
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .dashboard-header {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
+
+    .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .profile-avatar {
+        position: relative;
+    }
+
+        .profile-avatar img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ff8c42;
+        }
+
+    .profile-badge {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: #ff8c42;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #1e1e2e;
+    }
+
+        .profile-badge i {
+            font-size: 12px;
+            color: #1e1e2e;
+        }
+
+    .profile-info h1 {
+        color: #fff;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-meta {
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 0;
+    }
+
+        .profile-meta i {
+            color: #ff8c42;
+        }
+
+    .separator {
+        margin: 0 0.5rem;
+    }
+
+    .btn-edit-profile {
+        background: rgba(255, 140, 66, 0.1);
+        border: 1px solid #ff8c42;
+        color: #ff8c42;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+        .btn-edit-profile:hover {
+            background: #ff8c42;
+            color: #1e1e2e;
+        }
+
+    .stats-card, .activity-card {
+        background: #1e1e2e;
+        border-radius: 1rem;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+
+    .stats-header, .activity-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .stats-header h3, .activity-header h3 {
+            color: #ff8c42;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+    .stats-body {
+        padding: 1.5rem;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 140, 66, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .stat-icon i {
+            font-size: 1.5rem;
+            color: #ff8c42;
+        }
+
+    .stat-info h4 {
+        color: #fff;
+        font-size: 1.5rem;
+        margin: 0;
+    }
+
+    .stat-info p {
+        color: #b0b0b0;
+        margin: 0;
+    }
+
+    .stats-footer {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-view-all {
+        color: #ff8c42;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+        .btn-view-all:hover {
+            text-decoration: underline;
+        }
+
+    .books-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .book-card-mini {
+        background: #2a2a3a;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+        .book-card-mini:hover {
+            transform: translateY(-2px);
+        }
+
+        .book-card-mini a {
+            text-decoration: none;
+        }
+
+    .book-cover-mini img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    .book-info-mini {
+        padding: 0.75rem;
+    }
+
+        .book-info-mini h4 {
+            color: #ff8c42;
+            font-size: 0.9rem;
+            margin: 0 0 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .book-info-mini p {
+            color: #b0b0b0;
+            font-size: 0.8rem;
+            margin: 0 0 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+    .book-price {
+        color: #fff;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    .wishlist-items {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .wishlist-item {
+        background: #2a2a3a;
+        border-radius: 0.5rem;
+        transition: background 0.3s ease;
+    }
+
+        .wishlist-item:hover {
+            background: #353545;
+        }
+
+    .wishlist-link {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        text-decoration: none;
+    }
+
+    .wishlist-cover img {
+        width: 60px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 0.25rem;
+    }
+
+    .wishlist-info {
+        flex: 1;
+    }
+
+        .wishlist-info h4 {
+            color: #ff8c42;
+            font-size: 1rem;
+            margin: 0 0 0.25rem;
+        }
+
+        .wishlist-info p {
+            color: #b0b0b0;
+            font-size: 0.85rem;
+            margin: 0 0 0.5rem;
+        }
+
+    .wishlist-meta {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+        .wishlist-meta .price {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .wishlist-meta .added-date {
+            color: #b0b0b0;
+            font-size: 0.75rem;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #ff8c42;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h4 {
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #b0b0b0;
+            margin-bottom: 1rem;
+        }
+
+    .btn-primary {
+        background: #ff8c42;
+        color: #1e1e2e;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .btn-primary:hover {
+            background: #ff9c5a;
+            color: #1e1e2e;
+        }
+</style>
