@@ -1,26 +1,243 @@
-﻿@{
-    ViewData["Title"] = "Server Error";
-    Layout = "_Layout";
+﻿@model BookStore.Data.Models.Book
+@inject BookStore.Services.Interfaces.IWishlistService WishlistService
+@inject BookStore.Services.Interfaces.IRatingService RatingService
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    var isInWishlist = false;
+    var userRating = (int?)null;
+    var averageRating = 0.0;
+
+    if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+    {
+        var userId = HttpContextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (userId != null)
+        {
+            isInWishlist = await WishlistService.IsInWishlistAsync(userId, Model.Id);
+            userRating = await RatingService.GetUserRatingAsync(userId, Model.Id);
+        }
+    }
+    averageRating = await RatingService.GetAverageRatingForBookAsync(Model.Id);
 }
 
-<div class="container text-center mt-5">
-    <div class="row">
-        <div class="col-md-6 mx-auto">
-            <img src="/images/confused-cat.png" alt="Confused cat" class="img-fluid mb-4" style="max-height: 300px;">
-            <h1 class="display-4 text-danger">500 - Oops!</h1>
-            <p class="lead">Our servers are having a cat nap. Please try again later.</p>
-            <div class="alert alert-warning mt-4">
-                <i class="bi bi-exclamation-triangle"></i>
-                We've been notified and our team of feline experts is on the case!
+<div class="book-card">
+    <a asp-controller="Book" asp-action="Details" asp-route-id="@Model.Id" class="book-card-link">
+        <div class="book-cover">
+            <img src="@Model.CoverImageUrl" alt="@Model.Title">
+            @if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            {
+                <form asp-controller="Book" asp-action="ToggleWishlist" asp-route-bookId="@Model.Id" method="post"
+                      class="quick-wishlist-form" onclick="event.stopPropagation();">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="quick-wishlist @(isInWishlist ? "active" : "")">
+                        <i class="bi @(isInWishlist ? "bi-bookmark-fill" : "bi-bookmark")"></i>
+                    </button>
+                </form>
+            }
+        </div>
+        <div class="book-info">
+            <div class="book-rating">
+                <div class="stars">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= Math.Floor(averageRating))
+                        {
+                            <i class="bi bi-star-fill"></i>
+                        }
+                        else if (i == Math.Ceiling(averageRating) && averageRating % 1 != 0)
+                        {
+                            <i class="bi bi-star-half"></i>
+                        }
+                        else
+                        {
+                            <i class="bi bi-star"></i>
+                        }
+                    }
+                </div>
+                <span class="rating-value">@averageRating.ToString("0.0")</span>
             </div>
-            <div class="mt-4">
-                <a asp-controller="Home" asp-action="Index" class="btn btn-primary me-2">
-                    <i class="bi bi-house-door"></i> Home
-                </a>
-                <button onclick="window.location.reload()" class="btn btn-outline-primary">
-                    <i class="bi bi-arrow-clockwise"></i> Try Again
-                </button>
+            <h3 class="book-title">@Model.Title</h3>
+            <p class="book-author">by @Model.Author</p>
+            <div class="book-price">$@Model.Price.ToString("0.00")</div>
+            <div class="book-genres">
+                @foreach (var genre in Model.Genres.Take(2))
+                {
+                    <span class="genre-tag">@genre.Name</span>
+                }
+                @if (Model.Genres.Count > 2)
+                {
+                    <span class="genre-tag">+@(Model.Genres.Count - 2)</span>
+                }
             </div>
         </div>
-    </div>
+    </a>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Quick wishlist toggle
+            $('.quick-wishlist-form').submit(function(e) {
+                e.preventDefault();
+                var form = $(this);
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function(data) {
+                        if (data.success) {
+                            var btn = form.find('button');
+                            btn.toggleClass('active');
+
+                            var icon = btn.find('i');
+                            if (btn.hasClass('active')) {
+                                icon.removeClass('bi-bookmark').addClass('bi-bookmark-fill');
+                            } else {
+                                icon.removeClass('bi-bookmark-fill').addClass('bi-bookmark');
+                            }
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+<style>
+    .book-card {
+        background: #1e1e2e;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+    }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+    .book-card-link {
+        text-decoration: none;
+        display: block;
+        height: 100%;
+    }
+
+    .book-cover {
+        position: relative;
+        aspect-ratio: 3 / 4;
+        overflow: hidden;
+    }
+
+        .book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+    .book-card:hover .book-cover img {
+        transform: scale(1.05);
+    }
+
+    .quick-wishlist {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        background: rgba(30, 30, 46, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+    }
+
+        .quick-wishlist i {
+            font-size: 1.2rem;
+            color: #ff8c42;
+        }
+
+        .quick-wishlist.active i {
+            color: #ff8c42;
+        }
+
+        .quick-wishlist:hover {
+            background: #ff8c42;
+        }
+
+            .quick-wishlist:hover i {
+                color: #1e1e2e;
+            }
+
+    .book-info {
+        padding: 1rem;
+    }
+
+    .book-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .stars {
+        display: flex;
+        gap: 2px;
+    }
+
+        .stars i {
+            font-size: 0.8rem;
+            color: #ff8c42;
+        }
+
+    .rating-value {
+        color: #b0b0b0;
+        font-size: 0.8rem;
+    }
+
+    .book-title {
+        color: #ff8c42;
+        font-size: 1rem;
+        margin: 0 0 0.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .book-author {
+        color: #b0b0b0;
+        font-size: 0.85rem;
+        margin: 0 0 0.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .book-price {
+        color: #fff;
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .book-genres {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+
+    .genre-tag {
+        background: rgba(255, 140, 66, 0.1);
+        color: #ff8c42;
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        white-space: nowrap;
+    }
+</style>
