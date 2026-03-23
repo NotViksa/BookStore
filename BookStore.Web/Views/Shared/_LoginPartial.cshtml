@@ -6,24 +6,70 @@
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
-        <li class="nav-item">
-                    <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
-                Hello, @((await UserManager.GetUserAsync(User))?.DisplayName ?? User.Identity?.Name!)
+        var user = await UserManager.GetUserAsync(User);
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle me-1"></i>
+                @(user?.DisplayName ?? User.Identity?.Name)
             </a>
-        </li>
-        <li class="nav-item">
-            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
-                <button type="submit" class="nav-link btn btn-link">Logout</button>
-            </form>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li>
+                    <a class="dropdown-item" asp-controller="Profile" asp-action="Index">
+                        <i class="bi bi-person"></i> My Profile
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Profile" asp-action="MyBooks">
+                        <i class="bi bi-journal-bookmark"></i> My Books
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Profile" asp-action="Wishlist">
+                        <i class="bi bi-bookmark-heart"></i> Wishlist
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                        <button type="submit" class="dropdown-item">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </form>
+                </li>
+            </ul>
         </li>
     }
     else
     {
         <li class="nav-item">
-            <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register</a>
+            <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">
+                <i class="bi bi-person-plus"></i> Register
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">
+                <i class="bi bi-box-arrow-in-right"></i> Login
+            </a>
         </li>
     }
 </ul>
+
+<style>
+    .dropdown-menu {
+        background: #1e1e2e;
+        border: 1px solid rgba(255, 140, 66, 0.3);
+    }
+
+    .dropdown-item {
+        color: #e0e0e0;
+    }
+
+        .dropdown-item:hover {
+            background: rgba(255, 140, 66, 0.1);
+            color: #ff8c42;
+        }
+
+    .dropdown-divider {
+        border-top-color: rgba(255, 140, 66, 0.3);
+    }
+</style>
