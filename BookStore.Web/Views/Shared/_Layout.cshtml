@@ -8,64 +8,176 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BookStore.Web.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f0f1a;
+            color: #e0e0e0;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 140, 66, 0.3);
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff8c42 !important;
+        }
+
+            .navbar-brand i {
+                color: #ff8c42;
+            }
+
+        .navbar-nav .nav-link {
+            color: #e0e0e0 !important;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0.75rem;
+        }
+
+            .navbar-nav .nav-link:hover {
+                color: #ff8c42 !important;
+            }
+
+        .nav-item-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-divider {
+            color: #ff8c42;
+            margin: 0 0.25rem;
+        }
+
+        .nav-group-spacer {
+            width: 1rem;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1400px;
+            padding: 0 2rem;
+        }
+
+        main {
+            min-height: calc(100vh - 200px);
+            padding: 2rem 0;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1a2e;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 140, 66, 0.2);
+            text-align: center;
+            color: #b0b0b0;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1e1e2e;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ff8c42;
+            border-radius: 5px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #ff9c5a;
+            }
+
+        /* Utility Classes */
+        .text-orange {
+            color: #ff8c42;
+        }
+
+        .bg-orange {
+            background: #ff8c42;
+        }
+
+        .btn-orange {
+            background: #ff8c42;
+            color: #1e1e2e;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+            .btn-orange:hover {
+                background: #ff9c5a;
+                color: #1e1e2e;
+                transform: translateY(-2px);
+            }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-color">
+        <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
                 <a class="navbar-brand" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-camera-fill me-2"></i>BookStore <span class="cat-face">≽^•⩊•^≼</span>
+                    <i class="bi bi-book-fill me-2"></i>BookStore
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarContent">
-                    <!-- Left-aligned grouped navigation -->
                     <ul class="navbar-nav me-auto">
-                        <!-- Home & Dashboard Group -->
-                        <li class="nav-item-group">
+                        <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="Index">
                                 <i class="bi bi-house-door me-1"></i>Home
                             </a>
-                            @if (User.Identity.IsAuthenticated)
-                            {
-                                <span class="nav-divider">|</span>
-                                <a class="nav-link" asp-controller="User" asp-action="Dashboard">
-                                    <i class="bi bi-speedometer2 me-1"></i>Dashboard
-                                </a>
-                            }
                         </li>
-
-                        <!-- Browse & Upload Group -->
-                        <li class="nav-item-group">
-                            <span class="nav-group-spacer"></span>
-                            <a class="nav-link" asp-controller="CatImage" asp-action="Index">
-                                <i class="bi bi-images me-1"></i>Browse
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Profile" asp-action="Index">
+                                    <i class="bi bi-person me-1"></i>Profile
+                                </a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Book" asp-action="Index">
+                                <i class="bi bi-book me-1"></i>Browse
                             </a>
-                            @if (User.Identity.IsAuthenticated)
-                            {
-                                <span class="nav-divider">|</span>
-                                <a class="nav-link" asp-controller="CatImage" asp-action="Upload">
-                                    <i class="bi bi-cloud-arrow-up me-1"></i>Upload
-                                </a>
-                            }
                         </li>
-
-                        <!-- About & Privacy Group -->
-                        <li class="nav-item-group">
-                            <span class="nav-group-spacer"></span>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Book" asp-action="AddBook">
+                                    <i class="bi bi-plus-circle me-1"></i>Add Book
+                                </a>
+                            </li>
+                        }
+                        <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="About">
                                 <i class="bi bi-info-circle me-1"></i>About
                             </a>
-                            <span class="nav-divider">|</span>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="Privacy">
                                 <i class="bi bi-shield-lock me-1"></i>Privacy
                             </a>
                         </li>
                     </ul>
 
-                    <!-- Right-aligned login/logout -->
                     <div class="navbar-right">
                         <partial name="_LoginPartial" />
                     </div>
@@ -73,11 +185,17 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; @DateTime.Now.Year BookStore - Discover Your Next Great Read</p>
+        </div>
+    </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
