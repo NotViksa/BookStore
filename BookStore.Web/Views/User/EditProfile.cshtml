@@ -4,36 +4,156 @@
     ViewData["Title"] = "Edit Profile";
 }
 
-<h2>Edit Profile</h2>
+<div class="edit-profile-container">
+    <div class="container">
+        <div class="edit-profile-header">
+            <h1 class="page-title">
+                <i class="bi bi-pencil-square"></i> Edit Profile
+            </h1>
+            <p class="page-subtitle">Update your personal information</p>
+        </div>
 
-<form asp-action="EditProfile" enctype="multipart/form-data">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="edit-profile-card">
+            <form asp-action="EditProfile" enctype="multipart/form-data" class="edit-profile-form">
+                <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
 
-    <div class="form-group mb-3">
-        <label asp-for="DisplayName" class="control-label"></label>
-        <input asp-for="DisplayName" class="form-control" />
-        <span asp-validation-for="DisplayName" class="text-danger"></span>
+                <div class="form-columns">
+                    <!-- Left Column - Profile Info -->
+                    <div class="form-left">
+                        <div class="form-group">
+                            <label asp-for="DisplayName" class="form-label">
+                                <i class="bi bi-person"></i> Display Name
+                            </label>
+                            <input asp-for="DisplayName" class="form-control" />
+                            <span asp-validation-for="DisplayName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Bio" class="form-label">
+                                <i class="bi bi-chat-text"></i> Bio
+                            </label>
+                            <textarea asp-for="Bio" class="form-control" rows="4"
+                                      placeholder="Tell us about yourself..."></textarea>
+                            <span asp-validation-for="Bio" class="text-danger"></span>
+                            <small class="form-hint">Max 500 characters</small>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label asp-for="FavoriteGenre" class="form-label">
+                                    <i class="bi bi-tag"></i> Favorite Genre
+                                </label>
+                                <input asp-for="FavoriteGenre" class="form-control"
+                                       placeholder="e.g., Fantasy, Mystery, Fiction" />
+                                <span asp-validation-for="FavoriteGenre" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group half">
+                                <label asp-for="BirthYear" class="form-label">
+                                    <i class="bi bi-cake"></i> Birth Year
+                                </label>
+                                <input asp-for="BirthYear" class="form-control" placeholder="1990" />
+                                <span asp-validation-for="BirthYear" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column - Profile Image -->
+                    <div class="form-right">
+                        <div class="profile-image-section">
+                            <label class="form-label">
+                                <i class="bi bi-image"></i> Profile Image
+                            </label>
+
+                            <div class="profile-image-upload" id="profileImageUpload">
+                                <input asp-for="ProfileImage" type="file" id="ProfileImage"
+                                       accept=".jpg,.jpeg,.png,.gif" style="display: none;" />
+
+                                <div class="current-image">
+                                    <img id="profilePreview" src="@Model.CurrentProfileImageUrl" alt="Current profile image">
+                                </div>
+
+                                <div class="upload-placeholder" style="display: none;">
+                                    <i class="bi bi-cloud-upload"></i>
+                                    <p>Click to upload new image</p>
+                                    <small>JPG, PNG, GIF • Max 5MB</small>
+                                </div>
+
+                                <div class="image-preview" style="display: none;">
+                                    <img id="newProfilePreview" src="#" alt="Preview" />
+                                    <button type="button" class="change-image">
+                                        <i class="bi bi-pencil"></i> Change
+                                    </button>
+                                </div>
+                            </div>
+
+                            <span asp-validation-for="ProfileImage" class="text-danger"></span>
+                        </div>
+
+                        <div class="info-box">
+                            <h4><i class="bi bi-info-circle"></i> Profile Tips</h4>
+                            <ul>
+                                <li>Use a clear profile picture</li>
+                                <li>Share your reading interests in your bio</li>
+                                <li>Add your favorite genre to help others find similar books</li>
+                                <li>Your email will not be shared publicly</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-save">
+                        <i class="bi bi-check-circle"></i> Save Changes
+                    </button>
+                    <a asp-action="Index" class="btn-cancel">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div class="form-group mb-3">
-        <label asp-for="ProfileBio" class="control-label"></label>
-        <textarea asp-for="ProfileBio" class="form-control" rows="4"></textarea>
-        <span asp-validation-for="ProfileBio" class="text-danger"></span>
-    </div>
-
-    <div class="form-group mb-3">
-        <label asp-for="ProfileImage" class="control-label">Profile Image</label>
-        <input asp-for="ProfileImage" class="form-control" type="file" accept=".jpg,.jpeg,.png" />
-    </div>
-
-    <div class="form-group">
-        <input type="submit" value="Save Changes" class="btn btn-primary" />
-        <a asp-action="Dashboard" class="btn btn-secondary">Cancel</a>
-    </div>
-</form>
+</div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        $(document).ready(function() {
+            var profileImageUpload = $('#profileImageUpload');
+            var profileInput = $('#ProfileImage');
+            var currentImage = $('.current-image');
+            var uploadPlaceholder = $('.upload-placeholder');
+            var imagePreview = $('.image-preview');
+            var newProfilePreview = $('#newProfilePreview');
+
+            profileImageUpload.click(function(e) {
+                if (!$(e.target).hasClass('change-image') && !$(e.target).hasClass('bi-pencil')) {
+                    profileInput.click();
+                }
+            });
+
+            profileInput.change(function(e) {
+                var file = this.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        newProfilePreview.attr('src', e.target.result);
+                        currentImage.hide();
+                        uploadPlaceholder.hide();
+                        imagePreview.show();
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            $('.change-image').click(function(e) {
+                e.stopPropagation();
+                profileInput.val('');
+                currentImage.show();
+                imagePreview.hide();
+            });
+        });
+    </script>
 }
