@@ -1,0 +1,249 @@
+﻿@model BookStore.Web.Models.ProfileViewModel
+@using Microsoft.AspNetCore.Identity
+@using BookStore.Data.Models.Identity
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="profile-container">
+    <!-- Profile Header Section -->
+    <div class="profile-header-section">
+        <div class="container">
+            <div class="profile-card">
+                <div class="profile-avatar-wrapper">
+                    <img src="@Model.ProfileImageUrl" class="profile-avatar" alt="Profile Image">
+                    <span class="profile-status">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </span>
+                </div>
+                <div class="profile-details">
+                    <h1 class="profile-name">@Model.User.DisplayName</h1>
+                    <p class="profile-email">@Model.User.Email</p>
+                    @if (!string.IsNullOrEmpty(Model.User.Bio))
+                    {
+                        <p class="profile-bio">@Model.User.Bio</p>
+                    }
+                    <div class="profile-meta">
+                        <span class="meta-item">
+                            <i class="bi bi-calendar"></i> Member since @Model.MemberSince.ToString("MMMM yyyy")
+                        </span>
+                        @if (!string.IsNullOrEmpty(Model.User.FavoriteGenre))
+                        {
+                            <span class="meta-item">
+                                <i class="bi bi-tag"></i> Favorite: @Model.User.FavoriteGenre
+                            </span>
+                        }
+                    </div>
+                    <a asp-action="EditProfile" class="btn-edit-profile">
+                        <i class="bi bi-pencil"></i> Edit Profile
+                    </a>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">@Model.UploadCount</div>
+                        <div class="stat-label">Books Added</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">@Model.WishlistCount</div>
+                        <div class="stat-label">Wishlist</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">@Model.ReviewCount</div>
+                        <div class="stat-label">Reviews</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Content Tabs -->
+        <div class="dashboard-tabs">
+            <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="uploads-tab" data-bs-toggle="tab" data-bs-target="#uploads" type="button" role="tab">
+                        <i class="bi bi-journal-bookmark-fill"></i> My Books (@Model.UploadCount)
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="wishlist-tab" data-bs-toggle="tab" data-bs-target="#wishlist" type="button" role="tab">
+                        <i class="bi bi-bookmark-heart"></i> Wishlist (@Model.WishlistCount)
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
+                        <i class="bi bi-chat-right-text-fill"></i> My Reviews (@Model.ReviewCount)
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="dashboardTabsContent">
+                <!-- Uploads Tab -->
+                <div class="tab-pane fade show active" id="uploads" role="tabpanel">
+                    @if (!Model.UploadedBooks.Any())
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-journal-bookmark"></i>
+                            <h4>No books added yet</h4>
+                            <p>Share your favorite books with the community!</p>
+                            <a asp-controller="Book" asp-action="AddBook" class="btn-primary">
+                                <i class="bi bi-plus-circle"></i> Add a Book
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="books-grid">
+                            @foreach (var book in Model.UploadedBooks)
+                            {
+                                <div class="book-card-mini">
+                                    <a asp-controller="Book" asp-action="Details" asp-route-id="@book.Id">
+                                        <div class="book-cover-mini">
+                                            <img src="@book.CoverImageUrl" alt="@book.Title">
+                                        </div>
+                                        <div class="book-info-mini">
+                                            <h4>@book.Title</h4>
+                                            <p>by @book.Author</p>
+                                            <div class="book-price">$@book.Price.ToString("0.00")</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <!-- Wishlist Tab -->
+                <div class="tab-pane fade" id="wishlist" role="tabpanel">
+                    @if (!Model.WishlistBooks.Any())
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-bookmark"></i>
+                            <h4>No books in wishlist</h4>
+                            <p>Start adding books you want to read!</p>
+                            <a asp-controller="Book" asp-action="Index" class="btn-primary">
+                                <i class="bi bi-search"></i> Browse Books
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="wishlist-items">
+                            @foreach (var book in Model.WishlistBooks)
+                            {
+                                <div class="wishlist-item">
+                                    <a asp-controller="Book" asp-action="Details" asp-route-id="@book.Id" class="wishlist-link">
+                                        <div class="wishlist-cover">
+                                            <img src="@book.CoverImageUrl" alt="@book.Title">
+                                        </div>
+                                        <div class="wishlist-info">
+                                            <h4>@book.Title</h4>
+                                            <p>by @book.Author</p>
+                                            <div class="wishlist-meta">
+                                                <span class="price">$@book.Price.ToString("0.00")</span>
+                                                <span class="rating">
+                                                    <i class="bi bi-star-fill"></i>
+                                                    @book.AverageRating.ToString("0.0")
+                                                </span>
+                                            </div>
+                                            <div class="book-genres">
+                                                @foreach (var genre in book.Genres.Take(2))
+                                                {
+                                                    <span class="genre-tag">@genre.Name</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <form asp-controller="Book" asp-action="ToggleWishlist" asp-route-bookId="@book.Id" method="post" class="remove-wishlist-form">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-remove" onclick="return confirm('Remove from wishlist?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <!-- Reviews Tab -->
+                <div class="tab-pane fade" id="reviews" role="tabpanel">
+                    @if (Model.RecentReviews == null || !Model.RecentReviews.Any())
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-chat"></i>
+                            <h4>No reviews yet</h4>
+                            <p>Share your thoughts about the books you've read!</p>
+                            <a asp-controller="Book" asp-action="Index" class="btn-primary">
+                                <i class="bi bi-search"></i> Browse Books
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="reviews-list">
+                            @foreach (var review in Model.RecentReviews)
+                            {
+                                <div class="review-item">
+                                    <div class="review-book-cover">
+                                        <img src="@review.Book.CoverImageUrl" alt="@review.Book.Title">
+                                    </div>
+                                    <div class="review-content">
+                                        <div class="review-header">
+                                            <a asp-controller="Book" asp-action="Details" asp-route-id="@review.BookId" class="book-title">
+                                                @review.Book.Title
+                                            </a>
+                                            <div class="review-rating">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    if (i <= review.Rating)
+                                                    {
+                                                        <i class="bi bi-star-fill"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="bi bi-star"></i>
+                                                    }
+                                                }
+                                            </div>
+                                            <span class="review-date">@review.PostedDate.ToString("MMMM dd, yyyy")</span>
+                                        </div>
+                                        <p class="review-text">@review.Content</p>
+                                        <div class="review-actions">
+                                            <a asp-controller="Book" asp-action="Details" asp-route-id="@review.BookId" class="btn-view">
+                                                View Book
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Remove from wishlist
+            $('.remove-wishlist-form').submit(function(e) {
+                e.preventDefault();
+                var form = $(this);
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function(data) {
+                        if (data.success) {
+                            location.reload();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}
