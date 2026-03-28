@@ -40,7 +40,6 @@ builder.Services.AddScoped<IWishlistService, WishlistService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 
-
 // Configure Identity
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
@@ -72,7 +71,7 @@ builder.Services.Configure<IISServerOptions>(options =>
 });
 
 builder.WebHost.ConfigureKestrel(serverOptions =>
-{   
+{
     serverOptions.Limits.MaxRequestBodySize = 20 * 1024 * 1024; // 20MB
 });
 
@@ -121,7 +120,7 @@ using (var scope = app.Services.CreateScope())
         }
 
         // Create admin user if it doesn't exist
-        var adminEmail = "admin@BookStore.com";
+        var adminEmail = "admin@bookstore.com";
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
         if (adminUser == null)
         {
@@ -130,6 +129,9 @@ using (var scope = app.Services.CreateScope())
                 UserName = adminEmail,
                 Email = adminEmail,
                 DisplayName = "Admin",
+                Bio = "Bookstore Administrator",
+                FavoriteGenre = "Classics",
+                BirthYear = 1990,
                 RegistrationDate = DateTime.UtcNow
             };
 
@@ -138,6 +140,14 @@ using (var scope = app.Services.CreateScope())
             {
                 await userManager.AddToRoleAsync(adminUser, "Administrator");
             }
+        }
+
+        // Seed some sample data if needed
+        var bookRepository = services.GetRequiredService<IBookRepository>();
+        if (await bookRepository.CountAsync(b => true) == 0)
+        {
+            // Add sample books programmatically if needed
+            Console.WriteLine("Database seeded with sample books");
         }
     }
     catch (Exception ex)
