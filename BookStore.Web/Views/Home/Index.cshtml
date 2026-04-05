@@ -1,0 +1,252 @@
+﻿@{
+    ViewData["Title"] = "Home - BookStore";
+}
+
+<div class="home-container">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Discover Your Next Great Read</h1>
+                <p class="hero-subtitle">Join our community of book lovers. Explore thousands of books, share reviews, and build your wishlist.</p>
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <div class="hero-buttons">
+                        <a asp-area="Identity" asp-page="/Account/Register" class="btn-primary">Get Started</a>
+                        <a asp-area="Identity" asp-page="/Account/Login" class="btn-secondary">Sign In</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="hero-buttons">
+                        <a asp-controller="Book" asp-action="Index" class="btn-primary">Browse Books</a>
+                        <a asp-controller="Book" asp-action="AddBook" class="btn-secondary">Add a Book</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Popular Books Section -->
+        @if (ViewBag.PopularBooks != null && ((IEnumerable<BookStore.Data.Models.Book>)ViewBag.PopularBooks).Any())
+        {
+            <section class="books-section">
+                <div class="section-header">
+                    <h2 class="section-title">🔥 Popular Books</h2>
+                    <a asp-controller="Book" asp-action="Index" class="view-all">View All <i class="bi bi-arrow-right"></i></a>
+                </div>
+                <div class="books-carousel">
+                    <div class="books-grid">
+                        @foreach (var book in ViewBag.PopularBooks)
+                        {
+                            <partial name="_BookCard" model="book" />
+                        }
+                    </div>
+                </div>
+            </section>
+        }
+
+        <!-- Recent Books Section -->
+        @if (ViewBag.RecentBooks != null && ((IEnumerable<BookStore.Data.Models.Book>)ViewBag.RecentBooks).Any())
+        {
+            <section class="books-section">
+                <div class="section-header">
+                    <h2 class="section-title">📚 Recently Added</h2>
+                    <a asp-controller="Book" asp-action="Index" class="view-all">View All <i class="bi bi-arrow-right"></i></a>
+                </div>
+                <div class="books-grid">
+                    @foreach (var book in ViewBag.RecentBooks)
+                    {
+                        <partial name="_BookCard" model="book" />
+                    }
+                </div>
+            </section>
+        }
+
+        <!-- Popular Genres Section -->
+        @if (ViewBag.PopularGenres != null && ((IEnumerable<BookStore.Data.Models.Genre>)ViewBag.PopularGenres).Any())
+        {
+            <section class="genres-section">
+                <h2 class="section-title">🏷️ Popular Genres</h2>
+                <div class="genres-cloud">
+                    @foreach (var genre in ViewBag.PopularGenres)
+                    {
+                        <a asp-controller="Book" asp-action="Index" asp-route-genre="@genre.Name" class="genre-pill">
+                            @genre.Name
+                            <span class="genre-count">(@genre.BookCount)</span>
+                        </a>
+                    }
+                </div>
+            </section>
+        }
+
+        <!-- Call to Action for Non-authenticated Users -->
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <div class="cta-section">
+                <div class="cta-content">
+                    <h3>Join the BookStore Community</h3>
+                    <p>Create an account to start adding books, writing reviews, and building your wishlist.</p>
+                    <a asp-area="Identity" asp-page="/Account/Register" class="btn-primary">Sign Up Free</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .home-container {
+        background: #0f0f1a;
+        min-height: 100vh;
+    }
+
+    .hero-section {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        padding: 4rem 0;
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #ff8c42;
+        margin-bottom: 1rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        color: #e0e0e0;
+        max-width: 600px;
+        margin: 0 auto 2rem;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: #ff8c42;
+        color: #1e1e2e;
+    }
+
+        .btn-primary:hover {
+            background: #ff9c5a;
+            transform: translateY(-2px);
+        }
+
+    .btn-secondary {
+        background: transparent;
+        color: #ff8c42;
+        border: 1px solid #ff8c42;
+    }
+
+        .btn-secondary:hover {
+            background: rgba(255, 140, 66, 0.1);
+        }
+
+    .books-section {
+        margin-bottom: 3rem;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        color: #ff8c42;
+        margin: 0;
+    }
+
+    .view-all {
+        color: #ff8c42;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .view-all:hover {
+            text-decoration: underline;
+        }
+
+    .books-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .genres-section {
+        margin: 3rem 0;
+    }
+
+    .genres-cloud {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .genre-pill {
+        background: rgba(255, 140, 66, 0.1);
+        color: #ff8c42;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+        .genre-pill:hover {
+            background: #ff8c42;
+            color: #1e1e2e;
+        }
+
+    .genre-count {
+        font-size: 0.75rem;
+        margin-left: 0.25rem;
+        opacity: 0.8;
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, #ff8c42 0%, #ff6b6b 100%);
+        border-radius: 1rem;
+        padding: 3rem;
+        text-align: center;
+        margin: 3rem 0;
+    }
+
+    .cta-content h3 {
+        font-size: 1.8rem;
+        color: #1e1e2e;
+        margin-bottom: 0.5rem;
+    }
+
+    .cta-content p {
+        color: #1e1e2e;
+        margin-bottom: 1.5rem;
+    }
+
+    .cta-content .btn-primary {
+        background: #1e1e2e;
+        color: #ff8c42;
+    }
+
+        .cta-content .btn-primary:hover {
+            background: #2a2a3a;
+        }
+</style>

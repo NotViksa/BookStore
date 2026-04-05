@@ -23,11 +23,19 @@ namespace BookStore.Data
         {
             base.OnModelCreating(builder);
 
-            // Book-Genre many-to-many relationship
+            // Book-Genre many-to-many relationship with explicit join table
             builder.Entity<Book>()
                 .HasMany(b => b.Genres)
                 .WithMany(g => g.Books)
-                .UsingEntity(j => j.ToTable("BookGenres"));
+                .UsingEntity<Dictionary<string, object>>(
+                    "BookGenres",
+                    j => j.HasOne<Genre>().WithMany().HasForeignKey("GenreId"),
+                    j => j.HasOne<Book>().WithMany().HasForeignKey("BookId"),
+                    j =>
+                    {
+                        j.HasKey("BookId", "GenreId");
+                        j.ToTable("BookGenres");
+                    });
 
             // Review relationships
             builder.Entity<Review>()
@@ -68,7 +76,7 @@ namespace BookStore.Data
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Unique constraint for user ratings (one rating per book per user)
+            // Unique constraint for user ratings
             builder.Entity<Rating>()
                 .HasIndex(r => new { r.UserId, r.BookId })
                 .IsUnique();
@@ -87,7 +95,7 @@ namespace BookStore.Data
                 new Genre { Id = 10, Name = "Self-Help", Description = "Personal development and improvement" }
             );
 
-            // Seed some sample books
+            // Seed sample books
             builder.Entity<Book>().HasData(
                 new Book
                 {
@@ -121,15 +129,15 @@ namespace BookStore.Data
                 }
             );
 
-            // Seed Book-Genre relationships
+            // Seed Book-Genre relationships – use correct column names "BookId" and "GenreId"
             builder.Entity("BookGenres").HasData(
-                new { BooksId = 1, GenresId = 1 }, // Great Gatsby - Fiction
-                new { BooksId = 1, GenresId = 9 }, // Great Gatsby - Thriller
-                new { BooksId = 2, GenresId = 1 }, // Mockingbird - Fiction
-                new { BooksId = 2, GenresId = 5 }  // Mockingbird - Mystery
+                new { BookId = 1, GenreId = 1 }, // Great Gatsby - Fiction
+                new { BookId = 1, GenreId = 9 }, // Great Gatsby - Thriller
+                new { BookId = 2, GenreId = 1 }, // To Kill a Mockingbird - Fiction
+                new { BookId = 2, GenreId = 5 }  // To Kill a Mockingbird - Mystery
             );
 
-            // Roles
+            // Seed Roles
             builder.Entity<IdentityRole>().HasData(
                 new IdentityRole { Id = "1", Name = "User", NormalizedName = "USER" },
                 new IdentityRole { Id = "2", Name = "Administrator", NormalizedName = "ADMINISTRATOR" }
