@@ -84,5 +84,20 @@ namespace BookStore.Data.Repositories
         {
             return _context.Books.AsQueryable();
         }
+        public async Task<IEnumerable<Book>> GetByAuthorAsync(string author)
+        {
+            return await _context.Books
+                .Include(b => b.Genres)
+                .Where(b => b.Author.Contains(author))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Book>> GetBooksByPriceRangeAsync(decimal minPrice, decimal maxPrice)
+        {
+            return await _context.Books
+                .Where(b => b.Price >= minPrice && b.Price <= maxPrice)
+                .OrderBy(b => b.Price)
+                .ToListAsync();
+        }
     }
 }
