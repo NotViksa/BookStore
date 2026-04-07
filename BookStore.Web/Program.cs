@@ -1,11 +1,12 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using BookStore.Data;
 using BookStore.Data.Interfaces;
+using BookStore.Data.Models;
 using BookStore.Data.Models.Identity;
 using BookStore.Data.Repositories;
 using BookStore.Services;
 using BookStore.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -148,6 +149,54 @@ using (var scope = app.Services.CreateScope())
         {
             // Add sample books programmatically if needed
             Console.WriteLine("Database seeded with sample books");
+        }
+        // Seed sample books (only if table is empty)
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        if (!context.Books.Any())
+        {
+            adminUser = await userManager.FindByEmailAsync(adminEmail);
+            var fiction = await context.Genres.FirstOrDefaultAsync(g => g.Name == "Fiction");
+            var thriller = await context.Genres.FirstOrDefaultAsync(g => g.Name == "Thriller");
+            var mystery = await context.Genres.FirstOrDefaultAsync(g => g.Name == "Mystery");
+
+            var gatsby = new Book
+            {
+                Title = "The Great Gatsby",
+                ISBN = "9780743273565",
+                Author = "F. Scott Fitzgerald",
+                Description = "A classic novel about the American Dream in the Jazz Age",
+                Price = 12.99m,
+                CoverImageUrl = "/images/books/great-gatsby.jpg",
+                PublicationYear = 1925,
+                Publisher = "Scribner",
+                PageCount = 180,
+                UploadedById = adminUser.Id,
+                AddedDate = DateTime.UtcNow
+            };
+            if (fiction != null) gatsby.Genres.Add(fiction);
+            if (thriller != null) gatsby.Genres.Add(thriller);
+            context.Books.Add(gatsby);
+
+            var mockingbird = new Book
+            {
+                Id = 2,
+                Title = "To Kill a Mockingbird",
+                ISBN = "9780061120084",
+                Author = "Harper Lee",
+                Description = "A gripping story of racial injustice in the American South",
+                Price = 14.99m,
+                CoverImageUrl = "/images/books/to-kill-a-mockingbird.jpg",
+                PublicationYear = 1960,
+                Publisher = "J.B. Lippincott & Co.",
+                PageCount = 281,
+                UploadedById = adminUser.Id,
+                AddedDate = DateTime.UtcNow
+            };
+            if (fiction != null) mockingbird.Genres.Add(fiction);
+            if (mystery != null) mockingbird.Genres.Add(mystery);
+            context.Books.Add(mockingbird);
+
+            await context.SaveChangesAsync();
         }
     }
     catch (Exception ex)

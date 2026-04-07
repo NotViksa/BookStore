@@ -23,52 +23,48 @@ namespace BookStore.Data
         {
             base.OnModelCreating(builder);
 
-            // Book-Genre many-to-many relationship with explicit join table
+            // Book-Genre many-to-many
             builder.Entity<Book>()
                 .HasMany(b => b.Genres)
                 .WithMany(g => g.Books)
                 .UsingEntity<Dictionary<string, object>>(
                     "BookGenres",
-                    j => j.HasOne<Genre>().WithMany().HasForeignKey("GenreId"),
-                    j => j.HasOne<Book>().WithMany().HasForeignKey("BookId"),
-                    j =>
-                    {
-                        j.HasKey("BookId", "GenreId");
-                        j.ToTable("BookGenres");
-                    });
+                    j => j.HasOne<Genre>().WithMany().HasForeignKey("GenreId").OnDelete(DeleteBehavior.Restrict),
+                    j => j.HasOne<Book>().WithMany().HasForeignKey("BookId").OnDelete(DeleteBehavior.Cascade),
+                    j => j.HasKey("BookId", "GenreId"));
 
             // Review relationships
             builder.Entity<Review>()
                 .HasOne(r => r.Book)
                 .WithMany(b => b.Reviews)
                 .HasForeignKey(r => r.BookId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Review>()
                 .HasOne(r => r.PostedBy)
                 .WithMany(u => u.Reviews)
                 .HasForeignKey(r => r.PostedById)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Wishlist relationships
             builder.Entity<Wishlist>()
                 .HasOne(w => w.Book)
                 .WithMany(b => b.Wishlists)
                 .HasForeignKey(w => w.BookId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Wishlist>()
                 .HasOne(w => w.User)
                 .WithMany(u => u.Wishlist)
                 .HasForeignKey(w => w.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Rating relationships
             builder.Entity<Rating>()
                 .HasOne(r => r.Book)
                 .WithMany(b => b.Ratings)
                 .HasForeignKey(r => r.BookId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Rating>()
                 .HasOne(r => r.User)
@@ -76,12 +72,12 @@ namespace BookStore.Data
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Unique constraint for user ratings
+            // Unique constraint: one rating per user per book
             builder.Entity<Rating>()
                 .HasIndex(r => new { r.UserId, r.BookId })
                 .IsUnique();
 
-            // Seed Genres
+            // Seed Genres (no dependencies, always safe)
             builder.Entity<Genre>().HasData(
                 new Genre { Id = 1, Name = "Fiction", Description = "Literary works based on imagination" },
                 new Genre { Id = 2, Name = "Non-Fiction", Description = "Informational works based on facts" },
@@ -93,48 +89,6 @@ namespace BookStore.Data
                 new Genre { Id = 8, Name = "Romance", Description = "Love stories and relationships" },
                 new Genre { Id = 9, Name = "Thriller", Description = "Suspenseful and exciting plots" },
                 new Genre { Id = 10, Name = "Self-Help", Description = "Personal development and improvement" }
-            );
-
-            // Seed sample books
-            builder.Entity<Book>().HasData(
-                new Book
-                {
-                    Id = 1,
-                    Title = "The Great Gatsby",
-                    ISBN = "9780743273565",
-                    Author = "F. Scott Fitzgerald",
-                    Description = "A classic novel about the American Dream in the Jazz Age",
-                    Price = 12.99m,
-                    CoverImageUrl = "/images/books/great-gatsby.jpg",
-                    PublicationYear = 1925,
-                    Publisher = "Scribner",
-                    PageCount = 180,
-                    UploadedById = "1",
-                    AddedDate = DateTime.UtcNow
-                },
-                new Book
-                {
-                    Id = 2,
-                    Title = "To Kill a Mockingbird",
-                    ISBN = "9780061120084",
-                    Author = "Harper Lee",
-                    Description = "A gripping story of racial injustice in the American South",
-                    Price = 14.99m,
-                    CoverImageUrl = "/images/books/to-kill-a-mockingbird.jpg",
-                    PublicationYear = 1960,
-                    Publisher = "J.B. Lippincott & Co.",
-                    PageCount = 281,
-                    UploadedById = "1",
-                    AddedDate = DateTime.UtcNow
-                }
-            );
-
-            // Seed Book-Genre relationships – use correct column names "BookId" and "GenreId"
-            builder.Entity("BookGenres").HasData(
-                new { BookId = 1, GenreId = 1 }, // Great Gatsby - Fiction
-                new { BookId = 1, GenreId = 9 }, // Great Gatsby - Thriller
-                new { BookId = 2, GenreId = 1 }, // To Kill a Mockingbird - Fiction
-                new { BookId = 2, GenreId = 5 }  // To Kill a Mockingbird - Mystery
             );
 
             // Seed Roles
