@@ -7,92 +7,47 @@
 }
 
 <div class="browse-container">
-    <!-- Header -->
-    <div class="browse-header">
-        <div class="container">
-            <div class="header-content">
-                <h1 class="page-title">
-                    <i class="bi bi-book"></i> Browse Books
-                </h1>
-
-                <div class="header-actions">
-                    <!-- Search -->
-                    <form asp-action="Search" method="get" class="search-form">
-                        <div class="search-wrapper">
-                            <input type="text" name="query" class="search-input"
-                                   placeholder="Search by title, author, ISBN, or genre..."
-                                   value="@ViewBag.SearchQuery">
-                            <button type="submit" class="search-btn">
-                                <i class="bi bi-search"></i>
-                            </button>
-                        </div>
-                    </form>
-
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <a asp-action="AddBook" class="btn-add-book">
-                            <i class="bi bi-plus-circle"></i> Add Book
-                        </a>
-                    }
-                </div>
-            </div>
-
-            <!-- Filter Bar -->
-            <div class="filter-bar">
-                <div class="filter-group">
-                    <label>Genres:</label>
-                    <select class="filter-select" id="genreFilter">
-                        <option value="">All Genres</option>
-                        @foreach (var genre in ViewBag.PopularGenres ?? new List<Genre>())
-                        {
-                            <option value="@genre.Name" selected="@(ViewBag.CurrentGenre == genre.Name)">@genre.Name</option>
-                        }
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label>Price:</label>
-                    <div class="price-range">
-                        <input type="number" class="price-input" id="minPrice" placeholder="Min" value="@ViewBag.MinPrice">
-                        <span>-</span>
-                        <input type="number" class="price-input" id="maxPrice" placeholder="Max" value="@ViewBag.MaxPrice">
-                    </div>
-                </div>
-
-                <button class="filter-apply" id="applyFilters">
-                    <i class="bi bi-funnel"></i> Apply Filters
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Search Results Header -->
-    @if (!string.IsNullOrEmpty(ViewBag.SearchQuery))
-    {
-        <div class="search-results-header">
-            <div class="container">
-                <i class="bi bi-search"></i>
-                <span>Showing results for: <strong>"@ViewBag.SearchQuery"</strong></span>
-                <a asp-action="Index" class="clear-search">
-                    <i class="bi bi-x-lg"></i> Clear
-                </a>
-            </div>
-        </div>
-    }
-
-    <!-- Books Grid -->
     <div class="container">
+        <!-- Header -->
+        <div class="browse-header">
+            <h1 class="page-title">Browse Books</h1>
+            <div class="search-filter">
+                <form asp-action="Search" method="get" class="search-form">
+                    <input type="text" name="query" class="search-input" placeholder="Search by title, author, genre..." value="@ViewBag.SearchQuery">
+                    <button type="submit" class="search-btn"><i class="bi bi-search"></i></button>
+                </form>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-action="AddBook" class="btn-add"><i class="bi bi-plus-circle"></i> Add Book</a>
+                }
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+            <select id="genreFilter" class="filter-select">
+                <option value="">All Genres</option>
+                @foreach (var genre in ViewBag.PopularGenres ?? new List<Genre>())
+                {
+                    <option value="@genre.Name" selected="@(ViewBag.CurrentGenre == genre.Name)">@genre.Name</option>
+                }
+            </select>
+            <input type="number" id="minPrice" class="price-input" placeholder="Min price" value="@ViewBag.MinPrice">
+            <span>-</span>
+            <input type="number" id="maxPrice" class="price-input" placeholder="Max price" value="@ViewBag.MaxPrice">
+            <button id="applyFilters" class="btn-filter">Apply</button>
+        </div>
+
+        <!-- Books Grid -->
         @if (!Model.Any())
         {
             <div class="empty-state">
                 <i class="bi bi-book"></i>
                 <h3>No books found</h3>
-                <p>Try adjusting your search or filters</p>
+                <p>Try adjusting your filters or add a new book.</p>
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <a asp-action="AddBook" class="btn-add-book">
-                        <i class="bi bi-plus-circle"></i> Add Your First Book
-                    </a>
+                    <a asp-action="AddBook" class="btn-add">Add a Book</a>
                 }
             </div>
         }
@@ -101,142 +56,198 @@
             <div class="books-grid">
                 @foreach (var book in Model)
                 {
-                    <a asp-action="Details" asp-route-id="@book.Id" class="book-card">
-                        <div class="book-cover">
-                            <img src="@book.CoverImageUrl" alt="@book.Title">
-                            @if (User.Identity.IsAuthenticated)
-                            {
-                                <form asp-action="ToggleWishlist" asp-route-bookId="@book.Id" method="post"
-                                      class="quick-wishlist-form" onclick="event.stopPropagation();">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="quick-wishlist @(ViewBag.WishlistIds?.Contains(book.Id) == true ? "active" : "")">
-                                        <i class="bi @(ViewBag.WishlistIds?.Contains(book.Id) == true ? "bi-bookmark-fill" : "bi-bookmark")"></i>
-                                    </button>
-                                </form>
-                            }
-                        </div>
-                        <div class="book-info">
-                            <h3 class="book-title">@book.Title</h3>
-                            <p class="book-author">@book.Author</p>
-                            <div class="book-meta">
+                    <div class="book-card">
+                        <a asp-action="Details" asp-route-id="@book.Id" class="book-link">
+                            <div class="book-cover">
+                                <img src="@book.CoverImageUrl" alt="@book.Title" onerror="this.src='/images/default-cover.jpg'">
+                            </div>
+                            <div class="book-info">
+                                <h3 class="book-title">@book.Title</h3>
+                                <p class="book-author">by @book.Author</p>
+                                <div class="book-price">$@book.Price.ToString("0.00")</div>
                                 <div class="book-rating">
-                                    <i class="bi bi-star-fill"></i>
-                                    <span>@book.AverageRating.ToString("0.0")</span>
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= Math.Round(book.AverageRating))
+                                        {
+                                            <i class="bi bi-star-fill"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-star"></i>
+                                        }
+                                    }
+                                    <span>(@book.RatingCount)</span>
                                 </div>
-                                <span class="book-price">$@book.Price.ToString("0.00")</span>
                             </div>
-                            <div class="book-genres">
-                                @foreach (var genre in book.Genres.Take(2))
-                                {
-                                    <span class="genre-tag">@genre.Name</span>
-                                }
-                                @if (book.Genres.Count > 2)
-                                {
-                                    <span class="genre-tag">+@(book.Genres.Count - 2)</span>
-                                }
-                            </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                 }
             </div>
 
             <!-- Pagination -->
             <div class="pagination">
-                <div class="pagination-info">
-                    Showing page @Model.PageIndex of @Model.TotalPages
-                </div>
-                <div class="pagination-controls">
-                    <a asp-action="Index"
-                       asp-route-pageNumber="@(Model.PageIndex - 1)"
-                       asp-route-query="@ViewBag.SearchQuery"
-                       asp-route-genre="@ViewBag.CurrentGenre"
-                       asp-route-minPrice="@ViewBag.MinPrice"
-                       asp-route-maxPrice="@ViewBag.MaxPrice"
-                       class="pagination-btn @(!Model.HasPreviousPage ? "disabled" : "")">
-                        <i class="bi bi-chevron-left"></i> Previous
-                    </a>
-
-                    <div class="page-numbers">
-                        @for (int i = 1; i <= Model.TotalPages; i++)
-                        {
-                            <a asp-action="Index"
-                               asp-route-pageNumber="@i"
-                               asp-route-query="@ViewBag.SearchQuery"
-                               asp-route-genre="@ViewBag.CurrentGenre"
-                               asp-route-minPrice="@ViewBag.MinPrice"
-                               asp-route-maxPrice="@ViewBag.MaxPrice"
-                               class="page-number @(i == Model.PageIndex ? "active" : "")">
-                                @i
-                            </a>
-                        }
-                    </div>
-
-                    <a asp-action="Index"
-                       asp-route-pageNumber="@(Model.PageIndex + 1)"
-                       asp-route-query="@ViewBag.SearchQuery"
-                       asp-route-genre="@ViewBag.CurrentGenre"
-                       asp-route-minPrice="@ViewBag.MinPrice"
-                       asp-route-maxPrice="@ViewBag.MaxPrice"
-                       class="pagination-btn @(!Model.HasNextPage ? "disabled" : "")">
-                        Next <i class="bi bi-chevron-right"></i>
-                    </a>
-                </div>
+                <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" class="btn-page @(!Model.HasPreviousPage ? "disabled" : "")">Previous</a>
+                <span class="page-info">Page @Model.PageIndex of @Model.TotalPages</span>
+                <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" class="btn-page @(!Model.HasNextPage ? "disabled" : "")">Next</a>
             </div>
         }
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        $(document).ready(function() {
-            // Quick wishlist toggle
-            $('.quick-wishlist-form').submit(function(e) {
-                e.preventDefault();
-                var form = $(this);
+<style>
+    .browse-container {
+        background: #0f0f1a;
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
 
-                $.ajax({
-                    url: form.attr('action'),
-                    type: 'POST',
-                    data: form.serialize(),
-                    success: function(data) {
-                        if (data.success) {
-                            var btn = form.find('button');
-                            btn.toggleClass('active');
+    .page-title {
+        font-size: 2rem;
+        color: #ff8c42;
+        margin-bottom: 1rem;
+    }
 
-                            var icon = btn.find('i');
-                            if (btn.hasClass('active')) {
-                                icon.removeClass('bi-bookmark').addClass('bi-bookmark-fill');
-                            } else {
-                                icon.removeClass('bi-bookmark-fill').addClass('bi-bookmark');
-                            }
-                        }
-                    }
-                });
-            });
+    .browse-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
 
-            // Apply filters
-            $('#applyFilters').click(function() {
-                var genre = $('#genreFilter').val();
-                var minPrice = $('#minPrice').val();
-                var maxPrice = $('#maxPrice').val();
-                var query = '@ViewBag.SearchQuery';
+    .search-form {
+        display: flex;
+        gap: 0.5rem;
+    }
 
-                var url = '@Url.Action("Index")?';
+    .search-input {
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        border: none;
+        background: #1e1e2e;
+        color: #e0e0e0;
+        width: 250px;
+    }
 
-                if (query) url += '&query=' + encodeURIComponent(query);
-                if (genre) url += '&genre=' + encodeURIComponent(genre);
-                if (minPrice) url += '&minPrice=' + minPrice;
-                if (maxPrice) url += '&maxPrice=' + maxPrice;
+    .search-btn, .btn-add, .btn-filter {
+        background: #ff8c42;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        color: #1e1e2e;
+        cursor: pointer;
+    }
 
-                window.location.href = url;
-            });
+    .filters-bar {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
 
-            // Enter key in price inputs
-            $('.price-input').keypress(function(e) {
-                if (e.which == 13) {
-                    $('#applyFilters').click();
-                }
-            });
-        });
-    </script>
-}
+    .filter-select, .price-input {
+        background: #1e1e2e;
+        border: none;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        color: #e0e0e0;
+    }
+
+    .books-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .book-card {
+        background: #1e1e2e;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        transition: transform 0.2s;
+    }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .book-link {
+        text-decoration: none;
+        display: block;
+    }
+
+    .book-cover img {
+        width: 100%;
+        aspect-ratio: 2/3;
+        object-fit: cover;
+    }
+
+    .book-info {
+        padding: 0.75rem;
+    }
+
+    .book-title {
+        font-size: 1rem;
+        color: #ff8c42;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .book-author {
+        font-size: 0.85rem;
+        color: #b0b0b0;
+    }
+
+    .book-price {
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .book-rating i {
+        color: #ff8c42;
+        font-size: 0.8rem;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-page {
+        background: #1e1e2e;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        color: #ff8c42;
+        text-decoration: none;
+    }
+
+        .btn-page.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        background: #1e1e2e;
+        border-radius: 1rem;
+    }
+</style>
+
+<script>
+    document.getElementById('applyFilters')?.addEventListener('click', function() {
+        const genre = document.getElementById('genreFilter').value;
+        const minPrice = document.getElementById('minPrice').value;
+        const maxPrice = document.getElementById('maxPrice').value;
+        let url = '@Url.Action("Index")?';
+        if (genre) url += '&genre=' + encodeURIComponent(genre);
+        if (minPrice) url += '&minPrice=' + minPrice;
+        if (maxPrice) url += '&maxPrice=' + maxPrice;
+        window.location.href = url;
+    });
+</script>
