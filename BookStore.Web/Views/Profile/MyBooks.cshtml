@@ -1,0 +1,146 @@
+﻿@using BookStore.Web.Controllers
+@model PaginatedList<BookStore.Data.Models.Book>
+@{
+    ViewData["Title"] = "My Books";
+}
+
+<style>
+    .my-books-container {
+        background: #0f0f1a;
+        min-height: 100vh;
+    }
+
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        color: #ff8c42;
+        font-size: 2rem;
+    }
+
+    .books-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .book-card {
+        background: #1e1e2e;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        transition: transform 0.2s;
+    }
+
+        .book-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .book-card a {
+            text-decoration: none;
+        }
+
+    .book-cover img {
+        width: 100%;
+        aspect-ratio: 2/3;
+        object-fit: cover;
+    }
+
+    .book-info {
+        padding: 0.75rem;
+    }
+
+        .book-info h3 {
+            color: #ff8c42;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 0.25rem;
+        }
+
+        .book-info p {
+            color: #b0b0b0;
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+    .book-price {
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-page {
+        background: #1e1e2e;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        color: #ff8c42;
+        text-decoration: none;
+    }
+
+        .btn-page.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        background: #1e1e2e;
+        border-radius: 1rem;
+    }
+</style>
+
+<div class="my-books-container">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">My Books</h1>
+            <p>Books you've added to the collection</p>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <i class="bi bi-journal-bookmark" style="font-size: 3rem; color: #ff8c42;"></i>
+                <h4>No books added yet</h4>
+                <p>Share your favorite books with the community!</p>
+                <a asp-controller="Book" asp-action="AddBook" class="btn-primary" style="background:#ff8c42; color:#1e1e2e; padding:0.5rem 1rem; border-radius:0.5rem; text-decoration:none;">
+                    <i class="bi bi-plus-circle"></i> Add a Book
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="books-grid">
+                @foreach (var book in Model)
+                {
+                    <div class="book-card">
+                        <a asp-controller="Book" asp-action="Details" asp-route-id="@book.Id">
+                            <div class="book-cover">
+                                <img src="@book.CoverImageUrl" alt="@book.Title">
+                            </div>
+                            <div class="book-info">
+                                <h3>@book.Title</h3>
+                                <p>by @book.Author</p>
+                                <div class="book-price">$@book.Price.ToString("0.00")</div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+
+            <div class="pagination">
+                <a asp-action="MyBooks" asp-route-pageNumber="@(Model.PageIndex - 1)" class="btn-page @(!Model.HasPreviousPage ? "disabled" : "")">Previous</a>
+                <span class="page-info" style="color:#b0b0b0;">Page @Model.PageIndex of @Model.TotalPages</span>
+                <a asp-action="MyBooks" asp-route-pageNumber="@(Model.PageIndex + 1)" class="btn-page @(!Model.HasNextPage ? "disabled" : "")">Next</a>
+            </div>
+        }
+    </div>
+</div>

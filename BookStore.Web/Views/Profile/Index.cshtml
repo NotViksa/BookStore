@@ -1,0 +1,625 @@
+﻿@using BookStore.Web.Controllers
+@model BookStore.Web.Models.ProfileViewModel
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<style>
+    .profile-container {
+        background: #0f0f1a;
+        min-height: 100vh;
+    }
+
+    .profile-header-section {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
+
+    .profile-card {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        align-items: center;
+        background: #1e1e2e;
+        border-radius: 1rem;
+        padding: 2rem;
+    }
+
+    .profile-avatar-wrapper {
+        position: relative;
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #ff8c42;
+    }
+
+    .profile-status {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        background: #ff8c42;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #1e1e2e;
+    }
+
+    .profile-details {
+        flex: 1;
+    }
+
+    .profile-name {
+        color: #ff8c42;
+        font-size: 1.8rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .profile-email {
+        color: #b0b0b0;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-bio {
+        color: #e0e0e0;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+    }
+
+    .profile-meta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        color: #b0b0b0;
+    }
+
+    .meta-item i {
+        color: #ff8c42;
+        margin-right: 0.25rem;
+    }
+
+    .btn-edit-profile {
+        background: rgba(255,140,66,0.1);
+        border: 1px solid #ff8c42;
+        color: #ff8c42;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+        .btn-edit-profile:hover {
+            background: #ff8c42;
+            color: #1e1e2e;
+        }
+
+    .profile-stats {
+        display: flex;
+        gap: 2rem;
+        text-align: center;
+    }
+
+    .stat-item {
+        min-width: 80px;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #ff8c42;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        color: #b0b0b0;
+    }
+
+    .dashboard-tabs {
+        margin-top: 1rem;
+    }
+
+    .nav-tabs {
+        border-bottom: 1px solid rgba(255,140,66,0.3);
+        margin-bottom: 1.5rem;
+    }
+
+        .nav-tabs .nav-link {
+            color: #b0b0b0;
+            background: transparent;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+        }
+
+            .nav-tabs .nav-link.active {
+                color: #ff8c42;
+                border-bottom: 2px solid #ff8c42;
+                background: transparent;
+            }
+
+    .books-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .book-card-mini {
+        background: #1e1e2e;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        transition: transform 0.2s;
+    }
+
+        .book-card-mini:hover {
+            transform: translateY(-3px);
+        }
+
+        .book-card-mini a {
+            text-decoration: none;
+        }
+
+    .book-cover-mini img {
+        width: 100%;
+        aspect-ratio: 2/3;
+        object-fit: cover;
+    }
+
+    .book-info-mini {
+        padding: 0.75rem;
+    }
+
+        .book-info-mini h4 {
+            color: #ff8c42;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 0.25rem;
+        }
+
+        .book-info-mini p {
+            color: #b0b0b0;
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+    .book-price {
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .wishlist-items {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .wishlist-item {
+        background: #1e1e2e;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background 0.2s;
+    }
+
+        .wishlist-item:hover {
+            background: #2a2a3a;
+        }
+
+    .wishlist-link {
+        display: flex;
+        gap: 1rem;
+        text-decoration: none;
+        flex: 1;
+    }
+
+    .wishlist-cover img {
+        width: 60px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 0.25rem;
+    }
+
+    .wishlist-info h4 {
+        color: #ff8c42;
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .wishlist-info p {
+        color: #b0b0b0;
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .wishlist-meta {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+        .wishlist-meta .price {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .wishlist-meta .rating {
+            color: #ff8c42;
+            font-size: 0.8rem;
+        }
+
+    .book-genres {
+        display: flex;
+        gap: 0.25rem;
+        flex-wrap: wrap;
+    }
+
+    .genre-tag {
+        background: rgba(255,140,66,0.1);
+        color: #ff8c42;
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+    }
+
+    .btn-remove {
+        background: rgba(220,53,69,0.1);
+        border: 1px solid #dc3545;
+        color: #dc3545;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+        .btn-remove:hover {
+            background: #dc3545;
+            color: #fff;
+        }
+
+    .reviews-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .review-item {
+        background: #1e1e2e;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        display: flex;
+        gap: 1rem;
+    }
+
+    .review-book-cover img {
+        width: 80px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 0.25rem;
+    }
+
+    .review-content {
+        flex: 1;
+    }
+
+    .review-header {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+        .review-header .book-title {
+            color: #ff8c42;
+            font-size: 1.1rem;
+            text-decoration: none;
+        }
+
+    .review-rating i {
+        color: #ff8c42;
+        font-size: 0.8rem;
+    }
+
+    .review-date {
+        font-size: 0.75rem;
+        color: #b0b0b0;
+    }
+
+    .review-text {
+        color: #e0e0e0;
+        line-height: 1.5;
+    }
+
+    .btn-view {
+        display: inline-block;
+        margin-top: 0.5rem;
+        color: #ff8c42;
+        text-decoration: none;
+        font-size: 0.85rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        background: #1e1e2e;
+        border-radius: 1rem;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #ff8c42;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h4 {
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #b0b0b0;
+            margin-bottom: 1rem;
+        }
+
+    .btn-primary {
+        background: #ff8c42;
+        color: #1e1e2e;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .btn-primary:hover {
+            background: #ff9c5a;
+        }
+</style>
+
+<div class="profile-container">
+    <div class="profile-header-section">
+        <div class="container">
+            <div class="profile-card">
+                <div class="profile-avatar-wrapper">
+                    <img src="@Model.ProfileImageUrl" class="profile-avatar" alt="Profile Image">
+                    <span class="profile-status"><i class="bi bi-check-circle-fill"></i></span>
+                </div>
+                <div class="profile-details">
+                    <h1 class="profile-name">@Model.User.DisplayName</h1>
+                    <p class="profile-email">@Model.User.Email</p>
+                    @if (!string.IsNullOrEmpty(Model.User.Bio))
+                    {
+                        <p class="profile-bio">@Model.User.Bio</p>
+                    }
+                    <div class="profile-meta">
+                        <span class="meta-item"><i class="bi bi-calendar"></i> Member since @Model.MemberSince.ToString("MMMM yyyy")</span>
+                        @if (!string.IsNullOrEmpty(Model.User.FavoriteGenre))
+                        {
+                            <span class="meta-item"><i class="bi bi-tag"></i> Favorite: @Model.User.FavoriteGenre</span>
+                        }
+                    </div>
+                    <a asp-action="EditProfile" class="btn-edit-profile">
+                        <i class="bi bi-pencil"></i> Edit Profile
+                    </a>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">@Model.UploadCount</div>
+                        <div class="stat-label">Books Added</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">@Model.WishlistCount</div>
+                        <div class="stat-label">Wishlist</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">@Model.ReviewCount</div>
+                        <div class="stat-label">Reviews</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="dashboard-tabs">
+            <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="uploads-tab" data-bs-toggle="tab" data-bs-target="#uploads" type="button" role="tab">
+                        <i class="bi bi-journal-bookmark-fill"></i> My Books (@Model.UploadCount)
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="wishlist-tab" data-bs-toggle="tab" data-bs-target="#wishlist" type="button" role="tab">
+                        <i class="bi bi-bookmark-heart"></i> Wishlist (@Model.WishlistCount)
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
+                        <i class="bi bi-chat-right-text-fill"></i> My Reviews (@Model.ReviewCount)
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="profileTabsContent">
+                <!-- Uploads Tab -->
+                <div class="tab-pane fade show active" id="uploads" role="tabpanel">
+                    @if (!Model.UploadedBooks.Any())
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-journal-bookmark"></i>
+                            <h4>No books added yet</h4>
+                            <p>Share your favorite books with the community!</p>
+                            <a asp-controller="Book" asp-action="AddBook" class="btn-primary">
+                                <i class="bi bi-plus-circle"></i> Add a Book
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="books-grid">
+                            @foreach (var book in Model.UploadedBooks)
+                            {
+                                <div class="book-card-mini">
+                                    <a asp-controller="Book" asp-action="Details" asp-route-id="@book.Id">
+                                        <div class="book-cover-mini">
+                                            <img src="@book.CoverImageUrl" alt="@book.Title">
+                                        </div>
+                                        <div class="book-info-mini">
+                                            <h4>@book.Title</h4>
+                                            <p>by @book.Author</p>
+                                            <div class="book-price">$@book.Price.ToString("0.00")</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <!-- Wishlist Tab -->
+                <div class="tab-pane fade" id="wishlist" role="tabpanel">
+                    @if (!Model.WishlistBooks.Any())
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-bookmark"></i>
+                            <h4>No books in wishlist</h4>
+                            <p>Start adding books you want to read!</p>
+                            <a asp-controller="Book" asp-action="Index" class="btn-primary">
+                                <i class="bi bi-search"></i> Browse Books
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="wishlist-items">
+                            @foreach (var book in Model.WishlistBooks)
+                            {
+                                <div class="wishlist-item">
+                                    <a asp-controller="Book" asp-action="Details" asp-route-id="@book.Id" class="wishlist-link">
+                                        <div class="wishlist-cover">
+                                            <img src="@book.CoverImageUrl" alt="@book.Title">
+                                        </div>
+                                        <div class="wishlist-info">
+                                            <h4>@book.Title</h4>
+                                            <p>by @book.Author</p>
+                                            <div class="wishlist-meta">
+                                                <span class="price">$@book.Price.ToString("0.00")</span>
+                                                <span class="rating">
+                                                    <i class="bi bi-star-fill"></i>
+                                                    @book.AverageRating.ToString("0.0")
+                                                </span>
+                                            </div>
+                                            <div class="book-genres">
+                                                @foreach (var genre in book.Genres.Take(2))
+                                                {
+                                                    <span class="genre-tag">@genre.Name</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <form asp-controller="Book" asp-action="ToggleWishlist" asp-route-bookId="@book.Id" method="post" class="remove-wishlist-form">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-remove" onclick="return confirm('Remove from wishlist?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <!-- Reviews Tab -->
+                <div class="tab-pane fade" id="reviews" role="tabpanel">
+                    @if (Model.RecentReviews == null || !Model.RecentReviews.Any())
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-chat"></i>
+                            <h4>No reviews yet</h4>
+                            <p>Share your thoughts about the books you've read!</p>
+                            <a asp-controller="Book" asp-action="Index" class="btn-primary">
+                                <i class="bi bi-search"></i> Browse Books
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="reviews-list">
+                            @foreach (var review in Model.RecentReviews)
+                            {
+                                <div class="review-item">
+                                    <div class="review-book-cover">
+                                        <img src="@review.Book.CoverImageUrl" alt="@review.Book.Title">
+                                    </div>
+                                    <div class="review-content">
+                                        <div class="review-header">
+                                            <a asp-controller="Book" asp-action="Details" asp-route-id="@review.BookId" class="book-title">
+                                                @review.Book.Title
+                                            </a>
+                                            <div class="review-rating">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    if (i <= review.Rating)
+                                                    {
+                                                        <i class="bi bi-star-fill"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="bi bi-star"></i>
+                                                    }
+                                                }
+                                            </div>
+                                            <span class="review-date">@review.PostedDate.ToString("MMMM dd, yyyy")</span>
+                                        </div>
+                                        <p class="review-text">@review.Content</p>
+                                        <a asp-controller="Book" asp-action="Details" asp-route-id="@review.BookId" class="btn-view">
+                                            View Book <i class="bi bi-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Remove from wishlist
+            $('.remove-wishlist-form').submit(function(e) {
+                e.preventDefault();
+                var form = $(this);
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function(data) {
+                        if (data.success) {
+                            location.reload();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}
