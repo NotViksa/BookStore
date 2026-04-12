@@ -31,5 +31,6 @@ namespace BookStore.Services.Interfaces
         // Queryables for pagination
         IQueryable<Book> GetBooksQueryable();
         IQueryable<Book> GetSearchQueryable(string query);
+        IQueryable<Book> GetBooksByUserQueryable(string userId);
     }
 }

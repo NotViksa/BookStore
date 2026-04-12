@@ -57,5 +57,18 @@ namespace BookStore.Data.Repositories
             _context.Reviews.Update(review);
             return await _context.SaveChangesAsync() > 0;
         }
+        public IQueryable<Review> GetReviewsByUserQueryable(string userId)
+        {
+            return _context.Reviews
+                .Include(r => r.Book)
+                .Where(r => r.PostedById == userId)
+                .OrderByDescending(r => r.PostedDate)
+                .AsQueryable();
+        }
+
+        public async Task<IEnumerable<Review>> GetReviewsByUserAsync(string userId)
+        {
+            return await GetReviewsByUserQueryable(userId).ToListAsync();
+        }
     }
 }

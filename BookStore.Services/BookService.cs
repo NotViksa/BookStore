@@ -163,5 +163,10 @@ namespace BookStore.Services
                            b.Genres.Any(g => g.Name.ToLower().Contains(query)))
                 .OrderByDescending(b => b.AddedDate);
         }
+        public IQueryable<Book> GetBooksByUserQueryable(string userId)
+        {
+            return _bookRepository.GetQueryable()
+                .Where(b => b.UploadedById == userId);
+        }
     }
 }

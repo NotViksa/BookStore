@@ -16,5 +16,6 @@ namespace BookStore.Services.Interfaces
         // Bulk operations
         Task<bool> ClearWishlistAsync(string userId);
         Task<bool> RemoveFromWishlistAsync(string userId, int bookId);
+        IQueryable<Book> GetUserWishlistQueryable(string userId);
     }
 }

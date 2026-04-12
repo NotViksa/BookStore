@@ -12,5 +12,7 @@ namespace BookStore.Data.Interfaces
         Task<IEnumerable<Review>> GetCommentsForImageAsync(int bookId);
         Task<int> GetCountByUserAsync(string userId);
         Task<bool> UpdateAsync(Review review);
+        IQueryable<Review> GetReviewsByUserQueryable(string userId);
+        Task<IEnumerable<Review>> GetReviewsByUserAsync(string userId);
     }
 }

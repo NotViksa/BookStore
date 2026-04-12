@@ -14,5 +14,7 @@ namespace BookStore.Services.Interfaces
         Task<IEnumerable<Review>> GetReviewsForBookAsync(int bookId);
         Task<int> GetReviewCountByUserAsync(string userId);
         Task<double> GetAverageRatingForBookAsync(int bookId);
+        IQueryable<Review> GetReviewsByUserQueryable(string userId);
+        Task<IEnumerable<Review>> GetReviewsByUserAsync(string userId);
     }
 }

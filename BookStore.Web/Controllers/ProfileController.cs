@@ -58,12 +58,11 @@ namespace BookStore.Web.Controllers
         {
             const int pageSize = 12;
             var user = await _userManager.GetUserAsync(User);
-            var books = await _bookService.GetBooksByUserAsync(user.Id);
 
-            var paginatedBooks = await PaginatedList<Book>.CreateAsync(
-                books.AsQueryable(), pageNumber ?? 1, pageSize);
+            var booksQuery = _bookService.GetBooksByUserQueryable(user.Id);
 
-            return View(paginatedBooks);
+            var paginatedBooks = await PaginatedList<Book>.CreateAsync(booksQuery, pageNumber ?? 1, pageSize);
+            return View("/Views/Profile/MyBooks.cshtml", paginatedBooks);
         }
 
         [HttpGet]
@@ -71,12 +70,23 @@ namespace BookStore.Web.Controllers
         {
             const int pageSize = 12;
             var user = await _userManager.GetUserAsync(User);
-            var wishlist = await _wishlistService.GetUserWishlistAsync(user.Id);
 
-            var paginatedWishlist = await PaginatedList<Book>.CreateAsync(
-                wishlist.AsQueryable(), pageNumber ?? 1, pageSize);
+            var wishlistQuery = _wishlistService.GetUserWishlistQueryable(user.Id);
 
-            return View(paginatedWishlist);
+            var paginatedWishlist = await PaginatedList<Book>.CreateAsync(wishlistQuery, pageNumber ?? 1, pageSize);
+            return View("/Views/Profile/Wishlist.cshtml", paginatedWishlist);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Reviews(int? pageNumber)
+        {
+            const int pageSize = 10;
+            var user = await _userManager.GetUserAsync(User);
+
+            var reviewsQuery = _reviewService.GetReviewsByUserQueryable(user.Id);
+
+            var paginatedReviews = await PaginatedList<Review>.CreateAsync(reviewsQuery, pageNumber ?? 1, pageSize);
+            return View("/Views/Profile/Reviews.cshtml", paginatedReviews);
         }
 
         [HttpGet]

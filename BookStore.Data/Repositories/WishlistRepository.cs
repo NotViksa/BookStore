@@ -66,5 +66,14 @@ namespace BookStore.Data.Repositories
                 .Take(count)
                 .ToListAsync();
         }
+        public IQueryable<Book> GetUserWishlistQueryable(string userId)
+        {
+            return _context.Wishlists
+                .Where(w => w.UserId == userId)
+                .Include(w => w.Book)
+                    .ThenInclude(b => b.Genres)
+                .Select(w => w.Book)
+                .AsQueryable();
+        }
     }
 }

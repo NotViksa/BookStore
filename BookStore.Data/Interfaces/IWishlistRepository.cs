@@ -13,5 +13,6 @@ namespace BookStore.Data.Interfaces
         Task<IEnumerable<Book>> GetUserFavoriteImagesAsync(string userId);
         Task<int> GetFavoriteCountByUserAsync(string userId);
         Task<IEnumerable<Wishlist>> GetRecentFavoritesAsync(string userId, int count);
+        IQueryable<Book> GetUserWishlistQueryable(string userId);
     }
 }

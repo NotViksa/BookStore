@@ -95,5 +95,14 @@ namespace BookStore.Services
 
             return reviews.Average(r => r.Rating);
         }
+        public IQueryable<Review> GetReviewsByUserQueryable(string userId)
+        {
+            return _reviewRepository.GetReviewsByUserQueryable(userId);
+        }
+
+        public async Task<IEnumerable<Review>> GetReviewsByUserAsync(string userId)
+        {
+            return await _reviewRepository.GetReviewsByUserAsync(userId);
+        }
     }
 }

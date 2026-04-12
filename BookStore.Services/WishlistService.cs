@@ -105,5 +105,9 @@ namespace BookStore.Services
                 return false;
             }
         }
+        public IQueryable<Book> GetUserWishlistQueryable(string userId)
+        {
+            return _wishlistRepository.GetUserWishlistQueryable(userId);
+        }
     }
 }

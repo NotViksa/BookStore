@@ -1,0 +1,267 @@
+﻿@using BookStore.Web.Controllers
+@model PaginatedList<BookStore.Data.Models.Review>
+@{
+    ViewData["Title"] = "My Reviews";
+}
+
+<style>
+    .reviews-container {
+        background: #0f0f1a;
+        min-height: 100vh;
+    }
+    .page-header {
+        margin-bottom: 2rem;
+    }
+    .page-title {
+        color: #ff8c42;
+        font-size: 2rem;
+    }
+    .reviews-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .review-card {
+        background: #1e1e2e;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        transition: transform 0.2s;
+    }
+    .review-card:hover {
+        transform: translateX(5px);
+    }
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 0.5rem;
+    }
+    .book-title {
+        color: #ff8c42;
+        font-size: 1.1rem;
+        text-decoration: none;
+    }
+    .book-title:hover {
+        text-decoration: underline;
+    }
+    .review-rating i {
+        color: #ff8c42;
+        font-size: 0.85rem;
+    }
+    .review-date {
+        font-size: 0.75rem;
+        color: #b0b0b0;
+    }
+    .review-content {
+        color: #e0e0e0;
+        line-height: 1.5;
+        margin-bottom: 0.5rem;
+    }
+    .book-author {
+        font-size: 0.85rem;
+        color: #b0b0b0;
+    }
+    .btn-edit-review, .btn-delete-review {
+        background: none;
+        border: none;
+        color: #ff8c42;
+        cursor: pointer;
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
+        margin-right: 1rem;
+    }
+    .btn-delete-review {
+        color: #dc3545;
+    }
+    .edit-review-form {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255,140,66,0.2);
+    }
+    .edit-review-form textarea {
+        width: 100%;
+        background: #2a2a3a;
+        border: 1px solid #ff8c42;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        color: #e0e0e0;
+        margin-bottom: 0.5rem;
+    }
+    .edit-star-rating i {
+        color: #ff8c42;
+        cursor: pointer;
+    }
+    .edit-actions {
+        margin-top: 0.5rem;
+        display: flex;
+        gap: 0.5rem;
+    }
+    .btn-save-edit, .btn-cancel-edit {
+        background: #ff8c42;
+        border: none;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.25rem;
+        color: #1e1e2e;
+        cursor: pointer;
+    }
+    .btn-cancel-edit {
+        background: transparent;
+        border: 1px solid #ff8c42;
+        color: #ff8c42;
+    }
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    .btn-page {
+        background: #1e1e2e;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        color: #ff8c42;
+        text-decoration: none;
+    }
+    .btn-page.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        background: #1e1e2e;
+        border-radius: 1rem;
+    }
+</style>
+
+<div class="reviews-container">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">My Reviews</h1>
+            <p>All the reviews you've written</p>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <i class="bi bi-chat" style="font-size: 3rem; color: #ff8c42;"></i>
+                <h4>No reviews yet</h4>
+                <p>Share your thoughts about the books you've read!</p>
+                <a asp-controller="Book" asp-action="Index" class="btn-primary" style="background:#ff8c42; color:#1e1e2e; padding:0.5rem 1rem; border-radius:0.5rem; text-decoration:none;">
+                    <i class="bi bi-search"></i> Browse Books
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="reviews-list">
+                @foreach (var review in Model)
+                {
+                    <div class="review-card" data-review-id="@review.Id">
+                        <div class="review-header">
+                            <a asp-controller="Book" asp-action="Details" asp-route-id="@review.BookId" class="book-title">
+                                @review.Book.Title
+                            </a>
+                            <div class="review-rating">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= review.Rating)
+                                    {
+                                        <i class="bi bi-star-fill"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-star"></i>
+                                    }
+                                }
+                            </div>
+                            <span class="review-date">@review.PostedDate.ToString("MMMM dd, yyyy")</span>
+                        </div>
+                        <div class="review-content">
+                            <p>@review.Content</p>
+                        </div>
+                        <div class="book-author">
+                            by @review.Book.Author
+                        </div>
+                        <div class="review-actions">
+                            <button class="btn-edit-review" data-review-id="@review.Id">
+                                <i class="bi bi-pencil"></i> Edit
+                            </button>
+                            <form asp-controller="Review" asp-action="DeleteReview" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="reviewId" value="@review.Id" />
+                                <input type="hidden" name="bookId" value="@review.BookId" />
+                                <button type="submit" class="btn-delete-review" onclick="return confirm('Delete this review?')">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Edit Review Form -->
+                        <div class="edit-review-form" style="display: none;">
+                            <form asp-controller="Review" asp-action="EditReview" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="ReviewId" value="@review.Id" />
+                                <input type="hidden" name="BookId" value="@review.BookId" />
+                                <div class="edit-rating">
+                                    <span class="rating-label">Rating:</span>
+                                    <div class="edit-star-rating">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <i class="bi bi-star @(i <= review.Rating ? "rated" : "")" data-rating="@i"></i>
+                                        }
+                                    </div>
+                                    <input type="hidden" name="Rating" class="edit-rating-value" value="@review.Rating" />
+                                </div>
+                                <textarea name="Content" class="form-control" rows="3">@review.Content</textarea>
+                                <div class="edit-actions">
+                                    <button type="submit" class="btn-save-edit">Save Changes</button>
+                                    <button type="button" class="btn-cancel-edit">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="pagination">
+                <a asp-action="Reviews" asp-route-pageNumber="@(Model.PageIndex - 1)" class="btn-page @(!Model.HasPreviousPage ? "disabled" : "")">Previous</a>
+                <span class="page-info" style="color:#b0b0b0;">Page @Model.PageIndex of @Model.TotalPages</span>
+                <a asp-action="Reviews" asp-route-pageNumber="@(Model.PageIndex + 1)" class="btn-page @(!Model.HasNextPage ? "disabled" : "")">Next</a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Edit review
+            $('.btn-edit-review').click(function() {
+                var reviewCard = $(this).closest('.review-card');
+                reviewCard.find('.review-content, .review-actions, .book-author').hide();
+                reviewCard.find('.edit-review-form').show();
+            });
+
+            $('.btn-cancel-edit').click(function() {
+                var reviewCard = $(this).closest('.review-card');
+                reviewCard.find('.edit-review-form').hide();
+                reviewCard.find('.review-content, .review-actions, .book-author').show();
+            });
+
+            // Edit star rating
+            $('.edit-star-rating i').click(function() {
+                var rating = $(this).data('rating');
+                var parent = $(this).parent();
+                parent.find('i').removeClass('rated');
+                parent.find('i').each(function(index) {
+                    if (index < rating) {
+                        $(this).addClass('rated');
+                    }
+                });
+                parent.siblings('.edit-rating-value').val(rating);
+            });
+        });
+    </script>
+}
