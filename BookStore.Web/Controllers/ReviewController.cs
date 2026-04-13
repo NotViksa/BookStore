@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using BookStore.Services.Interfaces;
 using BookStore.Web.ViewModels;
+using BookStore.Web.Models;
 using System.Security.Claims;
 
 namespace BookStore.Web.Controllers
@@ -26,6 +27,7 @@ namespace BookStore.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                TempData["ErrorMessage"] = "Please provide valid review content and rating.";
                 return RedirectToAction("Details", "Book", new { id = model.BookId });
             }
 

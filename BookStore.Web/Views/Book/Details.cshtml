@@ -1,11 +1,29 @@
 ﻿@using System.Security.Claims
 @model BookStore.Web.Models.BookDetailsViewModel
+@{
+    var reviewAverage = Model.Reviews.Any() ? Model.Reviews.Average(r => r.Rating) : 0;
+    var totalReviews = Model.Reviews.Count();
+}
 
 @{
     ViewData["Title"] = Model.Book.Title;
 }
 
 <div class="book-details-container">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
     <!-- Hero Section with Book Cover -->
     <div class="book-hero">
         <div class="container">
@@ -34,11 +52,11 @@
                         <div class="stars">
                             @for (int i = 1; i <= 5; i++)
                             {
-                                if (i <= Math.Floor(Model.AverageRating))
+                                if (i <= Math.Floor(reviewAverage))
                                 {
                                     <i class="bi bi-star-fill"></i>
                                 }
-                                else if (i == Math.Ceiling(Model.AverageRating) && Model.AverageRating % 1 != 0)
+                                else if (i == Math.Ceiling(reviewAverage) && reviewAverage % 1 != 0)
                                 {
                                     <i class="bi bi-star-half"></i>
                                 }
@@ -48,8 +66,8 @@
                                 }
                             }
                         </div>
-                        <span class="rating-value">@Model.AverageRating.ToString("0.0")</span>
-                        <span class="rating-count">(@Model.TotalReviews reviews)</span>
+                        <span class="rating-value">@reviewAverage.ToString("0.0")</span>
+                        <span class="rating-count">(@totalReviews reviews)</span>
                     </div>
 
                     <div class="book-price-large">
@@ -67,17 +85,6 @@
                                     @(ViewBag.IsInWishlist ? "In Wishlist" : "Add to Wishlist")
                                 </button>
                             </form>
-
-                            <!-- Rating -->
-                            <div class="rating-control">
-                                <span class="rating-label">Rate this book:</span>
-                                <div class="star-rating" data-book-id="@Model.Book.Id">
-                                    @for (int i = 1; i <= 5; i++)
-                                    {
-                                        <i class="bi bi-star @(ViewBag.UserRating >= i ? "rated" : "")" data-rating="@i"></i>
-                                    }
-                                </div>
-                            </div>
                         </div>
                     }
 
@@ -155,10 +162,10 @@
                                     <div class="review-star-rating">
                                         @for (int i = 1; i <= 5; i++)
                                         {
-                                            <i class="bi bi-star" data-rating="@i"></i>
+                                            <i class="bi bi-star @(i == 1 ? "selected" : "")" data-rating="@i"></i>
                                         }
                                     </div>
-                                    <input type="hidden" name="Rating" id="selected-rating" required />
+                                    <input type="hidden" name="Rating" id="selected-rating" value="1" />
                                 </div>
 
                                 <div class="form-group">
@@ -305,7 +312,6 @@
             $('.wishlist-form').submit(function(e) {
                 e.preventDefault();
                 var form = $(this);
-
                 $.ajax({
                     url: form.attr('action'),
                     type: 'POST',
@@ -314,7 +320,6 @@
                         if (data.success) {
                             var btn = form.find('button');
                             btn.toggleClass('in-wishlist');
-
                             if (btn.hasClass('in-wishlist')) {
                                 btn.html('<i class="bi bi-bookmark-fill"></i> In Wishlist');
                             } else {
@@ -325,25 +330,21 @@
                 });
             });
 
-            // Star rating control
+            // Book rating (star rating control for the book itself)
             $('.star-rating i').hover(
                 function() {
                     var rating = $(this).data('rating');
                     $(this).parent().find('i').each(function(index) {
-                        if (index < rating) {
-                            $(this).addClass('hover');
-                        }
+                        if (index < rating) $(this).addClass('hover');
                     });
                 },
                 function() {
                     $(this).parent().find('i').removeClass('hover');
                 }
             );
-
             $('.star-rating i').click(function() {
                 var rating = $(this).data('rating');
                 var bookId = $(this).parent().data('book-id');
-
                 $.ajax({
                     url: '/Book/SubmitRating',
                     type: 'POST',
@@ -353,91 +354,95 @@
                         __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
                     },
                     success: function(data) {
-                        if (data.success) {
-                            location.reload();
-                        }
+                        if (data.success) location.reload();
+                        else alert('Failed to submit rating.');
+                    },
+                    error: function() {
+                        alert('An error occurred.');
                     }
                 });
             });
 
-            // Review star rating selection
+            // ========== REVIEW STAR RATING (for adding a new review) ==========
+            // Pre-select 1 star on page load
+            $('#selected-rating').val(1);
             $('.review-star-rating i').hover(
                 function() {
                     var rating = $(this).data('rating');
                     $(this).parent().find('i').each(function(index) {
-                        if (index < rating) {
-                            $(this).addClass('hover');
-                        }
+                        if (index < rating) $(this).addClass('hover');
                     });
                 },
                 function() {
                     $(this).parent().find('i').removeClass('hover');
                 }
             );
-
             $('.review-star-rating i').click(function() {
                 var rating = $(this).data('rating');
                 var parent = $(this).parent();
-
                 parent.find('i').removeClass('selected');
                 parent.find('i').each(function(index) {
-                    if (index < rating) {
-                        $(this).addClass('selected');
-                    }
+                    if (index < rating) $(this).addClass('selected');
                 });
-
                 $('#selected-rating').val(rating);
             });
 
-            // Edit review
-            $('.btn-edit-review').click(function() {
-                var reviewId = $(this).data('review-id');
-                var reviewCard = $(`.review-card[data-review-id="${reviewId}"]`);
-
-                reviewCard.find('.review-content').hide();
-                reviewCard.find('.review-actions').hide();
-                reviewCard.find(`.edit-review-form[data-review-id="${reviewId}"]`).show();
+            // Validate review form before submission
+            $('.review-form').submit(function(e) {
+                var rating = $('#selected-rating').val();
+                var content = $('textarea[name="Content"]').val().trim();
+                if (!rating || rating < 1 || rating > 5) {
+                    alert('Please select a rating (1-5 stars).');
+                    e.preventDefault();
+                    return false;
+                }
+                if (content.length < 10) {
+                    alert('Please write at least 10 characters for your review.');
+                    e.preventDefault();
+                    return false;
+                }
+                return true;
             });
 
+            // ========== EDIT REVIEW FUNCTIONALITY ==========
+            // Show edit form
+            $('.btn-edit-review').click(function() {
+                var reviewCard = $(this).closest('.review-card');
+                reviewCard.find('.review-content').hide();
+                reviewCard.find('.review-actions').hide();
+                reviewCard.find('.edit-review-form').show();
+            });
+            // Cancel edit
             $('.btn-cancel-edit').click(function() {
-                var form = $(this).closest('.edit-review-form');
-                var reviewId = form.data('review-id');
-                var reviewCard = $(`.review-card[data-review-id="${reviewId}"]`);
-
-                form.hide();
+                var editForm = $(this).closest('.edit-review-form');
+                var reviewCard = editForm.closest('.review-card');
+                editForm.hide();
                 reviewCard.find('.review-content').show();
                 reviewCard.find('.review-actions').show();
             });
-
-            // Edit star rating
+            // Edit star rating (inside edit form)
             $('.edit-star-rating i').hover(
                 function() {
                     var rating = $(this).data('rating');
                     $(this).parent().find('i').each(function(index) {
-                        if (index < rating) {
-                            $(this).addClass('hover');
-                        }
+                        if (index < rating) $(this).addClass('hover');
                     });
                 },
                 function() {
                     $(this).parent().find('i').removeClass('hover');
                 }
             );
-
             $('.edit-star-rating i').click(function() {
                 var rating = $(this).data('rating');
                 var parent = $(this).parent();
-                var reviewId = parent.data('review-id');
-
-                parent.find('i').removeClass('selected');
+                parent.find('i').removeClass('rated');
                 parent.find('i').each(function(index) {
-                    if (index < rating) {
-                        $(this).addClass('selected');
-                    }
+                    if (index < rating) $(this).addClass('rated');
                 });
-
                 parent.siblings('.edit-rating-value').val(rating);
             });
+            // Edit review form submission - normal POST (reload page)
+            // No AJAX needed – the form will submit normally and redirect.
         });
     </script>
 }
@@ -711,6 +716,22 @@
         font-size: 0.8rem;
         margin: 0;
     }
+
+    .review-star-rating i {
+        cursor: pointer;
+        font-size: 1.2rem;
+        margin-right: 2px;
+        color: #555;
+        transition: color 0.2s;
+    }
+
+        .review-star-rating i.selected {
+            color: #ff8c42; /* orange when selected */
+        }
+
+        .review-star-rating i.hover {
+            color: #ffaa66; /* lighter orange on hover */
+        }
 
     @@media (max-width: 768px) {
         .book-hero-content {
