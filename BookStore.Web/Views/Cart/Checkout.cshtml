@@ -1,0 +1,118 @@
+﻿@model BookStore.Web.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "Checkout";
+    decimal total = ViewBag.Total;
+}
+
+<div class="checkout-container">
+    <div class="container">
+        <h1 class="page-title">Checkout</h1>
+        <div class="checkout-card">
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <p>Total: <strong>$@total.ToString("0.00")</strong></p>
+            </div>
+            <form asp-action="Checkout" method="post">
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label asp-for="ShippingAddress" class="form-label">Shipping Address</label>
+                    <textarea asp-for="ShippingAddress" class="form-control" rows="3" placeholder="Street, City, Postal Code, Country" required></textarea>
+                    <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+                </div>
+                <div class="payment-info">
+                    <h3>Payment Method</h3>
+                    <p class="fake-payment">Fake payment – no real transaction will be made.</p>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-place-order">Place Order</button>
+                    <a asp-action="Index" class="btn-back">Back to Cart</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .checkout-container {
+        background: #0f0f1a;
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+
+    .page-title {
+        color: #ff8c42;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .checkout-card {
+        background: #1e1e2e;
+        border-radius: 1rem;
+        padding: 2rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .order-summary {
+        background: #2a2a3a;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+        text-align: right;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-label {
+        display: block;
+        color: #ff8c42;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        width: 100%;
+        background: #2a2a3a;
+        border: 1px solid #ff8c42;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        color: #e0e0e0;
+    }
+
+    .payment-info {
+        margin: 1rem 0;
+    }
+
+    .fake-payment {
+        background: #2a2a3a;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        color: #b0b0b0;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 1.5rem;
+    }
+
+    .btn-place-order {
+        background: #ff8c42;
+        color: #1e1e2e;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+    }
+
+    .btn-back {
+        background: transparent;
+        border: 1px solid #ff8c42;
+        color: #ff8c42;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+    }
+</style>

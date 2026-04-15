@@ -18,6 +18,9 @@ namespace BookStore.Data
         public virtual DbSet<Review> Reviews { get; set; }
         public virtual DbSet<Wishlist> Wishlists { get; set; }
         public virtual DbSet<Rating> Ratings { get; set; }
+        public virtual DbSet<CartItem> CartItems { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<OrderItem> OrderItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -77,6 +80,39 @@ namespace BookStore.Data
                 .HasIndex(r => new { r.UserId, r.BookId })
                 .IsUnique();
 
+            // CartItem
+            builder.Entity<CartItem>()
+                .HasOne(c => c.User)
+                .WithMany()
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<CartItem>()
+                .HasOne(c => c.Book)
+                .WithMany()
+                .HasForeignKey(c => c.BookId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Order
+            builder.Entity<Order>()
+                .HasOne(o => o.User)
+                .WithMany()
+                .HasForeignKey(o => o.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // OrderItem
+            builder.Entity<OrderItem>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<OrderItem>()
+                .HasOne(oi => oi.Book)
+                .WithMany()
+                .HasForeignKey(oi => oi.BookId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // Seed Genres (no dependencies, always safe)
             builder.Entity<Genre>().HasData(
                 new Genre { Id = 1, Name = "Fiction", Description = "Literary works based on imagination" },
@@ -96,6 +132,8 @@ namespace BookStore.Data
                 new IdentityRole { Id = "1", Name = "User", NormalizedName = "USER" },
                 new IdentityRole { Id = "2", Name = "Administrator", NormalizedName = "ADMINISTRATOR" }
             );
+
+
         }
     }
 }

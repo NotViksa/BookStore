@@ -1,4 +1,14 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+@inject BookStore.Services.Interfaces.ICartService CartService
+@{
+    var cartCount = 0;
+    if (User.Identity.IsAuthenticated)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        cartCount = await CartService.GetCartItemCountAsync(userId);
+    }
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -73,6 +83,15 @@
             background: #1e1e2e;
         }
 
+        .cart-badge {
+            background: #ff8c42;
+            color: #1e1e2e;
+            border-radius: 50%;
+            padding: 0.1rem 0.4rem;
+            font-size: 0.7rem;
+            margin-left: 0.3rem;
+        }
+
         ::-webkit-scrollbar-thumb {
             background: #ff8c42;
             border-radius: 5px;
@@ -101,6 +120,16 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarContent">
                     <ul class="navbar-nav me-auto">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                                    <button type="submit" class="nav-link btn btn-link" style="color: #e0e0e0; text-decoration: none; background: none; border: none; padding: 0.5rem 0.75rem;">
+                                        <i class="bi bi-box-arrow-right"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                        }
                         <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-1"></i>Home</a></li>
                         @if (User.Identity.IsAuthenticated)
                         {
@@ -113,6 +142,15 @@
                         }
                         <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="About"><i class="bi bi-info-circle me-1"></i>About</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Privacy"><i class="bi bi-shield-lock me-1"></i>Privacy</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Cart" asp-action="Index">
+                                <i class="bi bi-cart"></i> Cart
+                                @if (cartCount > 0)
+                                {
+                                    <span class="cart-badge">@cartCount</span>
+                                }
+                            </a>
+                        </li>
                     </ul>
                     <div class="navbar-right">
                         <partial name="_LoginPartial" />

@@ -77,6 +77,14 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <div class="book-actions">
+                            <!--Add to Cart Button-->
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post" class="add-to-cart-form">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="bookId" value="@Model.Book.Id" />
+                                <button type="submit" class="btn-add-to-cart">
+                                    <i class="bi bi-cart-plus"></i> Add to Cart
+                                </button>
+                            </form>
                             <!-- Wishlist Button -->
                             <form asp-action="ToggleWishlist" asp-route-bookId="@Model.Book.Id" method="post" class="wishlist-form">
                                 @Html.AntiForgeryToken()
@@ -724,6 +732,19 @@
         color: #555;
         transition: color 0.2s;
     }
+
+    .btn-add-to-cart {
+        background: #28a745;
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+    }
+
+        .btn-add-to-cart:hover {
+            background: #218838;
+        }
 
         .review-star-rating i.selected {
             color: #ff8c42; /* orange when selected */

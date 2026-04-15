@@ -1,0 +1,68 @@
+﻿@model BookStore.Data.Models.Order
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<div class="confirmation-container">
+    <div class="container">
+        <div class="confirmation-card">
+            <i class="bi bi-check-circle-fill success-icon"></i>
+            <h1>Thank You for Your Order!</h1>
+            <p>Your order has been placed successfully.</p>
+            <div class="order-details">
+                <h3>Order #@Model.Id</h3>
+                <p>Date: @Model.OrderDate.ToString("MMMM dd, yyyy HH:mm")</p>
+                <p>Shipping Address: @Model.ShippingAddress</p>
+                <p>Total: <strong>$@Model.TotalAmount.ToString("0.00")</strong></p>
+                <h4>Items:</h4>
+                <ul>
+                    @foreach (var item in Model.OrderItems)
+                    {
+                        <li>@item.Book.Title x @item.Quantity = $@((item.UnitPrice * item.Quantity).ToString("0.00"))</li>
+                    }
+                </ul>
+            </div>
+            <a asp-controller="Home" asp-action="Index" class="btn-home">Continue Shopping</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .confirmation-container {
+        background: #0f0f1a;
+        min-height: 100vh;
+        padding: 3rem 0;
+        text-align: center;
+    }
+
+    .confirmation-card {
+        background: #1e1e2e;
+        border-radius: 1rem;
+        padding: 2rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .success-icon {
+        font-size: 4rem;
+        color: #28a745;
+        margin-bottom: 1rem;
+    }
+
+    .order-details {
+        text-align: left;
+        background: #2a2a3a;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .btn-home {
+        display: inline-block;
+        background: #ff8c42;
+        color: #1e1e2e;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+    }
+</style>

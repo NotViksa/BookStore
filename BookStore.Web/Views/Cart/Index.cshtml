@@ -1,0 +1,101 @@
+﻿@model IEnumerable<BookStore.Data.Models.CartItem>
+@{
+    ViewData["Title"] = "Shopping Cart";
+    decimal total = ViewBag.Total;
+}
+
+<div class="cart-container">
+    <div class="container">
+        <h1 class="page-title">Shopping Cart</h1>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+
+        @if (!Model.Any())
+        {
+            <div class="empty-cart">
+                <i class="bi bi-cart-x"></i>
+                <h3>Your cart is empty</h3>
+                <p>Browse books and add some to your cart!</p>
+                <a asp-controller="Book" asp-action="Index" class="btn-browse">Browse Books</a>
+            </div>
+        }
+        else
+        {
+            <div class="cart-items">
+                <table class="cart-table">
+                    <thead>
+                        <tr><th>Book</th><th>Price</th><th>Quantity</th><th>Subtotal</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var subtotal = item.Book.Price * item.Quantity;
+                            <tr>
+                                <td class="cart-book">
+                                    <img src="@item.Book.CoverImageUrl" alt="@item.Book.Title" width="60">
+                                    <div>
+                                        <h4>@item.Book.Title</h4>
+                                        <p>by @item.Book.Author</p>
+                                    </div>
+                                </td>
+                                <td class="cart-price">$@item.Book.Price.ToString("0.00")</td>
+                                <td class="cart-quantity">
+                                    <form asp-action="UpdateQuantity" method="post" class="quantity-form">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="bookId" value="@item.BookId" />
+                                        <input type="number" name="quantity" value="@item.Quantity" min="1" max="99" class="qty-input" />
+                                        <button type="submit" class="btn-update">Update</button>
+                                    </form>
+                                </td>
+                                <td class="cart-subtotal">$@subtotal.ToString("0.00")</td>
+                                <td>
+                                    <form asp-action="RemoveFromCart" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="bookId" value="@item.BookId" />
+                                        <button type="submit" class="btn-remove" onclick="return confirm('Remove this item?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="cart-summary">
+                    <div class="cart-total">Total: $@total.ToString("0.00")</div>
+                    <a asp-action="Checkout" class="btn-checkout">Proceed to Checkout</a>
+                    <a asp-controller="Book" asp-action="Index" class="btn-continue">Continue Shopping</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .cart-container { background: #0f0f1a; min-height: 100vh; padding: 2rem 0; }
+    .page-title { color: #ff8c42; font-size: 2rem; margin-bottom: 1.5rem; }
+    .cart-table { width: 100%; background: #1e1e2e; border-radius: 1rem; border-collapse: collapse; overflow: hidden; }
+    .cart-table th, .cart-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #2a2a3a; }
+    .cart-book { display: flex; gap: 1rem; align-items: center; }
+    .cart-book img { border-radius: 0.5rem; }
+    .cart-book h4 { color: #ff8c42; margin: 0; }
+    .cart-price, .cart-subtotal { color: #fff; }
+    .qty-input { width: 60px; background: #2a2a3a; border: 1px solid #ff8c42; color: #fff; border-radius: 0.25rem; padding: 0.25rem; }
+    .btn-update { background: #ff8c42; border: none; padding: 0.25rem 0.5rem; border-radius: 0.25rem; cursor: pointer; }
+    .btn-remove { background: none; border: none; color: #dc3545; cursor: pointer; }
+    .cart-summary { margin-top: 1.5rem; text-align: right; }
+    .cart-total { font-size: 1.5rem; font-weight: bold; color: #ff8c42; margin-bottom: 1rem; }
+    .btn-checkout, .btn-continue { display: inline-block; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; margin-left: 1rem; }
+    .btn-checkout { background: #ff8c42; color: #1e1e2e; }
+    .btn-continue { background: transparent; border: 1px solid #ff8c42; color: #ff8c42; }
+    .empty-cart { text-align: center; padding: 3rem; background: #1e1e2e; border-radius: 1rem; }
+    .empty-cart i { font-size: 4rem; color: #ff8c42; }
+    .btn-browse { background: #ff8c42; color: #1e1e2e; padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; }
+</style>
