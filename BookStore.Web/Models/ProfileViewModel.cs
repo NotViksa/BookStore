@@ -23,5 +23,7 @@ namespace BookStore.Web.Models
         public DateTime MemberSince => User?.RegistrationDate ?? DateTime.UtcNow;
 
         public string ProfileImageUrl => User?.ProfileImageUrl ?? "/images/default-profile.png";
+        public int PurchasedCount { get; set; }
+        public IEnumerable<Book> PurchasedBooks { get; set; } = new List<Book>();
     }
 }

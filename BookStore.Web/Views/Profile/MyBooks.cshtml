@@ -2,6 +2,7 @@
 @model PaginatedList<BookStore.Data.Models.Book>
 @{
     ViewData["Title"] = "My Books";
+    var currentTab = ViewBag.Tab ?? "added";
 }
 
 <style>
@@ -19,6 +20,26 @@
         font-size: 2rem;
     }
 
+    .tabs {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid rgba(255,140,66,0.3);
+        padding-bottom: 0.5rem;
+    }
+
+    .tab-link {
+        padding: 0.5rem 1rem;
+        color: #b0b0b0;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .tab-link.active {
+        color: #ff8c42;
+        border-bottom: 2px solid #ff8c42;
+    }
+
     .books-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -32,13 +53,13 @@
         transition: transform 0.2s;
     }
 
-        .book-card:hover {
-            transform: translateY(-3px);
-        }
+    .book-card:hover {
+        transform: translateY(-3px);
+    }
 
-        .book-card a {
-            text-decoration: none;
-        }
+    .book-card a {
+        text-decoration: none;
+    }
 
     .book-cover img {
         width: 100%;
@@ -50,20 +71,20 @@
         padding: 0.75rem;
     }
 
-        .book-info h3 {
-            color: #ff8c42;
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-bottom: 0.25rem;
-        }
+    .book-info h3 {
+        color: #ff8c42;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 0.25rem;
+    }
 
-        .book-info p {
-            color: #b0b0b0;
-            font-size: 0.8rem;
-            margin-bottom: 0.25rem;
-        }
+    .book-info p {
+        color: #b0b0b0;
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
+    }
 
     .book-price {
         color: #fff;
@@ -85,10 +106,10 @@
         text-decoration: none;
     }
 
-        .btn-page.disabled {
-            opacity: 0.5;
-            pointer-events: none;
-        }
+    .btn-page.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
 
     .empty-state {
         text-align: center;
@@ -102,18 +123,33 @@
     <div class="container">
         <div class="page-header">
             <h1 class="page-title">My Books</h1>
-            <p>Books you've added to the collection</p>
+            <p>Books you've added or purchased</p>
+        </div>
+
+        <div class="tabs">
+            <a asp-action="MyBooks" asp-route-tab="added" class="tab-link @(currentTab == "added" ? "active" : "")">Added by me</a>
+            <a asp-action="MyBooks" asp-route-tab="purchased" class="tab-link @(currentTab == "purchased" ? "active" : "")">Purchased</a>
         </div>
 
         @if (!Model.Any())
         {
             <div class="empty-state">
                 <i class="bi bi-journal-bookmark" style="font-size: 3rem; color: #ff8c42;"></i>
-                <h4>No books added yet</h4>
-                <p>Share your favorite books with the community!</p>
-                <a asp-controller="Book" asp-action="AddBook" class="btn-primary" style="background:#ff8c42; color:#1e1e2e; padding:0.5rem 1rem; border-radius:0.5rem; text-decoration:none;">
-                    <i class="bi bi-plus-circle"></i> Add a Book
-                </a>
+                <h4>No books found</h4>
+                @if (currentTab == "added")
+                {
+                    <p>You haven't added any books yet.</p>
+                    <a asp-controller="Book" asp-action="AddBook" class="btn-primary" style="background:#ff8c42; color:#1e1e2e; padding:0.5rem 1rem; border-radius:0.5rem; text-decoration:none;">
+                        <i class="bi bi-plus-circle"></i> Add a Book
+                    </a>
+                }
+                else
+                {
+                    <p>You haven't purchased any books yet.</p>
+                    <a asp-controller="Book" asp-action="Index" class="btn-primary" style="background:#ff8c42; color:#1e1e2e; padding:0.5rem 1rem; border-radius:0.5rem; text-decoration:none;">
+                        <i class="bi bi-search"></i> Browse Books
+                    </a>
+                }
             </div>
         }
         else
@@ -135,12 +171,12 @@
                     </div>
                 }
             </div>
-
+            }
             <div class="pagination">
-                <a asp-action="MyBooks" asp-route-pageNumber="@(Model.PageIndex - 1)" class="btn-page @(!Model.HasPreviousPage ? "disabled" : "")">Previous</a>
+                <a asp-action="MyBooks" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-tab="@currentTab" class="btn-page @(!Model.HasPreviousPage ? "disabled" : "")">Previous</a>
                 <span class="page-info" style="color:#b0b0b0;">Page @Model.PageIndex of @Model.TotalPages</span>
-                <a asp-action="MyBooks" asp-route-pageNumber="@(Model.PageIndex + 1)" class="btn-page @(!Model.HasNextPage ? "disabled" : "")">Next</a>
+                <a asp-action="MyBooks" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-tab="@currentTab" class="btn-page @(!Model.HasNextPage ? "disabled" : "")">Next</a>
             </div>
-        }
+        </div>
     </div>
 </div>

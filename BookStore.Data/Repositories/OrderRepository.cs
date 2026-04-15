@@ -36,5 +36,13 @@ namespace BookStore.Data.Repositories
                     .ThenInclude(oi => oi.Book)
                 .FirstOrDefaultAsync(o => o.Id == orderId);
         }
+        public IQueryable<Book> GetPurchasedBooksQueryable(string userId)
+        {
+            return _context.OrderItems
+                .Where(oi => oi.Order.UserId == userId)
+                .Select(oi => oi.Book)
+                .Distinct()
+                .AsQueryable();
+        }
     }
 }

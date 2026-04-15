@@ -7,5 +7,6 @@ namespace BookStore.Data.Interfaces
         Task AddOrderAsync(Order order);
         Task<IEnumerable<Order>> GetUserOrdersAsync(string userId);
         Task<Order?> GetOrderByIdAsync(int orderId);
+        IQueryable<Book> GetPurchasedBooksQueryable(string userId);
     }
 }

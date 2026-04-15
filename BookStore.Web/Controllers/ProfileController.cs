@@ -1,5 +1,6 @@
 ﻿using BookStore.Data.Models;
 using BookStore.Data.Models.Identity;
+using BookStore.Services;
 using BookStore.Services.Interfaces;
 using BookStore.Web.Models;
 using BookStore.Web.ViewModels;
@@ -17,6 +18,7 @@ namespace BookStore.Web.Controllers
         private readonly IBookService _bookService;
         private readonly IWishlistService _wishlistService;
         private readonly IReviewService _reviewService;
+        private readonly IOrderService _orderService;
         private readonly ILogger<ProfileController> _logger;
 
         public ProfileController(
@@ -24,12 +26,14 @@ namespace BookStore.Web.Controllers
             IBookService bookService,
             IWishlistService wishlistService,
             IReviewService reviewService,
+            IOrderService orderService,
             ILogger<ProfileController> logger)
         {
             _userManager = userManager;
             _bookService = bookService;
             _wishlistService = wishlistService;
             _reviewService = reviewService;
+            _orderService = orderService;
             _logger = logger;
         }
 
@@ -38,30 +42,44 @@ namespace BookStore.Web.Controllers
             var user = await _userManager.GetUserAsync(User);
             var userBooks = await _bookService.GetBooksByUserAsync(user.Id);
             var wishlist = await _wishlistService.GetUserWishlistAsync(user.Id);
-            var reviews = await _reviewService.GetReviewCountByUserAsync(user.Id);
+            var reviews = await _reviewService.GetReviewsByUserAsync(user.Id);
+            var purchasedBooks = await _orderService.GetPurchasedBooksAsync(user.Id);
+            var purchasedCount = purchasedBooks.Count();
 
             var viewModel = new ProfileViewModel
             {
                 User = user,
                 UploadedBooks = userBooks,
                 WishlistBooks = wishlist,
-                ReviewCount = reviews,
+                PurchasedBooks = purchasedBooks,
+                RecentReviews = reviews,
                 UploadCount = userBooks.Count(),
-                WishlistCount = wishlist.Count()
+                WishlistCount = wishlist.Count(),
+                ReviewCount = reviews.Count(),
+                PurchasedCount = purchasedCount
             };
 
             return View(viewModel);
         }
 
         [HttpGet]
-        public async Task<IActionResult> MyBooks(int? pageNumber)
+        public async Task<IActionResult> MyBooks(int? pageNumber, string tab = "added")
         {
             const int pageSize = 12;
             var user = await _userManager.GetUserAsync(User);
+            IQueryable<Book> query;
+            if (tab == "purchased")
+            {
+                query = _orderService.GetPurchasedBooksQueryable(user.Id);
+                ViewBag.Tab = "purchased";
+            }
+            else
+            {
+                query = _bookService.GetBooksByUserQueryable(user.Id);
+                ViewBag.Tab = "added";
+            }
+            var paginatedBooks = await PaginatedList<Book>.CreateAsync(query, pageNumber ?? 1, pageSize);
 
-            var booksQuery = _bookService.GetBooksByUserQueryable(user.Id);
-
-            var paginatedBooks = await PaginatedList<Book>.CreateAsync(booksQuery, pageNumber ?? 1, pageSize);
             return View("/Views/Profile/MyBooks.cshtml", paginatedBooks);
         }
 

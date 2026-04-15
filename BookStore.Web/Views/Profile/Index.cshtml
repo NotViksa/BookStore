@@ -1,5 +1,6 @@
-﻿@using BookStore.Web.Controllers
-@model BookStore.Web.Models.ProfileViewModel
+﻿@model BookStore.Web.Models.ProfileViewModel
+@using Microsoft.AspNetCore.Identity
+@using BookStore.Data.Models.Identity
 @{
     ViewData["Title"] = "My Profile";
 }
@@ -393,12 +394,15 @@
 </style>
 
 <div class="profile-container">
+    <!-- Profile Header Section -->
     <div class="profile-header-section">
         <div class="container">
             <div class="profile-card">
                 <div class="profile-avatar-wrapper">
                     <img src="@Model.ProfileImageUrl" class="profile-avatar" alt="Profile Image">
-                    <span class="profile-status"><i class="bi bi-check-circle-fill"></i></span>
+                    <span class="profile-status">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </span>
                 </div>
                 <div class="profile-details">
                     <h1 class="profile-name">@Model.User.DisplayName</h1>
@@ -408,10 +412,14 @@
                         <p class="profile-bio">@Model.User.Bio</p>
                     }
                     <div class="profile-meta">
-                        <span class="meta-item"><i class="bi bi-calendar"></i> Member since @Model.MemberSince.ToString("MMMM yyyy")</span>
+                        <span class="meta-item">
+                            <i class="bi bi-calendar"></i> Member since @Model.MemberSince.ToString("MMMM yyyy")
+                        </span>
                         @if (!string.IsNullOrEmpty(Model.User.FavoriteGenre))
                         {
-                            <span class="meta-item"><i class="bi bi-tag"></i> Favorite: @Model.User.FavoriteGenre</span>
+                            <span class="meta-item">
+                                <i class="bi bi-tag"></i> Favorite: @Model.User.FavoriteGenre
+                            </span>
                         }
                     </div>
                     <a asp-action="EditProfile" class="btn-edit-profile">
@@ -422,6 +430,10 @@
                     <div class="stat-item">
                         <div class="stat-value">@Model.UploadCount</div>
                         <div class="stat-label">Books Added</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">@Model.PurchasedCount</div>
+                        <div class="stat-label">Books Purchased</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-value">@Model.WishlistCount</div>
@@ -437,11 +449,17 @@
     </div>
 
     <div class="container">
+        <!-- Content Tabs -->
         <div class="dashboard-tabs">
-            <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+            <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="uploads-tab" data-bs-toggle="tab" data-bs-target="#uploads" type="button" role="tab">
                         <i class="bi bi-journal-bookmark-fill"></i> My Books (@Model.UploadCount)
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="purchased-tab" data-bs-toggle="tab" data-bs-target="#purchased" type="button" role="tab">
+                        <i class="bi bi-bag-check-fill"></i> Purchased (@Model.PurchasedCount)
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
@@ -456,8 +474,8 @@
                 </li>
             </ul>
 
-            <div class="tab-content" id="profileTabsContent">
-                <!-- Uploads Tab -->
+            <div class="tab-content" id="dashboardTabsContent">
+                <!-- Uploads Tab (Added Books) -->
                 <div class="tab-pane fade show active" id="uploads" role="tabpanel">
                     @if (!Model.UploadedBooks.Any())
                     {
@@ -474,6 +492,41 @@
                     {
                         <div class="books-grid">
                             @foreach (var book in Model.UploadedBooks)
+                            {
+                                <div class="book-card-mini">
+                                    <a asp-controller="Book" asp-action="Details" asp-route-id="@book.Id">
+                                        <div class="book-cover-mini">
+                                            <img src="@book.CoverImageUrl" alt="@book.Title">
+                                        </div>
+                                        <div class="book-info-mini">
+                                            <h4>@book.Title</h4>
+                                            <p>by @book.Author</p>
+                                            <div class="book-price">$@book.Price.ToString("0.00")</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <!-- Purchased Tab -->
+                <div class="tab-pane fade" id="purchased" role="tabpanel">
+                    @if (!Model.PurchasedBooks.Any())
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-bag-check"></i>
+                            <h4>No books purchased yet</h4>
+                            <p>Browse our collection and buy some books!</p>
+                            <a asp-controller="Book" asp-action="Index" class="btn-primary">
+                                <i class="bi bi-search"></i> Browse Books
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="books-grid">
+                            @foreach (var book in Model.PurchasedBooks)
                             {
                                 <div class="book-card-mini">
                                     <a asp-controller="Book" asp-action="Details" asp-route-id="@book.Id">
@@ -588,9 +641,11 @@
                                             <span class="review-date">@review.PostedDate.ToString("MMMM dd, yyyy")</span>
                                         </div>
                                         <p class="review-text">@review.Content</p>
-                                        <a asp-controller="Book" asp-action="Details" asp-route-id="@review.BookId" class="btn-view">
-                                            View Book <i class="bi bi-arrow-right"></i>
-                                        </a>
+                                        <div class="review-actions">
+                                            <a asp-controller="Book" asp-action="Details" asp-route-id="@review.BookId" class="btn-view">
+                                                View Book
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             }
@@ -609,6 +664,7 @@
             $('.remove-wishlist-form').submit(function(e) {
                 e.preventDefault();
                 var form = $(this);
+
                 $.ajax({
                     url: form.attr('action'),
                     type: 'POST',

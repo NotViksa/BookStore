@@ -1,6 +1,7 @@
 ﻿using BookStore.Data.Interfaces;
 using BookStore.Data.Models;
 using BookStore.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.Services
 {
@@ -55,6 +56,14 @@ namespace BookStore.Services
         public async Task<Order?> GetOrderByIdAsync(int orderId)
         {
             return await _orderRepository.GetOrderByIdAsync(orderId);
+        }
+        public IQueryable<Book> GetPurchasedBooksQueryable(string userId)
+        {
+            return _orderRepository.GetPurchasedBooksQueryable(userId);
+        }
+        public async Task<IEnumerable<Book>> GetPurchasedBooksAsync(string userId)
+        {
+            return await _orderRepository.GetPurchasedBooksQueryable(userId).ToListAsync();
         }
     }
 }
