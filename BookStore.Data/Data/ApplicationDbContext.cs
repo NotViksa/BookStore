@@ -113,7 +113,8 @@ namespace BookStore.Data
                 .HasForeignKey(oi => oi.BookId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Seed Genres (no dependencies, always safe)
+            //
+            // Genres (no dependencies, always safe)
             builder.Entity<Genre>().HasData(
                 new Genre { Id = 1, Name = "Fiction", Description = "Literary works based on imagination" },
                 new Genre { Id = 2, Name = "Non-Fiction", Description = "Informational works based on facts" },

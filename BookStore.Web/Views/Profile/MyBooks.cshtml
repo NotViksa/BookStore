@@ -160,7 +160,7 @@
                     <div class="book-card">
                         <a asp-controller="Book" asp-action="Details" asp-route-id="@book.Id">
                             <div class="book-cover">
-                                <img src="@book.CoverImageUrl" alt="@book.Title">
+                                <img src="@book.CoverImageUrl" alt="@book.Title" onerror="this.src='/images/default-cover.jpg'">
                             </div>
                             <div class="book-info">
                                 <h3>@book.Title</h3>
@@ -171,12 +171,11 @@
                     </div>
                 }
             </div>
-            }
             <div class="pagination">
                 <a asp-action="MyBooks" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-tab="@currentTab" class="btn-page @(!Model.HasPreviousPage ? "disabled" : "")">Previous</a>
                 <span class="page-info" style="color:#b0b0b0;">Page @Model.PageIndex of @Model.TotalPages</span>
                 <a asp-action="MyBooks" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-tab="@currentTab" class="btn-page @(!Model.HasNextPage ? "disabled" : "")">Next</a>
             </div>
-        </div>
+        }
     </div>
 </div>

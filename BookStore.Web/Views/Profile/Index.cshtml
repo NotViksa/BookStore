@@ -496,7 +496,7 @@
                                 <div class="book-card-mini">
                                     <a asp-controller="Book" asp-action="Details" asp-route-id="@book.Id">
                                         <div class="book-cover-mini">
-                                            <img src="@book.CoverImageUrl" alt="@book.Title">
+                                            <img src="@book.CoverImageUrl" alt="@book.Title" onerror="this.src='/images/default-cover.jpg'">
                                         </div>
                                         <div class="book-info-mini">
                                             <h4>@book.Title</h4>
@@ -531,7 +531,9 @@
                                 <div class="book-card-mini">
                                     <a asp-controller="Book" asp-action="Details" asp-route-id="@book.Id">
                                         <div class="book-cover-mini">
-                                            <img src="@book.CoverImageUrl" alt="@book.Title">
+                                            <div class="book-cover-mini">
+                                                <img src="@book.CoverImageUrl" alt="@book.Title" onerror="this.src='/images/default-cover.jpg'">
+                                            </div>
                                         </div>
                                         <div class="book-info-mini">
                                             <h4>@book.Title</h4>
@@ -566,7 +568,9 @@
                                 <div class="wishlist-item">
                                     <a asp-controller="Book" asp-action="Details" asp-route-id="@book.Id" class="wishlist-link">
                                         <div class="wishlist-cover">
-                                            <img src="@book.CoverImageUrl" alt="@book.Title">
+                                            <div class="wishlist-cover">
+                                                <img src="@book.CoverImageUrl" alt="@book.Title" onerror="this.src='/images/default-cover.jpg'">
+                                            </div>
                                         </div>
                                         <div class="wishlist-info">
                                             <h4>@book.Title</h4>
@@ -618,7 +622,9 @@
                             {
                                 <div class="review-item">
                                     <div class="review-book-cover">
-                                        <img src="@review.Book.CoverImageUrl" alt="@review.Book.Title">
+                                        <div class="review-book-cover">
+                                            <img src="@review.Book.CoverImageUrl" alt="@review.Book.Title" onerror="this.src='/images/default-cover.jpg'">
+                                        </div>
                                     </div>
                                     <div class="review-content">
                                         <div class="review-header">

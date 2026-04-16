@@ -164,7 +164,7 @@
                     <div class="wishlist-item">
                         <a asp-controller="Book" asp-action="Details" asp-route-id="@book.Id" class="wishlist-link">
                             <div class="wishlist-cover">
-                                <img src="@book.CoverImageUrl" alt="@book.Title">
+                                <img src="@book.CoverImageUrl" alt="@book.Title" onerror="this.src='/images/default-cover.jpg'">
                             </div>
                             <div class="wishlist-info">
                                 <h3>@book.Title</h3>

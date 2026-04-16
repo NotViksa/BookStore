@@ -154,15 +154,38 @@ using (var scope = app.Services.CreateScope())
             // Add sample books programmatically if needed
             Console.WriteLine("Database seeded with sample books");
         }
-        // Seed sample books (only if table is empty)
+        // Seed sample books (add missing ones without removing existing)
         var context = services.GetRequiredService<ApplicationDbContext>();
-        if (!context.Books.Any())
+        adminUser = await userManager.FindByEmailAsync(adminEmail);
+        if (adminUser == null)
         {
-            adminUser = await userManager.FindByEmailAsync(adminEmail);
-            var fiction = await context.Genres.FirstOrDefaultAsync(g => g.Name == "Fiction");
-            var thriller = await context.Genres.FirstOrDefaultAsync(g => g.Name == "Thriller");
-            var mystery = await context.Genres.FirstOrDefaultAsync(g => g.Name == "Mystery");
+            throw new Exception("Admin user not found – seeding aborted.");
+        }
 
+        // Ensure genres exist
+        var fiction = await context.Genres.FirstOrDefaultAsync(g => g.Name == "Fiction");
+        if (fiction == null)
+        {
+            fiction = new Genre { Name = "Fiction", Description = "Literary works based on imagination" };
+            context.Genres.Add(fiction);
+        }
+        var thriller = await context.Genres.FirstOrDefaultAsync(g => g.Name == "Thriller");
+        if (thriller == null)
+        {
+            thriller = new Genre { Name = "Thriller", Description = "Suspenseful and exciting plots" };
+            context.Genres.Add(thriller);
+        }
+        var mystery = await context.Genres.FirstOrDefaultAsync(g => g.Name == "Mystery");
+        if (mystery == null)
+        {
+            mystery = new Genre { Name = "Mystery", Description = "Crime, detective, and suspense stories" };
+            context.Genres.Add(mystery);
+        }
+        await context.SaveChangesAsync();
+
+        // Add The Great Gatsby if not exists
+        if (!context.Books.Any(b => b.Title == "The Great Gatsby"))
+        {
             var gatsby = new Book
             {
                 Title = "The Great Gatsby",
@@ -177,13 +200,16 @@ using (var scope = app.Services.CreateScope())
                 UploadedById = adminUser.Id,
                 AddedDate = DateTime.UtcNow
             };
-            if (fiction != null) gatsby.Genres.Add(fiction);
-            if (thriller != null) gatsby.Genres.Add(thriller);
+            gatsby.Genres.Add(fiction);
+            gatsby.Genres.Add(thriller);
             context.Books.Add(gatsby);
+        }
 
+        // Add To Kill a Mockingbird if not exists
+        if (!context.Books.Any(b => b.Title == "To Kill a Mockingbird"))
+        {
             var mockingbird = new Book
             {
-                Id = 2,
                 Title = "To Kill a Mockingbird",
                 ISBN = "9780061120084",
                 Author = "Harper Lee",
@@ -196,12 +222,13 @@ using (var scope = app.Services.CreateScope())
                 UploadedById = adminUser.Id,
                 AddedDate = DateTime.UtcNow
             };
-            if (fiction != null) mockingbird.Genres.Add(fiction);
-            if (mystery != null) mockingbird.Genres.Add(mystery);
+            mockingbird.Genres.Add(fiction);
+            mockingbird.Genres.Add(mystery);
             context.Books.Add(mockingbird);
-
-            await context.SaveChangesAsync();
         }
+
+        await context.SaveChangesAsync();
+        Console.WriteLine("Sample books seeded successfully.");
     }
     catch (Exception ex)
     {

@@ -29,7 +29,7 @@
         <div class="container">
             <div class="book-hero-content">
                 <div class="book-cover-large">
-                    <img src="@Model.Book.CoverImageUrl" alt="@Model.Book.Title">
+                    <img src="@Model.Book.CoverImageUrl" alt="@Model.Book.Title" onerror="this.src='/images/default-cover.jpg'">
                 </div>
                 <div class="book-info-large">
                     <div class="book-metadata">
@@ -293,7 +293,7 @@
                             {
                                 <a asp-controller="Book" asp-action="Details" asp-route-id="@similar.Id" class="similar-book-item">
                                     <div class="similar-book-cover">
-                                        <img src="@similar.CoverImageUrl" alt="@similar.Title">
+                                        <img src="@similar.CoverImageUrl" alt="@similar.Title" onerror="this.src='/images/default-cover.jpg'">
                                     </div>
                                     <div class="similar-book-info">
                                         <h4>@similar.Title</h4>

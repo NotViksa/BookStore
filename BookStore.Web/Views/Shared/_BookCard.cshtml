@@ -23,7 +23,7 @@
 <div class="book-card">
     <a asp-controller="Book" asp-action="Details" asp-route-id="@Model.Id" class="book-card-link">
         <div class="book-cover">
-            <img src="@Model.CoverImageUrl" alt="@Model.Title">
+            <img src="@Model.CoverImageUrl" alt="@Model.Title" onerror="this.src='/images/default-cover.jpg'">
             @if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
             {
                 <form asp-controller="Book" asp-action="ToggleWishlist" asp-route-bookId="@Model.Id" method="post"
