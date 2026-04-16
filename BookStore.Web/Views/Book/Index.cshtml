@@ -2,6 +2,7 @@
 @using BookStore.Web.Controllers
 @model PaginatedList<BookStore.Data.Models.Book>
 
+
 @{
     ViewData["Title"] = "Browse Books";
 }
@@ -84,6 +85,11 @@
                         <div class="books-grid">
                             @foreach (var book in Model)
                             {
+                                var avgRating = book.Reviews != null && book.Reviews.Any()
+                                ? book.Reviews.Average(r => r.Rating)
+                                : 0;
+                                var reviewCount = book.Reviews?.Count ?? 0;
+
                                 <div class="book-card">
                                     <a asp-action="Details" asp-route-id="@book.Id" class="book-link">
                                         <div class="book-cover">
@@ -98,11 +104,11 @@
                                                     <div class="stars">
                                                         @for (int i = 1; i <= 5; i++)
                                                         {
-                                                            if (i <= Math.Round(book.AverageRating))
+                                                            if (i <= Math.Floor(avgRating))
                                                             {
                                                                 <i class="bi bi-star-fill"></i>
                                                             }
-                                                            else if (i - 0.5 <= book.AverageRating)
+                                                            else if (i == Math.Ceiling(avgRating) && avgRating % 1 != 0)
                                                             {
                                                                 <i class="bi bi-star-half"></i>
                                                             }
@@ -112,7 +118,7 @@
                                                             }
                                                         }
                                                     </div>
-                                                    <span>(@book.RatingCount)</span>
+                                                    <span>(@reviewCount)</span>
                                                 </div>
                                             </div>
                                         </div>

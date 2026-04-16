@@ -144,6 +144,8 @@ namespace BookStore.Services
             return _bookRepository.GetQueryable()
                 .Include(b => b.Genres)
                 .Include(b => b.UploadedBy)
+                .Include(b => b.Ratings)
+                .Include(b => b.Reviews)
                 .OrderByDescending(b => b.AddedDate);
         }
 

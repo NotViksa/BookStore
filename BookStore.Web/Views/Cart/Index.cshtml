@@ -39,7 +39,7 @@
                             var subtotal = item.Book.Price * item.Quantity;
                             <tr>
                                 <td class="cart-book">
-                                    <img src="@item.Book.CoverImageUrl" alt="@item.Book.Title" width="60">
+                                    <img src="@item.Book.CoverImageUrl" alt="@item.Book.Title" width="60" onerror="this.src='/images/default-cover.jpg'">
                                     <div>
                                         <h4>@item.Book.Title</h4>
                                         <p>by @item.Book.Author</p>

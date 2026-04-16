@@ -72,6 +72,8 @@ namespace BookStore.Data.Repositories
                 .Where(w => w.UserId == userId)
                 .Include(w => w.Book)
                     .ThenInclude(b => b.Genres)
+                .Include(w => w.Book)
+                    .ThenInclude(b => b.Reviews)
                 .Select(w => w.Book)
                 .AsQueryable();
         }

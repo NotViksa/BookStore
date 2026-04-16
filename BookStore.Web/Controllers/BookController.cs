@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using BookStore.Data.Models;
+﻿using BookStore.Data.Models;
 using BookStore.Services.Interfaces;
 using BookStore.Web.Models;
 using BookStore.Web.ViewModels;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Security.Claims;
 
 namespace BookStore.Web.Controllers
 {
@@ -43,6 +44,7 @@ namespace BookStore.Web.Controllers
         {
             const int pageSize = 12;
             var query = _bookService.GetBooksQueryable();
+            query = query.Include(b => b.Ratings);
 
             // Apply filters
             if (!string.IsNullOrEmpty(genre))

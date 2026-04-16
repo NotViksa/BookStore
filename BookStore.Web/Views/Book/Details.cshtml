@@ -3,6 +3,7 @@
 @{
     var reviewAverage = Model.Reviews.Any() ? Model.Reviews.Average(r => r.Rating) : 0;
     var totalReviews = Model.Reviews.Count();
+
 }
 
 @{
