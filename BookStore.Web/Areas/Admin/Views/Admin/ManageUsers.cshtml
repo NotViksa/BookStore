@@ -1,0 +1,145 @@
+﻿@using BookStore.Data.Models.Identity
+@model List<ApplicationUser>
+@{
+    ViewData["Title"] = "Manage Users";
+    var userRoles = ViewBag.UserRoles as Dictionary<string, IList<string>>;
+}
+
+<div class="admin-container">
+    <div class="container">
+        <div class="admin-header">
+            <h1><i class="bi bi-people"></i> Manage Users</h1>
+            <a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+
+        <div class="user-table-wrapper">
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Registered</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        var isAdmin = userRoles[user.Id].Contains("Administrator");
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <img src="@user.ProfileImageUrl" alt="@user.DisplayName" class="user-avatar-small">
+                                    <span>@user.DisplayName</span>
+                                </div>
+                            </td>
+                            <td>@user.Email</td>
+                            <td>@user.RegistrationDate.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                <span class="role-badge @(isAdmin ? "admin" : "user")">
+                                    @(isAdmin ? "Admin" : "User")
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <form asp-action="ToggleAdminRole" method="post" class="inline-form">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="userId" value="@user.Id" />
+                                        <button type="submit" class="btn-icon" title="@(isAdmin ? "Remove Admin" : "Make Admin")">
+                                            <i class="bi @(isAdmin ? "bi-shield-slash" : "bi-shield-check")"></i>
+                                        </button>
+                                    </form>
+                                    @if (User.Identity.Name != user.Email) // Prevent self-deletion
+                                    {
+                                        <form asp-action="DeleteUser" method="post" class="inline-form">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <button type="submit" class="btn-icon btn-danger"
+                                                    onclick="return confirm('Delete user @user.DisplayName? This action cannot be undone.')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    .admin-header h1 { color: #ff8c42; margin: 0; }
+    .back-link { color: #ff8c42; text-decoration: none; }
+    .user-table-wrapper {
+        background: #1e1e2e;
+        border-radius: 1rem;
+        padding: 1.5rem;
+    }
+    .user-table {
+        width: 100%;
+        border-collapse: collapse;
+        color: #e0e0e0;
+    }
+    .user-table th {
+        text-align: left;
+        padding: 0.75rem 0.5rem;
+        border-bottom: 1px solid #3a3a4a;
+        color: #ff8c42;
+    }
+    .user-table td {
+        padding: 0.75rem 0.5rem;
+        border-bottom: 1px solid #2a2a3a;
+    }
+    .user-cell {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    .user-avatar-small {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    .role-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    .role-badge.admin { background: #ff8c42; color: #1e1e2e; }
+    .role-badge.user { background: #2a2a3a; color: #b0b0b0; }
+    .action-buttons { display: flex; gap: 0.5rem; }
+    .inline-form { display: inline; }
+    .btn-icon {
+        background: none;
+        border: 1px solid #ff8c42;
+        color: #ff8c42;
+        width: 32px;
+        height: 32px;
+        border-radius: 0.25rem;
+        cursor: pointer;
+    }
+    .btn-icon:hover { background: #ff8c42; color: #1e1e2e; }
+    .btn-icon.btn-danger { border-color: #dc3545; color: #dc3545; }
+    .btn-icon.btn-danger:hover { background: #dc3545; color: #fff; }
+</style>

@@ -104,5 +104,9 @@ namespace BookStore.Services
         {
             return await _reviewRepository.GetReviewsByUserAsync(userId);
         }
+        public int GetTotalReviewsCount()
+        {
+            return _reviewRepository.GetTotalCount();
+        }
     }
 }

@@ -9,5 +9,7 @@ namespace BookStore.Services.Interfaces
         Task<Order?> GetOrderByIdAsync(int orderId);
         IQueryable<Book> GetPurchasedBooksQueryable(string userId);
         Task<IEnumerable<Book>> GetPurchasedBooksAsync(string id);
+        int GetAllOrdersCount();
+
     }
 }

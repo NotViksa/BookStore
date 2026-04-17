@@ -44,5 +44,9 @@ namespace BookStore.Data.Repositories
                 .Distinct()
                 .AsQueryable();
         }
+        public int GetAllOrdersCount()
+        {
+            return _context.Orders.Count();
+        }
     }
 }

@@ -84,18 +84,18 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
-app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
-app.UseExceptionHandler("/Home/Error");
-
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
-    app.UseMigrationsEndPoint();
+    // app.UseDeveloperExceptionPage();   // Keep commented for demo
+    app.UseExceptionHandler("/Home/Error");
 }
 else
 {
+    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -104,6 +104,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// ... rest of your code (seeding, routes, etc.)
 
 // Initialize roles and admin user
 using (var scope = app.Services.CreateScope())
@@ -240,8 +242,12 @@ using (var scope = app.Services.CreateScope())
 app.MapRazorPages();
 
 app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
     name: "errors",
-    pattern: "Home/Error{statusCode}",
+    pattern: "Home/Error/{statusCode}",
     defaults: new { controller = "Home", action = "Error" });
 
 app.MapControllerRoute(

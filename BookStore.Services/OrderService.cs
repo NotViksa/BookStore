@@ -65,5 +65,9 @@ namespace BookStore.Services
         {
             return await _orderRepository.GetPurchasedBooksQueryable(userId).ToListAsync();
         }
+        public int GetAllOrdersCount()
+        {
+            return _orderRepository.GetAllOrdersCount();
+        }
     }
 }

@@ -14,5 +14,7 @@ namespace BookStore.Data.Interfaces
         Task<bool> UpdateAsync(Review review);
         IQueryable<Review> GetReviewsByUserQueryable(string userId);
         Task<IEnumerable<Review>> GetReviewsByUserAsync(string userId);
+        int GetTotalCount();
+
     }
 }

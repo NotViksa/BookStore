@@ -70,5 +70,9 @@ namespace BookStore.Data.Repositories
         {
             return await GetReviewsByUserQueryable(userId).ToListAsync();
         }
+        public int GetTotalCount()
+        {
+            return _context.Reviews.Count();
+        }
     }
 }
