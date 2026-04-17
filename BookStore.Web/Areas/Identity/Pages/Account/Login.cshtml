@@ -4,46 +4,205 @@
     ViewData["Title"] = "Log in";
 }
 
-<div class="row justify-content-center mt-5">
-    <div class="col-md-6">
-        <div class="card shadow">
-            <div class="card-body p-5">
-                <h2 class="card-title text-center mb-4">@ViewData["Title"]</h2>
-                <form id="account" method="post">
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+<div class="auth-container">
+    <div class="container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <i class="bi bi-book-fill auth-icon"></i>
+                <h1 class="auth-title">Welcome back</h1>
+                <p class="auth-subtitle">Sign in to your account</p>
+            </div>
 
-                    <div class="mb-3">
-                        <label asp-for="Input.Email" class="form-label">Email</label>
-                        <input asp-for="Input.Email" class="form-control" autocomplete="username" />
-                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+            <form id="account" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Input.Email" class="form-label">Email address</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="you@example.com" />
                     </div>
-
-                    <div class="mb-3">
-                        <label asp-for="Input.Password" class="form-label">Password</label>
-                        <input asp-for="Input.Password" class="form-control" autocomplete="current-password" />
-                        <span asp-validation-for="Input.Password" class="text-danger"></span>
-                    </div>
-
-                    <div class="mb-3 form-check">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        <label class="form-check-label" asp-for="Input.RememberMe">Remember me</label>
-                    </div>
-
-                    <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </form>
-
-                <div class="mt-4 text-center">
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
+
+                <div class="form-group">
+                    <label asp-for="Input.Password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input asp-for="Input.Password" class="form-control" autocomplete="current-password" placeholder="••••••••" />
+                    </div>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" asp-for="Input.RememberMe" />
+                    <label class="form-check-label" asp-for="Input.RememberMe">Remember me</label>
+                </div>
+
+                <button type="submit" class="btn-submit">Log in</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>
+                    <a asp-page="./ForgotPassword">Forgot your password?</a>
+                </p>
+                <p>
+                    Don't have an account? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Create one</a>
+                </p>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .auth-container {
+        background: #0f0f1a;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 2rem 0;
+    }
+
+    .auth-card {
+        max-width: 480px;
+        margin: 0 auto;
+        background: #1e1e2e;
+        border-radius: 1.5rem;
+        padding: 2rem;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .auth-icon {
+        font-size: 3rem;
+        color: #ff8c42;
+        margin-bottom: 1rem;
+    }
+
+    .auth-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #ff8c42;
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-subtitle {
+        color: #b0b0b0;
+    }
+
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #e0e0e0;
+        font-weight: 500;
+    }
+
+    .input-group {
+        display: flex;
+        background: #2a2a3a;
+        border-radius: 0.75rem;
+        overflow: hidden;
+    }
+
+    .input-group-text {
+        background: #2a2a3a;
+        border: none;
+        color: #ff8c42;
+        padding: 0.75rem;
+    }
+
+    .form-control {
+        background: #2a2a3a;
+        border: none;
+        color: #e0e0e0;
+        padding: 0.75rem;
+        flex: 1;
+    }
+
+        .form-control:focus {
+            outline: none;
+            background: #353545;
+        }
+
+    .form-check {
+        margin: 1rem 0;
+    }
+
+    .form-check-input {
+        background-color: #2a2a3a;
+        border-color: #ff8c42;
+    }
+
+        .form-check-input:checked {
+            background-color: #ff8c42;
+            border-color: #ff8c42;
+        }
+
+    .form-check-label {
+        color: #b0b0b0;
+        margin-left: 0.5rem;
+    }
+
+    .btn-submit {
+        width: 100%;
+        background: #ff8c42;
+        color: #1e1e2e;
+        border: none;
+        border-radius: 2rem;
+        padding: 0.75rem;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 0.5rem;
+    }
+
+        .btn-submit:hover {
+            background: #ff9c5a;
+            transform: translateY(-2px);
+        }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: #b0b0b0;
+    }
+
+        .auth-footer a {
+            color: #ff8c42;
+            text-decoration: none;
+        }
+
+            .auth-footer a:hover {
+                text-decoration: underline;
+            }
+
+    .text-danger {
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .alert {
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .alert-danger {
+        background: rgba(220,53,69,0.1);
+        border: 1px solid #dc3545;
+        color: #dc3545;
+    }
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
