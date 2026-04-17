@@ -10,6 +10,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookStore.Services", "BookStore.Services\BookStore.Services.csproj", "{C05E354A-CDA7-48D9-8B9F-C88C18C598E5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookStore.Tests", "BookStore.Tests\BookStore.Tests.csproj", "{E9AAD5EA-B51C-461D-9F2E-575CD7D01196}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1FA38B46-FE9F-4BF8-8F44-5D0C7C9FD9F5} = {1FA38B46-FE9F-4BF8-8F44-5D0C7C9FD9F5}
+		{C05E354A-CDA7-48D9-8B9F-C88C18C598E5} = {C05E354A-CDA7-48D9-8B9F-C88C18C598E5}
+		{E0A38C81-379A-442E-A7E8-EC9A55D5B2B6} = {E0A38C81-379A-442E-A7E8-EC9A55D5B2B6}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

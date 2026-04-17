@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BookStore.Data\BookStore.Data.csproj" />
+    <ProjectReference Include="..\BookStore.Services\BookStore.Services.csproj" />
+    <ProjectReference Include="..\BookStore.Web\BookStore.Web.csproj" />
     <ProjectReference Include="..\PurrfectPics.Services\BookStore.Services.csproj" />
     <ProjectReference Include="..\PurrfectPics.Web\BookStore.Web.csproj" />
   </ItemGroup>
@@ -15,6 +18,7 @@
     <PackageReference Include="FluentAssertions" Version="8.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.7" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="MockQueryable.Moq" Version="8.0.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.3">
