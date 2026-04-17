@@ -39,9 +39,6 @@ The solution follows a clean, layered architecture:
 - ASP.NET Core
 - Entity Framework Core (SQL Server)
 - ASP.NET Core Identity
+- Bootstrap 5 & Bootstrap Icons
 - jQuery & AJAX
-<<<<<<< HEAD
 - Razor Pages & MVC
-=======
-- Razor Pages & MVC
->>>>>>> d0b8233bc65227a562de8e2e02f85a427311d219
