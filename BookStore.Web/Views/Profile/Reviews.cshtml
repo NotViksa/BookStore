@@ -198,7 +198,6 @@
                             </form>
                         </div>
 
-                        <!-- Edit Review Form -->
                         <div class="edit-review-form" style="display: none;">
                             <form asp-controller="Review" asp-action="EditReview" method="post">
                                 @Html.AntiForgeryToken()
@@ -237,7 +236,6 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Edit review
             $('.btn-edit-review').click(function() {
                 var reviewCard = $(this).closest('.review-card');
                 reviewCard.find('.review-content, .review-actions, .book-author').hide();
@@ -250,7 +248,6 @@
                 reviewCard.find('.review-content, .review-actions, .book-author').show();
             });
 
-            // Edit star rating
             $('.edit-star-rating i').click(function() {
                 var rating = $(this).data('rating');
                 var parent = $(this).parent();

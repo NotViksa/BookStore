@@ -90,7 +90,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    // app.UseDeveloperExceptionPage();   // Keep commented for demo
+    // app.UseDeveloperExceptionPage();
     app.UseExceptionHandler("/Home/Error");
 }
 else

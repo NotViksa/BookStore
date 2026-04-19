@@ -48,9 +48,7 @@
                     </button>
                 </aside>
 
-                <!-- RIGHT COLUMN – BOOKS & PAGINATION -->
                 <div class="books-main">
-                    <!-- Search bar -->
                     <div class="search-bar">
                         <form asp-action="Search" method="get" class="search-form">
                             <div class="search-wrapper">
@@ -126,7 +124,6 @@
                             }
                         </div>
 
-                        <!-- Pagination -->
                         <div class="pagination">
                             <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" class="btn-page @(!Model.HasPreviousPage ? "disabled" : "")"><i class="bi bi-chevron-left"></i> Previous</a>
                             <span class="page-info">Page @Model.PageIndex of @Model.TotalPages</span>

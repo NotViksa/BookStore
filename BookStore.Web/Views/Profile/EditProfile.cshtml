@@ -18,7 +18,6 @@
                 <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
 
                 <div class="form-columns">
-                    <!-- Left Column - Profile Info -->
                     <div class="form-left">
                         <div class="form-group">
                             <label asp-for="DisplayName" class="form-label">
@@ -58,7 +57,6 @@
                         </div>
                     </div>
 
-                    <!-- Right Column - Profile Image -->
                     <div class="form-right">
                         <div class="profile-image-section">
                             <label class="form-label">
@@ -70,7 +68,7 @@
                                        accept=".jpg,.jpeg,.png,.gif" style="display: none;" />
 
                                 <div class="current-image">
-                                    <img id="profilePreview" src="@Model.CurrentProfileImageUrl" alt="Current profile image">
+                                    <img id="profilePreview" src="@Model.CurrentProfileImageUrl">
                                 </div>
 
                                 <div class="upload-placeholder" style="display: none;">
@@ -128,13 +126,13 @@
             var imagePreview = $('.image-preview');
             var newProfilePreview = $('#newProfilePreview');
 
-            profileImageUpload.click(function(e) {
-                if (!$(e.target).hasClass('change-image') && !$(e.target).hasClass('bi-pencil')) {
+            profileImageUpload.on('click', function(e) {
+                if (!$(e.target).closest('.change-image').length) {
                     profileInput.click();
                 }
             });
 
-            profileInput.change(function(e) {
+            profileInput.on('change', function(e) {
                 var file = this.files[0];
                 if (file) {
                     var reader = new FileReader();
@@ -143,17 +141,220 @@
                         currentImage.hide();
                         uploadPlaceholder.hide();
                         imagePreview.show();
-                    }
+                    };
                     reader.readAsDataURL(file);
                 }
             });
 
-            $('.change-image').click(function(e) {
+            $('.change-image').on('click', function(e) {
                 e.stopPropagation();
                 profileInput.val('');
-                currentImage.show();
                 imagePreview.hide();
+                currentImage.show();
+            });
+
+            profileImageUpload.on('dragover', function(e) {
+                e.preventDefault();
+                $(this).addClass('dragover');
+            });
+
+            profileImageUpload.on('dragleave', function(e) {
+                e.preventDefault();
+                $(this).removeClass('dragover');
+            });
+
+            profileImageUpload.on('drop', function(e) {
+                e.preventDefault();
+                $(this).removeClass('dragover');
+
+                var files = e.originalEvent.dataTransfer.files;
+                if (files.length > 0) {
+                    profileInput[0].files = files;
+                    profileInput.trigger('change');
+                }
             });
         });
     </script>
 }
+
+<style>
+    .change-image {
+        background: #ff8c42;
+        color: #1e1e2e;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 0.75rem;
+        transition: all 0.3s ease;
+    }
+
+        .change-image:hover {
+            background: #ff9c5a;
+            transform: translateY(-2px);
+        }
+
+        .change-image i {
+            margin-right: 0.25rem;
+        }
+    .edit-profile-container {
+        background: #0f0f1a;
+        min-height: 70vh;
+        padding: 2rem 0;
+    }
+
+    .edit-profile-header {
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        color: #ff8c42;
+        font-size: 2rem;
+    }
+
+    .page-subtitle {
+        color: #b0b0b0;
+    }
+
+    .edit-profile-card {
+        background: #1e1e2e;
+        border-radius: 1rem;
+        padding: 2rem;
+    }
+
+    .form-columns {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .form-left, .form-right {
+        flex: 1;
+        min-width: 250px;
+    }
+
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #ff8c42;
+        font-weight: 500;
+    }
+
+    .form-control {
+        width: 100%;
+        background: #2a2a3a;
+        border: 1px solid #3a3a4a;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        color: #e0e0e0;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ff8c42;
+        }
+
+    .form-row {
+        display: flex;
+        gap: 1rem;
+    }
+
+        .form-row .half {
+            flex: 1;
+        }
+
+    .profile-image-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .profile-image-upload {
+        background: #2a2a3a;
+        border: 2px dashed #ff8c42;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .current-image img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #ff8c42;
+    }
+
+    .image-preview img {
+        max-width: 100%;
+        max-height: 150px;
+        border-radius: 0.5rem;
+    }
+
+    .info-box {
+        background: #2a2a3a;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        margin-top: 1.5rem;
+    }
+
+        .info-box h4 {
+            color: #ff8c42;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box ul {
+            margin: 0;
+            padding-left: 1.25rem;
+            color: #b0b0b0;
+        }
+
+    .form-actions {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255,140,66,0.2);
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+    }
+
+    .btn-save, .btn-cancel {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-save {
+        background: #ff8c42;
+        color: #1e1e2e;
+        border: none;
+    }
+
+        .btn-save:hover {
+            background: #ff9c5a;
+        }
+
+    .btn-cancel {
+        background: transparent;
+        color: #ff8c42;
+        border: 1px solid #ff8c42;
+    }
+
+        .btn-cancel:hover {
+            background: rgba(255,140,66,0.1);
+        }
+
+    .form-hint {
+        color: #b0b0b0;
+        font-size: 0.8rem;
+    }
+</style>

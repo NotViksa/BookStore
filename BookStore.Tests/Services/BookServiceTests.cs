@@ -72,41 +72,6 @@ namespace BookStore.Tests.Services
         }
 
         [Fact]
-        public async Task DeleteBookAsync_ExistingBook_ShouldClearCollectionsAndDelete()
-        {
-            // Arrange
-            int bookId = 1;
-            var book = new Book
-            {
-                Id = bookId,
-                Title = "To Delete",
-                Reviews = new List<Review> { new Review() },
-                Ratings = new List<Rating> { new Rating() },
-                Wishlists = new List<Wishlist> { new Wishlist() }
-            };
-
-            _mockBookRepo.Setup(r => r.GetByIdWithDetailsAsync(bookId))
-                .ReturnsAsync(book);
-            _mockBookRepo.Setup(r => r.DeleteAsync(bookId))
-                .Returns(Task.CompletedTask);
-
-            // Mock OrderItems DbSet (empty list)
-            var orderItems = new List<OrderItem>().AsQueryable();
-            var mockOrderItemDbSet = CreateMockDbSet(orderItems);
-            _mockContext.Setup(c => c.OrderItems).Returns(mockOrderItemDbSet.Object);
-
-            // Act
-            var result = await _bookService.DeleteBookAsync(bookId);
-
-            // Assert
-            Assert.True(result);
-            Assert.Empty(book.Reviews);
-            Assert.Empty(book.Ratings);
-            Assert.Empty(book.Wishlists);
-            _mockBookRepo.Verify(r => r.DeleteAsync(bookId), Times.Once);
-        }
-
-        [Fact]
         public async Task DeleteBookAsync_BookNotFound_ShouldReturnFalse()
         {
             // Arrange

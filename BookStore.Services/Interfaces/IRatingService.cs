@@ -14,7 +14,7 @@ namespace BookStore.Services.Interfaces
         Task<Rating?> GetRatingAsync(string userId, int bookId);
 
         // Statistics
-        Task<Dictionary<int, int>> GetRatingDistributionAsync(int bookId); // How many 1-star, 2-star, etc.
+        Task<Dictionary<int, int>> GetRatingDistributionAsync(int bookId);
         Task<int> GetTotalRatingsCountAsync(int bookId);
     }
 }

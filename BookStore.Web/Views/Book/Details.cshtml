@@ -25,7 +25,6 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
-    <!-- Hero Section with Book Cover -->
     <div class="book-hero">
         <div class="container">
             <div class="book-hero-content">
@@ -97,7 +96,6 @@
                         </div>
                     }
 
-                    <!-- Delete Button (for owners/admins) -->
                     @if (Model.Book.UploadedById == User.FindFirstValue(ClaimTypes.NameIdentifier) || User.IsInRole("Administrator"))
                     {
                         <form asp-action="Delete" method="post" class="delete-form mt-3">
@@ -114,12 +112,9 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="container">
         <div class="book-details-content">
-            <!-- Left Column - Book Info -->
             <div class="book-details-left">
-                <!-- About the Book -->
                 <section class="book-section">
                     <h2 class="section-title">About the Book</h2>
                     <div class="book-description">
@@ -154,7 +149,6 @@
                     </div>
                 </section>
 
-                <!-- Reviews Section -->
                 <section class="book-section" id="reviews">
                     <h2 class="section-title">Reviews</h2>
 
@@ -413,15 +407,13 @@
                 return true;
             });
 
-            // ========== EDIT REVIEW FUNCTIONALITY ==========
-            // Show edit form
             $('.btn-edit-review').click(function() {
                 var reviewCard = $(this).closest('.review-card');
                 reviewCard.find('.review-content').hide();
                 reviewCard.find('.review-actions').hide();
                 reviewCard.find('.edit-review-form').show();
             });
-            // Cancel edit
+
             $('.btn-cancel-edit').click(function() {
                 var editForm = $(this).closest('.edit-review-form');
                 var reviewCard = editForm.closest('.review-card');
@@ -429,7 +421,7 @@
                 reviewCard.find('.review-content').show();
                 reviewCard.find('.review-actions').show();
             });
-            // Edit star rating (inside edit form)
+
             $('.edit-star-rating i').hover(
                 function() {
                     var rating = $(this).data('rating');
@@ -450,8 +442,6 @@
                 });
                 parent.siblings('.edit-rating-value').val(rating);
             });
-            // Edit review form submission - normal POST (reload page)
-            // No AJAX needed – the form will submit normally and redirect.
         });
     </script>
 }
@@ -743,6 +733,31 @@
         cursor: pointer;
     }
 
+    .btn-edit-review, .btn-delete-review {
+        background: rgba(255,140,66,0.1);
+        border: 1px solid #ff8c42;
+        color: #ff8c42;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        margin-right: 0.5rem;
+    }
+
+    .btn-delete-review {
+        border-color: #dc3545;
+        color: #dc3545;
+    }
+
+        .btn-edit-review:hover, .btn-delete-review:hover {
+            background: #ff8c42;
+            color: #1e1e2e;
+        }
+
+        .btn-delete-review:hover {
+            background: #dc3545;
+            color: #fff;
+        }
+
         .btn-add-to-cart:hover {
             background: #218838;
         }
@@ -753,6 +768,20 @@
 
         .review-star-rating i.hover {
             color: #ffaa66; /* lighter orange on hover */
+        }
+
+    .btn-delete {
+        background: rgba(220,53,69,0.1);
+        border: 1px solid #dc3545;
+        color: #dc3545;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+    }
+
+        .btn-delete:hover {
+            background: #dc3545;
+            color: #fff;
         }
 
     @@media (max-width: 768px) {

@@ -20,6 +20,6 @@ namespace BookStore.Web.ViewModels
         public decimal? MaxPrice { get; set; }
 
         // Sorting
-        public string SortBy { get; set; } = "relevance"; // relevance, price_low, price_high, newest, rating
+        public string SortBy { get; set; } = "relevance";
     }
 }

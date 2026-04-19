@@ -4,7 +4,6 @@
 
 <div class="home-container">
     <div class="container">
-        <!-- Hero section (card) -->
         <div class="hero-card">
             <div class="hero-content">
                 <h1 class="hero-title">Discover Your Next Great Read</h1>
@@ -24,7 +23,6 @@
             </div>
         </div>
 
-        <!-- Popular Books -->
         @if (ViewBag.PopularBooks != null && ((IEnumerable<BookStore.Data.Models.Book>)ViewBag.PopularBooks).Any())
         {
             <div class="section-card">
@@ -41,7 +39,6 @@
             </div>
         }
 
-        <!-- Recent Books -->
         @if (ViewBag.RecentBooks != null && ((IEnumerable<BookStore.Data.Models.Book>)ViewBag.RecentBooks).Any())
         {
             <div class="section-card">
@@ -58,7 +55,6 @@
             </div>
         }
 
-        <!-- Popular Genres -->
         @if (ViewBag.PopularGenres != null && ((IEnumerable<BookStore.Data.Models.Genre>)ViewBag.PopularGenres).Any())
         {
             var genres = (IEnumerable<BookStore.Data.Models.Genre>)ViewBag.PopularGenres;
@@ -78,7 +74,6 @@
             </div>
         }
 
-        <!-- Call to Action (for non‑authenticated) -->
         @if (!User.Identity.IsAuthenticated)
         {
             <div class="cta-card">

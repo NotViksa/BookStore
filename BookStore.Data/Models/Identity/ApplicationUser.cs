@@ -16,7 +16,6 @@ namespace BookStore.Data.Models.Identity
 
         public string ProfileImageUrl { get; set; } = "/images/default-profile.png";
 
-        // New fields for book store
         [StringLength(50)]
         public string? FavoriteGenre { get; set; }
 

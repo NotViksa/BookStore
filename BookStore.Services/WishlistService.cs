@@ -40,7 +40,7 @@ namespace BookStore.Services
                 };
 
                 await _wishlistRepository.AddFavoriteAsync(wishlist);
-                return true; // Added to wishlist
+                return true;
             }
             catch (Exception ex)
             {

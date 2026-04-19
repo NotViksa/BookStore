@@ -1,4 +1,5 @@
-﻿using BookStore.Data.Models;
+﻿using BookStore.Data;
+using BookStore.Data.Models;
 using BookStore.Data.Models.Identity;
 using BookStore.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -89,7 +90,6 @@ namespace BookStore.Web.Areas.Admin.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null) return NotFound();
 
-            // Prevent deleting the last admin
             if (await _userManager.IsInRoleAsync(user, "Administrator"))
             {
                 var adminCount = (await _userManager.GetUsersInRoleAsync("Administrator")).Count;
@@ -99,6 +99,24 @@ namespace BookStore.Web.Areas.Admin.Controllers
                     return RedirectToAction(nameof(ManageUsers));
                 }
             }
+
+            var context = HttpContext.RequestServices.GetRequiredService<ApplicationDbContext>();
+            var userBooks = await context.Books.Where(b => b.UploadedById == userId).ToListAsync();
+            context.Books.RemoveRange(userBooks);
+
+            var cartItems = await context.CartItems.Where(c => c.UserId == userId).ToListAsync();
+            context.CartItems.RemoveRange(cartItems);
+
+            var wishlistItems = await context.Wishlists.Where(w => w.UserId == userId).ToListAsync();
+            context.Wishlists.RemoveRange(wishlistItems);
+
+            var ratings = await context.Ratings.Where(r => r.UserId == userId).ToListAsync();
+            context.Ratings.RemoveRange(ratings);
+
+            var reviews = await context.Reviews.Where(r => r.PostedById == userId).ToListAsync();
+            context.Reviews.RemoveRange(reviews);
+
+            await context.SaveChangesAsync();
 
             var result = await _userManager.DeleteAsync(user);
             if (result.Succeeded)
@@ -136,7 +154,6 @@ namespace BookStore.Web.Areas.Admin.Controllers
         [AllowAnonymous]
         public IActionResult SimulateError()
         {
-            // This triggers the status code middleware, which redirects to /Home/Error?statusCode=500
             return StatusCode(500);
         }
     }

@@ -32,12 +32,10 @@ namespace BookStore.Services
                 {
                     if (existingRating.Value == ratingValue)
                     {
-                        // Remove rating if clicking same value (toggle off)
                         await _ratingRepository.RemoveVoteAsync(existingRating);
                     }
                     else
                     {
-                        // Update to new rating value
                         existingRating.Value = ratingValue;
                         existingRating.RatedDate = DateTime.UtcNow;
                         await _ratingRepository.UpdateVoteAsync(existingRating);
@@ -102,22 +100,18 @@ namespace BookStore.Services
 
         public async Task<Dictionary<int, int>> GetRatingDistributionAsync(int bookId)
         {
-            var ratings = await _ratingRepository.GetVoteAsync(null, bookId); // You'll need to add a method to get all ratings for a book
+            var ratings = await _ratingRepository.GetVoteAsync(null, bookId);
             var distribution = new Dictionary<int, int>();
 
             for (int i = 1; i <= 5; i++)
             {
                 distribution[i] = 0;
             }
-
-            // This would need a new repository method to get all ratings for a book
-            // For now, returning empty distribution
             return distribution;
         }
 
         public async Task<int> GetTotalRatingsCountAsync(int bookId)
         {
-            // This would need a new repository method to count ratings for a book
             return 0;
         }
     }

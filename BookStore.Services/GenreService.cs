@@ -106,14 +106,11 @@ namespace BookStore.Services
 
         public async Task AddGenreToBookAsync(int bookId, int genreId)
         {
-            // This would need a repository method to handle many-to-many relationship
-            // Implementation depends on how you want to manage this
             throw new System.NotImplementedException();
         }
 
         public async Task RemoveGenreFromBookAsync(int bookId, int genreId)
         {
-            // This would need a repository method to handle many-to-many relationship
             throw new System.NotImplementedException();
         }
     }
