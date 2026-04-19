@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260419162159_FixCartItemCascade")]
-    partial class FixCartItemCascade
+    [Migration("20260419190320_FixCartItem")]
+    partial class FixCartItem
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -645,7 +645,7 @@ namespace BookStore.Data.Migrations
                     b.HasOne("BookStore.Data.Models.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("BookStore.Data.Models.Identity.ApplicationUser", "User")

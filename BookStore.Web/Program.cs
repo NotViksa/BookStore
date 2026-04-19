@@ -18,11 +18,15 @@ if (builder.Configuration.GetConnectionString("DefaultConnection") == null)
 }
 
 // Get connection string with fallback
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? "Server=(localdb)\\mssqllocaldb;Database=BookStore;Trusted_Connection=True;MultipleActiveResultSets=true";
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+if (string.IsNullOrEmpty(connectionString))
+{
+	throw new Exception("DefaultConnection is NOT configured!");
+}
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+	options.UseSqlServer(connectionString));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -105,13 +109,14 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// ... rest of your code (seeding, routes, etc.)
 
 // Initialize roles and admin user
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    try
+	var contextdb = services.GetRequiredService<ApplicationDbContext>();
+	await contextdb.Database.MigrateAsync();
+	try
     {
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();

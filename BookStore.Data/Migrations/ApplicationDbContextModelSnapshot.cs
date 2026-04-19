@@ -642,7 +642,7 @@ namespace BookStore.Data.Migrations
                     b.HasOne("BookStore.Data.Models.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("BookStore.Data.Models.Identity.ApplicationUser", "User")

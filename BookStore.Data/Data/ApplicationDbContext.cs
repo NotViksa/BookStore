@@ -90,7 +90,7 @@ namespace BookStore.Data
                 .HasOne(c => c.Book)
                 .WithMany()
                 .HasForeignKey(c => c.BookId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Order
             builder.Entity<Order>()

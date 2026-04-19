@@ -106,28 +106,17 @@ namespace BookStore.Services
                 var book = await _bookRepository.GetByIdWithDetailsAsync(id);
                 if (book == null) return false;
 
-                var cartItems = await _context.CartItems
-                    .Where(ci => ci.BookId == id)
-                    .ToListAsync();
-                if (cartItems.Any())
-                {
-                    _context.CartItems.RemoveRange(cartItems);
-                }
+                var cartItems = await _context.CartItems.Where(ci => ci.BookId == id).ToListAsync();
+                _context.CartItems.RemoveRange(cartItems);
 
-                var orderItems = await _context.OrderItems
-                    .Where(oi => oi.BookId == id)
-                    .ToListAsync();
-                if (orderItems.Any())
-                {
-                    _context.OrderItems.RemoveRange(orderItems);
-                }
+                var orderItems = await _context.OrderItems.Where(oi => oi.BookId == id).ToListAsync();
+                _context.OrderItems.RemoveRange(orderItems);
 
                 book.Reviews?.Clear();
                 book.Ratings?.Clear();
                 book.Wishlists?.Clear();
 
                 await _context.SaveChangesAsync();
-
                 await _bookRepository.DeleteAsync(id);
                 return true;
             }
