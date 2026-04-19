@@ -8,12 +8,15 @@ namespace BookStore.Services
 {
     public static class RolesInitializer
     {
+        public const string AdministratorRole = "Administrator";
+        public const string UserRole = "User";
+
         public static async Task Initialize(IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-            string[] roleNames = { "Administrator", "User" };
+            string[] roleNames = { AdministratorRole, UserRole };
 
             foreach (var roleName in roleNames)
             {
@@ -23,7 +26,6 @@ namespace BookStore.Services
                 }
             }
 
-            // Create admin user
             var adminEmail = "admin@bookstore.com";
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
@@ -43,7 +45,7 @@ namespace BookStore.Services
                 var createAdmin = await userManager.CreateAsync(adminUser, "AdminPassword123!");
                 if (createAdmin.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(adminUser, "Administrator");
+                    await userManager.AddToRoleAsync(adminUser, AdministratorRole);
                 }
             }
         }

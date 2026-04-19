@@ -1,4 +1,5 @@
-﻿using BookStore.Data.Interfaces;
+﻿using BookStore.Data;
+using BookStore.Data.Interfaces;
 using BookStore.Data.Models;
 using BookStore.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -12,15 +13,18 @@ namespace BookStore.Services
         private readonly IBookRepository _bookRepository;
         private readonly IGenreService _genreService;
         private readonly ILogger<BookService> _logger;
+        private readonly ApplicationDbContext _context;
 
         public BookService(
             IBookRepository bookRepository,
             IGenreService genreService,
-            ILogger<BookService> logger)
+            ILogger<BookService> logger,
+            ApplicationDbContext context)
         {
             _bookRepository = bookRepository;
             _genreService = genreService;
             _logger = logger;
+            _context = context;
         }
 
         public async Task<IEnumerable<Book>> GetAllBooksAsync()
@@ -102,10 +106,27 @@ namespace BookStore.Services
                 var book = await _bookRepository.GetByIdWithDetailsAsync(id);
                 if (book == null) return false;
 
-                // Clear collections to avoid foreign key issues
+                var cartItems = await _context.CartItems
+                    .Where(ci => ci.BookId == id)
+                    .ToListAsync();
+                if (cartItems.Any())
+                {
+                    _context.CartItems.RemoveRange(cartItems);
+                }
+
+                var orderItems = await _context.OrderItems
+                    .Where(oi => oi.BookId == id)
+                    .ToListAsync();
+                if (orderItems.Any())
+                {
+                    _context.OrderItems.RemoveRange(orderItems);
+                }
+
                 book.Reviews?.Clear();
                 book.Ratings?.Clear();
                 book.Wishlists?.Clear();
+
+                await _context.SaveChangesAsync();
 
                 await _bookRepository.DeleteAsync(id);
                 return true;

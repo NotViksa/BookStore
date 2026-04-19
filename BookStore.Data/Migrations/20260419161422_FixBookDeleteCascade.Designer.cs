@@ -4,6 +4,7 @@ using BookStore.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260419161422_FixBookDeleteCascade")]
+    partial class FixBookDeleteCascade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -642,7 +645,7 @@ namespace BookStore.Data.Migrations
                     b.HasOne("BookStore.Data.Models.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("BookStore.Data.Models.Identity.ApplicationUser", "User")
@@ -672,7 +675,7 @@ namespace BookStore.Data.Migrations
                     b.HasOne("BookStore.Data.Models.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("BookStore.Data.Models.Order", "Order")

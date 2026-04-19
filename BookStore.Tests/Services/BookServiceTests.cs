@@ -1,14 +1,16 @@
-﻿using BookStore.Data.Interfaces;
+﻿using BookStore.Data;
+using BookStore.Data.Interfaces;
 using BookStore.Data.Models;
-using BookStore.Data.Repositories;
 using BookStore.Services;
 using BookStore.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -19,6 +21,7 @@ namespace BookStore.Tests.Services
         private readonly Mock<IBookRepository> _mockBookRepo;
         private readonly Mock<IGenreService> _mockGenreService;
         private readonly Mock<ILogger<BookService>> _mockLogger;
+        private readonly Mock<ApplicationDbContext> _mockContext;
         private readonly BookService _bookService;
 
         public BookServiceTests()
@@ -26,7 +29,13 @@ namespace BookStore.Tests.Services
             _mockBookRepo = new Mock<IBookRepository>();
             _mockGenreService = new Mock<IGenreService>();
             _mockLogger = new Mock<ILogger<BookService>>();
-            _bookService = new BookService(_mockBookRepo.Object, _mockGenreService.Object, _mockLogger.Object);
+            _mockContext = new Mock<ApplicationDbContext>(new DbContextOptions<ApplicationDbContext>());
+
+            _bookService = new BookService(
+                _mockBookRepo.Object,
+                _mockGenreService.Object,
+                _mockLogger.Object,
+                _mockContext.Object);
         }
 
         [Fact]
@@ -80,6 +89,11 @@ namespace BookStore.Tests.Services
                 .ReturnsAsync(book);
             _mockBookRepo.Setup(r => r.DeleteAsync(bookId))
                 .Returns(Task.CompletedTask);
+
+            // Mock OrderItems DbSet (empty list)
+            var orderItems = new List<OrderItem>().AsQueryable();
+            var mockOrderItemDbSet = CreateMockDbSet(orderItems);
+            _mockContext.Setup(c => c.OrderItems).Returns(mockOrderItemDbSet.Object);
 
             // Act
             var result = await _bookService.DeleteBookAsync(bookId);
@@ -286,6 +300,32 @@ namespace BookStore.Tests.Services
             // Assert
             Assert.Single(result);
             Assert.Equal(userId, result.First().UploadedById);
+        }
+
+        // Helper method to mock DbSet
+        private static Mock<DbSet<T>> CreateMockDbSet<T>(IQueryable<T> data) where T : class
+        {
+            var mockSet = new Mock<DbSet<T>>();
+            mockSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(data.Provider);
+            mockSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+
+            mockSet.As<IAsyncEnumerable<T>>()
+                .Setup(m => m.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
+                .Returns(new TestAsyncEnumerator<T>(data.GetEnumerator()));
+
+            return mockSet;
+        }
+
+        // Helper class for async enumeration
+        internal class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
+        {
+            private readonly IEnumerator<T> _inner;
+            public TestAsyncEnumerator(IEnumerator<T> inner) => _inner = inner;
+            public T Current => _inner.Current;
+            public ValueTask DisposeAsync() => new ValueTask(Task.CompletedTask);
+            public ValueTask<bool> MoveNextAsync() => new ValueTask<bool>(_inner.MoveNext());
         }
     }
 }

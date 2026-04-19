@@ -289,17 +289,14 @@ namespace BookStore.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ByAuthor(string author, int? pageNumber)
+        public IActionResult ByAuthor(string author)
         {
             if (string.IsNullOrWhiteSpace(author))
             {
                 return RedirectToAction("Index");
             }
 
-            var books = await _bookService.GetBooksByAuthorAsync(author);
-            ViewBag.Author = author;
-
-            return View(books);
+            return RedirectToAction("Index", new { author = author });
         }
     }
 }

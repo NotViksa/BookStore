@@ -75,7 +75,6 @@ namespace BookStore.Data
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Unique constraint: one rating per user per book
             builder.Entity<Rating>()
                 .HasIndex(r => new { r.UserId, r.BookId })
                 .IsUnique();
@@ -91,7 +90,7 @@ namespace BookStore.Data
                 .HasOne(c => c.Book)
                 .WithMany()
                 .HasForeignKey(c => c.BookId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Order
             builder.Entity<Order>()
@@ -111,10 +110,9 @@ namespace BookStore.Data
                 .HasOne(oi => oi.Book)
                 .WithMany()
                 .HasForeignKey(oi => oi.BookId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
-            //
-            // Genres (no dependencies, always safe)
+            // Genres
             builder.Entity<Genre>().HasData(
                 new Genre { Id = 1, Name = "Fiction", Description = "Literary works based on imagination" },
                 new Genre { Id = 2, Name = "Non-Fiction", Description = "Informational works based on facts" },
