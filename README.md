@@ -48,9 +48,17 @@ The solution is divided into three main layers:
 
 ## Usage Instructions
 
-The application is publicly deployed and can be accessed at the following URL:
+The application is hosted on Azure App Service and is publicly accessible at the following address:
 
 [https://bookstore-softuni-g4hyauhchhgcfxdp.canadacentral-01.azurewebsites.net](https://bookstore-softuni-g4hyauhchhgcfxdp.canadacentral-01.azurewebsites.net)
+
+**Note on Initial Load:** The website runs on a free hosting tier and enters a sleep state after periods of inactivity. If the page does not load immediately, please allow a few moments for the service to start, then refresh the page.
+
+### Demonstration Video
+
+A short walkthrough of the project's primary features is available here:
+
+[https://youtu.be/LwjwCUEALsE?si=KIJWeIlUVeioL3Cn](https://youtu.be/LwjwCUEALsE?si=KIJWeIlUVeioL3Cn)
 
 ### User Accounts
 - Register a new account using the **Register** page.
