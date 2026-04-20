@@ -18,6 +18,7 @@ namespace BookStore.Web.Areas.Admin.Controllers
         private readonly IBookService _bookService;
         private readonly IOrderService _orderService;
         private readonly IReviewService _reviewService;
+        private readonly ApplicationDbContext _context;
         private readonly ILogger<AdminController> _logger;
 
         public AdminController(
@@ -26,6 +27,7 @@ namespace BookStore.Web.Areas.Admin.Controllers
             IBookService bookService,
             IOrderService orderService,
             IReviewService reviewService,
+            ApplicationDbContext context,
             ILogger<AdminController> logger)
         {
             _userManager = userManager;
@@ -33,6 +35,7 @@ namespace BookStore.Web.Areas.Admin.Controllers
             _bookService = bookService;
             _orderService = orderService;
             _reviewService = reviewService;
+            _context = context;
             _logger = logger;
         }
 
@@ -90,6 +93,7 @@ namespace BookStore.Web.Areas.Admin.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null) return NotFound();
 
+            // Prevent deleting the last administrator
             if (await _userManager.IsInRoleAsync(user, "Administrator"))
             {
                 var adminCount = (await _userManager.GetUsersInRoleAsync("Administrator")).Count;
@@ -100,35 +104,49 @@ namespace BookStore.Web.Areas.Admin.Controllers
                 }
             }
 
-            var context = HttpContext.RequestServices.GetRequiredService<ApplicationDbContext>();
-            var userBooks = await context.Books.Where(b => b.UploadedById == userId).ToListAsync();
-            context.Books.RemoveRange(userBooks);
+            try
+            {
+                var orders = await _context.Orders.Where(o => o.UserId == userId).ToListAsync();
+                _context.Orders.RemoveRange(orders);
 
-            var cartItems = await context.CartItems.Where(c => c.UserId == userId).ToListAsync();
-            context.CartItems.RemoveRange(cartItems);
+                var userBooks = await _context.Books.Where(b => b.UploadedById == userId).ToListAsync();
+                _context.Books.RemoveRange(userBooks);
 
-            var wishlistItems = await context.Wishlists.Where(w => w.UserId == userId).ToListAsync();
-            context.Wishlists.RemoveRange(wishlistItems);
+                var cartItems = await _context.CartItems.Where(c => c.UserId == userId).ToListAsync();
+                _context.CartItems.RemoveRange(cartItems);
 
-            var ratings = await context.Ratings.Where(r => r.UserId == userId).ToListAsync();
-            context.Ratings.RemoveRange(ratings);
+                var wishlistItems = await _context.Wishlists.Where(w => w.UserId == userId).ToListAsync();
+                _context.Wishlists.RemoveRange(wishlistItems);
 
-            var reviews = await context.Reviews.Where(r => r.PostedById == userId).ToListAsync();
-            context.Reviews.RemoveRange(reviews);
+                var ratings = await _context.Ratings.Where(r => r.UserId == userId).ToListAsync();
+                _context.Ratings.RemoveRange(ratings);
 
-            await context.SaveChangesAsync();
+                var reviews = await _context.Reviews.Where(r => r.PostedById == userId).ToListAsync();
+                _context.Reviews.RemoveRange(reviews);
 
-            var result = await _userManager.DeleteAsync(user);
-            if (result.Succeeded)
-                TempData["SuccessMessage"] = $"User {user.DisplayName} deleted.";
-            else
-                TempData["ErrorMessage"] = "Failed to delete user.";
+                await _context.SaveChangesAsync();
+
+                var result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    TempData["SuccessMessage"] = $"User {user.DisplayName} deleted successfully.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = $"Failed to delete user: {string.Join(", ", result.Errors.Select(e => e.Description))}";
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting user {UserId}", userId);
+                TempData["ErrorMessage"] = "An error occurred while deleting the user.";
+            }
 
             return RedirectToAction(nameof(ManageUsers));
         }
 
-        // ========== BOOK MANAGEMENT ==========
-        public IActionResult ManageBooks()
+// ========== BOOK MANAGEMENT ==========
+public IActionResult ManageBooks()
         {
             var books = _bookService.GetBooksQueryable()
                 .Include(b => b.UploadedBy)
