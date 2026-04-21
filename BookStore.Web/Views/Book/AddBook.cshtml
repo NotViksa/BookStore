@@ -150,54 +150,56 @@
     }
     <script>
         $(document).ready(function() {
-            var coverUploadArea = $('#coverUploadArea');
-            var coverInput = $('#CoverImage');
-            var coverPlaceholder = $('.cover-placeholder');
-            var coverPreview = $('.cover-preview');
-            var coverPreviewImg = $('#coverPreview');
+            var coverUploadArea = document.getElementById('coverUploadArea');
+            var coverInput = document.getElementById('CoverImage');
+            var coverPlaceholder = document.querySelector('.cover-placeholder');
+            var coverPreview = document.querySelector('.cover-preview');
+            var coverPreviewImg = document.getElementById('coverPreview');
+            var changeBtn = document.querySelector('.change-cover');
 
-            coverUploadArea.on('click', function() {
+            coverUploadArea.addEventListener('click', function() {
                 coverInput.click();
             });
 
-            coverInput.on('change', function(e) {
+            coverInput.addEventListener('change', function(e) {
                 var file = this.files[0];
                 if (file) {
                     var reader = new FileReader();
                     reader.onload = function(e) {
-                        coverPreviewImg.attr('src', e.target.result);
-                        coverPlaceholder.hide();
-                        coverPreview.show();
+                        coverPreviewImg.src = e.target.result;
+                        coverPlaceholder.style.display = 'none';
+                        coverPreview.style.display = 'block';
                     };
                     reader.readAsDataURL(file);
                 }
             });
 
-            $('.change-cover').on('click', function(e) {
+            changeBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                coverInput.val('');
-                coverPreview.hide();
-                coverPlaceholder.show();
+                coverInput.value = '';
+                coverPreview.style.display = 'none';
+                coverPlaceholder.style.display = 'block';
             });
 
-            coverUploadArea.on('dragover', function(e) {
+            coverUploadArea.addEventListener('dragover', function(e) {
                 e.preventDefault();
-                $(this).addClass('dragover');
+                this.classList.add('dragover');
             });
 
-            coverUploadArea.on('dragleave', function(e) {
+            coverUploadArea.addEventListener('dragleave', function(e) {
                 e.preventDefault();
-                $(this).removeClass('dragover');
+                this.classList.remove('dragover');
             });
 
-            coverUploadArea.on('drop', function(e) {
+            coverUploadArea.addEventListener('drop', function(e) {
                 e.preventDefault();
-                $(this).removeClass('dragover');
+                this.classList.remove('dragover');
 
-                var files = e.originalEvent.dataTransfer.files;
+                var files = e.dataTransfer.files;
                 if (files.length > 0) {
-                    coverInput[0].files = files;
-                    coverInput.trigger('change');
+                    coverInput.files = files;
+                    var event = new Event('change', { bubbles: true });
+                    coverInput.dispatchEvent(event);
                 }
             });
         });

@@ -119,58 +119,62 @@
     }
     <script>
         $(document).ready(function() {
-            var profileImageUpload = $('#profileImageUpload');
-            var profileInput = $('#ProfileImage');
-            var currentImage = $('.current-image');
-            var uploadPlaceholder = $('.upload-placeholder');
-            var imagePreview = $('.image-preview');
-            var newProfilePreview = $('#newProfilePreview');
+            var profileImageUpload = document.getElementById('profileImageUpload');
+            var profileInput = document.getElementById('ProfileImage');
+            var currentImage = document.querySelector('.current-image');
+            var uploadPlaceholder = document.querySelector('.upload-placeholder');
+            var imagePreview = document.querySelector('.image-preview');
+            var newProfilePreview = document.getElementById('newProfilePreview');
+            var changeBtn = document.querySelector('.change-image');
 
-            profileImageUpload.on('click', function(e) {
-                if (!$(e.target).closest('.change-image').length) {
+            profileImageUpload.addEventListener('click', function(e) {
+                if (!e.target.closest('.change-image')) {
                     profileInput.click();
                 }
             });
 
-            profileInput.on('change', function(e) {
+            profileInput.addEventListener('change', function(e) {
                 var file = this.files[0];
                 if (file) {
                     var reader = new FileReader();
                     reader.onload = function(e) {
-                        newProfilePreview.attr('src', e.target.result);
-                        currentImage.hide();
-                        uploadPlaceholder.hide();
-                        imagePreview.show();
+                        newProfilePreview.src = e.target.result;
+                        currentImage.style.display = 'none';
+                        if (uploadPlaceholder) uploadPlaceholder.style.display = 'none';
+                        imagePreview.style.display = 'block';
                     };
                     reader.readAsDataURL(file);
                 }
             });
 
-            $('.change-image').on('click', function(e) {
-                e.stopPropagation();
-                profileInput.val('');
-                imagePreview.hide();
-                currentImage.show();
+            if (changeBtn) {
+                changeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    profileInput.value = '';
+                    imagePreview.style.display = 'none';
+                    currentImage.style.display = 'block';
+                });
+            }
+
+            profileImageUpload.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
             });
 
-            profileImageUpload.on('dragover', function(e) {
+            profileImageUpload.addEventListener('dragleave', function(e) {
                 e.preventDefault();
-                $(this).addClass('dragover');
+                this.classList.remove('dragover');
             });
 
-            profileImageUpload.on('dragleave', function(e) {
+            profileImageUpload.addEventListener('drop', function(e) {
                 e.preventDefault();
-                $(this).removeClass('dragover');
-            });
+                this.classList.remove('dragover');
 
-            profileImageUpload.on('drop', function(e) {
-                e.preventDefault();
-                $(this).removeClass('dragover');
-
-                var files = e.originalEvent.dataTransfer.files;
+                var files = e.dataTransfer.files;
                 if (files.length > 0) {
-                    profileInput[0].files = files;
-                    profileInput.trigger('change');
+                    profileInput.files = files;
+                    var event = new Event('change', { bubbles: true });
+                    profileInput.dispatchEvent(event);
                 }
             });
         });
